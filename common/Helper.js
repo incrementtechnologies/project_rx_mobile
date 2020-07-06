@@ -25,7 +25,7 @@ export default {
     {
       key: 1,
       title: 'Welcome to RunwayExpress!',
-      text: 'Let\'s be one in Fighting COVID-19!',
+      text: 'Delivering food and more to your doorstep!',
       icon: null,
       image: require('assets/logo.png'),
       colors: [Color.primary, Color.lightGray]
