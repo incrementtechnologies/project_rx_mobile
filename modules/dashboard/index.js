@@ -8,7 +8,9 @@ import Currency from 'services/Currency.js';
 import {NavigationActions} from 'react-navigation';
 import { connect } from 'react-redux';
 import { Dimensions } from 'react-native';
+import { Thumbnail, List, ListItem, Separator } from 'native-base';
 import RNPickerSelect from 'react-native-picker-select';
+import {Collapse,CollapseHeader, CollapseBody, AccordionList} from 'accordion-collapse-react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUserCircle, faMapMarker, faUniversity, faKaaba, faFilter } from '@fortawesome/free-solid-svg-icons';
 const width = Math.round(Dimensions.get('window').width);
@@ -21,7 +23,11 @@ class Dashboard extends Component{
       isLoading: false,
       selected: null,
       data: null,
-      locationChoice:null
+      locationChoice:null,
+      location:{
+        latitude:null,
+        longitude:null,
+      }
     }
   }
 
@@ -42,30 +48,63 @@ class Dashboard extends Component{
 
   currentLocation = () => {
     Geolocation.getCurrentPosition(info => {
-     console.log(info.coords.latitude);
+    console.log(info)
+     this.setState({location:{
+       latitude:info.coords.latitude,
+       longitude:info.coords.longitude,
+     }})
     })
   }
 
-  locationOption=(option)=>{
-    
-    if(option=='currLoc')
-    {
-      console.log("Hello")
-      this.setState({locationChoice:null})
-      this.currentLocation()
-    }
-    else if(option=='addLoc')
-    {
-      this.setState({locationChoice:null})
-      this.redirect('selectLocation')
-      
-    }
-  }
+  
 
-  onLocationOptionChange=(option)=>
+
+
+  filterInput=()=>
   {
-    this.setState({locationChoice:option})
-    console.log(this.state.locationChoice);
+    return(
+      <View style={Style.searchSection}>
+    
+      <TextInput
+          style={Style.input}
+          placeholder="Search for Shops"
+          onChangeText={(searchString) => {this.setState({searchString})}}
+         
+      />
+      <TouchableOpacity onPress={()=>this.filterRedirect()}>
+      <FontAwesomeIcon style={Style.searchIcon} icon={faFilter} color={'orange'}/>
+      </TouchableOpacity>
+  </View>
+    )
+  }
+  locationChoices=()=>
+  {
+    return(
+      <View style={{width:'100%',paddingBottom:10}}>
+      <Collapse>
+        <CollapseHeader style={{flexDirection:'row',alignItems:'center',justifyContent:'center',width:'100%',backgroundColor:'white',height:40}}>
+          <View>
+            <Text>Choose Location</Text>
+          </View>
+        </CollapseHeader>
+        <CollapseBody style={{alignItems:'center',justifyContent:'center',flexDirection:'column',backgroundColor:'white'}}>
+          <TouchableOpacity
+         
+          style={{borderBottomWidth:1,width:'100%',padding:10}}
+          onPress={()=>this.currentLocation()}>
+            <Text>Use Current Location</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+          style={{borderBottomWidth:1,width:'100%',padding:10}}
+          onPress={()=>this.redirect('selectLocation')}>
+            <Text>Set Location</Text>
+          </TouchableOpacity>
+          
+        </CollapseBody>
+      </Collapse>
+    </View>
+    )
   }
 
   render() {
@@ -79,35 +118,12 @@ class Dashboard extends Component{
           }
         }}
         >
-        <View style={[Style.MainContainer, {
-          minHeight: height
-        }]}>
-          {isLoading ? <Spinner mode="overlay"/> : null }
-          <View style={Style.MainContainer}>
-            <Text>Welcome2</Text>
-
-          </View>
-          <RNPickerSelect
-            onValueChange={(value) => this.locationOption(value)}
-            items={[
-                { label: 'Use Current Location', value: 'currLoc' },
-                { label: 'Add Location', value: 'addLoc' },
-               
-            ]}
-        />
-          <View style={Style.searchSection}>
-    
-    <TextInput
-        style={Style.input}
-        placeholder="User Nickname"
-        onChangeText={(searchString) => {this.setState({searchString})}}
        
-    />
-    <TouchableOpacity onPress={()=>this.filterRedirect()}>
-    <FontAwesomeIcon style={Style.searchIcon} icon={faFilter} color={'orange'}/>
-    </TouchableOpacity>
-</View>
-        </View>
+          {isLoading ? <Spinner mode="overlay"/> : null }
+        {this.locationChoices()}
+       
+        {this.filterInput()}
+      
       
       </ScrollView>
     );

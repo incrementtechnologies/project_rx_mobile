@@ -46,6 +46,14 @@ class filterPicker extends Component{
     }
   }
 
+  stackRedirect=()=>
+  {
+    this.redirect('drawerStack')
+  }
+
+  redirect = (route) => {
+    this.props.navigation.navigate(route)
+  }
   componentDidMount(){
     const { user } = this.props.state;
      if(user != null){
@@ -56,7 +64,7 @@ class filterPicker extends Component{
   {
     return (
       
-      <View>
+    <React.Fragment>
           <Card
       title='Cuisines'
       >
@@ -69,10 +77,10 @@ class filterPicker extends Component{
     onValueChange={value => this.setState({toggleCheckBox:value})}
   />
 
-          </View>
-          
+          </View>    
     </Card>
-      </View>
+
+            </React.Fragment>
     )
     
   }
@@ -82,8 +90,24 @@ class filterPicker extends Component{
     const { user } = this.props.state;
     
     return (
-      <View>
+      <View style={Style.MainContainer}>
       {this.filterCuisine()}
+      <TouchableOpacity
+              onPress={()=>this.stackRedirect()}
+              style={{
+            
+                justifyContent: 'center',
+                height: 50,
+               width:'100%',
+              
+                backgroundColor: Color.white
+              }}
+              >
+              <Text style={{
+                color: Color.primary,
+                textAlign: 'center'
+              }}>Apply Filters</Text>
+            </TouchableOpacity>
       </View>
     );
   }

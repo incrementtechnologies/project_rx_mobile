@@ -58,6 +58,7 @@ export default {
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
+    
 },
 searchIcon: {
     paddingRight: 30,
