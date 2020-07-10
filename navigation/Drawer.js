@@ -26,7 +26,9 @@ class MenuDrawerStructure extends Component {
         {this.state.loginState === true && 
           <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
             {/*Donute Button Image */}
-            <FontAwesomeIcon icon={ faBars } size={BasicStyles.iconSize} style={BasicStyles.iconStyle}/>
+            <FontAwesomeIcon icon={ faBars } size={BasicStyles.iconSize} style={[BasicStyles.iconStyle, {
+              color: Color.primary
+            }]}/>
           </TouchableOpacity>
         }
         
@@ -42,7 +44,7 @@ const Dashboard_StackNavigator = createStackNavigator({
       headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
       headerRight: <OptionRight navigationProps={navigation} />,
       headerStyle: {
-        backgroundColor: Color.primary,
+        backgroundColor: Color.white,
       },
       headerTintColor: '#fff',
     }),
@@ -56,7 +58,7 @@ const Notification_StackNavigator = createStackNavigator({
       headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
       headerRight: <OptionRight navigationProps={navigation} />,
       headerStyle: {
-        backgroundColor: Color.primary,
+        backgroundColor: Color.white,
       },
       headerTintColor: '#fff',
     }),
@@ -71,7 +73,7 @@ const Profile_StackNavigator = createStackNavigator({
       headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
       headerRight: <OptionRight navigationProps={navigation} />,
       headerStyle: {
-        backgroundColor: Color.primary,
+        backgroundColor: Color.white,
       },
       headerTintColor: '#fff',
     }),
