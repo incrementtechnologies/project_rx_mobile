@@ -3,11 +3,11 @@ import { Dimensions } from 'react-native';
 const width = Math.round(Dimensions.get('window').width);
 export default {
   ScrollView: {
-    padding: 10
+    padding: 20
   },
   MainContainer: {
     width: '100%',
-    alignItems: 'center'
+    paddingBottom: 50
   },
   TextContainer: {
     flex: 1
