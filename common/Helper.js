@@ -15,6 +15,13 @@ export default {
       color: Color.primary
     }
   }, {
+    title: 'Homepage',
+    route: 'Homepage',
+    icon: faUser,
+    iconStyle: {
+      color: Color.primary
+    }
+  }, {
     title: 'My Profile',
     route: 'Profile',
     icon: faUser,
@@ -23,7 +30,7 @@ export default {
     }
   }, {
     title: 'My Address',
-    route: 'Homepage',
+    route: 'MyAddress',
     icon: faMapMarker,
     iconStyle: {
       color: Color.primary
