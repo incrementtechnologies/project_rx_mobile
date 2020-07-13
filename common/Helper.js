@@ -16,7 +16,7 @@ export default {
     }
   }, {
     title: 'My Profile',
-    route: 'MyProfile',
+    route: 'Profile',
     icon: faUser,
     iconStyle: {
       color: Color.primary

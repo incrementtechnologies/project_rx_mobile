@@ -36,25 +36,30 @@ class NavigationDrawerStructureRight extends Component {
         width: width - (width * .10)
       }}>
 
-
-        <View style={{
-          width: '85%',
-          flexDirection: 'row'
+      <TouchableOpacity
+        onPress={() => this.goTo('Location')}
+        style={{
+          width: '85%'
         }}>
-          <FontAwesomeIcon icon={ faMapMarker } size={15} style={[BasicStyles.iconStyle, {
-                color: Color.primary
-              }]}/>
-          <Text style={{
-            fontSize: 12
+          <View style={{
+            width: '100%',
+            flexDirection: 'row'
           }}>
-            Casili, Casili, Consolacion
-          </Text>
-        </View>
+            <FontAwesomeIcon icon={ faMapMarker } size={15} style={[BasicStyles.iconStyle, {
+                  color: Color.primary
+                }]}/>
+            <Text style={{
+              fontSize: 12
+            }}>
+              Casili, Casili, Consolacion
+            </Text>
+          </View>
+        </TouchableOpacity>
 
         <View style={{
           width: '15%'
         }}>
-          <TouchableOpacity onPress={() => this.navigateToScreen('LinkedAccounts')}>
+          <TouchableOpacity onPress={() => this.goTo('Cart')}>
             <View style={{ flexDirection: 'row'}}>
               <FontAwesomeIcon icon={ faShoppingCart } size={15} style={[BasicStyles.iconStyle, {
                 color: Color.black
