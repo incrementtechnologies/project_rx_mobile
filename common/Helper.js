@@ -69,6 +69,9 @@ export default {
   }, {
     title: 'SHOPS',
     value: 'shops'
+  }, {
+    title: 'OTHERS',
+    value: 'others'
   }],
   pusher: {
     broadcast_type: 'pusher',
