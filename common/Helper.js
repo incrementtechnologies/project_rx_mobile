@@ -23,7 +23,7 @@ export default {
     }
   }, {
     title: 'My Address',
-    route: 'MyAddress',
+    route: 'Homepage',
     icon: faMapMarker,
     iconStyle: {
       color: Color.primary
@@ -59,6 +59,16 @@ export default {
   }, {
     title: 'Privacy Policy',
     route: 'PrivacyPolicy'
+  }],
+  pagerMenu: [{
+    title: 'FEATURED',
+    value: 'featured'
+  }, {
+    title: 'CATEGORIES',
+    value: 'categories'
+  }, {
+    title: 'SHOPS',
+    value: 'shops'
   }],
   pusher: {
     broadcast_type: 'pusher',

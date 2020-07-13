@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import Slider from 'components/Slider/WithIcons.js';
 import { Color, BasicStyles } from 'common';
+import Homepage from 'modules/homepage';
 import Dashboard from 'modules/dashboard';
 import Notification from 'modules/notification';
 import Profile from 'modules/profile';
@@ -36,6 +37,21 @@ class MenuDrawerStructure extends Component {
     );
   }
 }
+ 
+const Homepage_StackNavigator = createStackNavigator({
+  Homepage: {
+    screen: Homepage,
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
+      headerRight: <OptionRight navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: Color.white,
+      },
+      headerTintColor: '#fff',
+    }),
+  },
+});
+
  
 const Dashboard_StackNavigator = createStackNavigator({
   Dashboard: {
@@ -83,6 +99,12 @@ const Profile_StackNavigator = createStackNavigator({
 
 
 const Drawer = createDrawerNavigator({
+  Homepage: {
+    screen: Homepage_StackNavigator,
+    navigationOptions: {
+      drawerLabel: '',
+    },
+  },
   Dashboard: {
     screen: Dashboard_StackNavigator,
     navigationOptions: {
