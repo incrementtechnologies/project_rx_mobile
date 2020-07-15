@@ -8,15 +8,15 @@ export default {
   APP_WEBSITE: 'www.runwayexpress.com',
   APP_HOST: 'com.runwayexpress',
   DrawerMenu: [{
-    title: 'Dashboard',
-    route: 'Dashboard',
+    title: 'Homepage',
+    route: 'Homepage',
     icon: faUser,
     iconStyle: {
       color: Color.primary
     }
   }, {
-    title: 'Homepage',
-    route: 'Homepage',
+    title: 'My Orders',
+    route: 'MyOrders',
     icon: faUser,
     iconStyle: {
       color: Color.primary
