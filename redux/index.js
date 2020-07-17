@@ -8,6 +8,9 @@ const types = {
   UPDATE_USER: 'UPDATE_USER',
   SET_NOTIFICATIONS: 'SET_NOTIFICATIONS',
   UPDATE_NOTIFICATIONS: 'UPDATE_NOTIFICATIONS',
+  ADD_PRODUCT_TO_CART: 'ADD_PRODUCT_TO_CART',
+  UPDATE_PRODUCT_TO_CART: 'UPDATE_PRODUCT_TO_CART',
+  REMOVE_PRODUCT_TO_CART: 'REMOVE_PRODUCT_TO_CART',
   nav: null,
 }
 
@@ -22,17 +25,27 @@ export const actions = {
     return { type: types.UPDATE_USER, user };
   },
   setNotifications(unread, notifications){
-    return { type: types.SET_NOTIFICATIONS, unread, notifications};
+    return { type: types.SET_NOTIFICATIONS, unread, notifications };
   }, 
   updateNotifications(unread, notification){
-    return { type: types.UPDATE_NOTIFICATIONS, unread, notification};
+    return { type: types.UPDATE_NOTIFICATIONS, unread, notification };
+  }, 
+  addProductToCart(product){
+    return { type: types.ADD_PRODUCT_TO_CART, product };
+  },
+  updateProductToCart(product){
+    return { type: types.UPDATE_PRODUCT_TO_CART, product };
+  },
+  removeProductToCart(product){
+    return { type: types.REMOVE_PRODUCT_TO_CART, product };
   }
 };
 
 const initialState = {
   token: null,
   user: null,
-  notifications: null
+  notifications: null,
+  cart: []
 }
 
 storeData = async (key, value) => {
@@ -47,6 +60,8 @@ const reducer = (state = initialState, action) => {
   const { type, user, token } = action;
   const { unread } = action;
   const { notification } = action;
+  const { product } = action;
+
   switch (type) {
     case types.LOGOUT:
       AsyncStorage.clear();
@@ -107,6 +122,43 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         notifications: updatedNotifications
+      }
+    case types.ADD_PRODUCT_TO_CART:
+      let cartProduct = state.cart
+      let flag = false
+      for (var i = 0; i < state.cart.length; i++) {
+        let item = state.cart[i]
+        if(parseInt(product.id) == parseInt(item.id)){
+          flag = true
+          break
+        }
+      }
+      if(flag == false){
+        cartProduct.push(product)
+      }
+      return {
+        ...state,
+        cart: cartProduct
+      }
+    case types.UPDATE_PRODUCT_TO_CART:
+      let updateCart = state.cart.map(item => {
+        if(parseInt(product.id) == parseInt(item.id)){
+          return product
+        }else{
+          return item
+        }
+      })
+      return {
+        ...state,
+        cart: updateCart
+      }
+    case types.REMOVE_PRODUCT_TO_CART:
+      let removeCart = state.cart.filter(item => {
+        return parseInt(product.id) != parseInt(item.id)
+      })
+      return {
+        ...state,
+        cart: removeCart
       }
     default:
       return {...state, nav: state.nav};
