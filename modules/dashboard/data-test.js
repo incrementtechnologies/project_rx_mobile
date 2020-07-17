@@ -58,7 +58,8 @@ const products = [
       avg: 5.0,
       total: 786
     },
-    promo: ['25% OFF', 'FREE DELIVERY']
+    promo: ['25% OFF', 'FREE DELIVERY'],
+    price:150,
   },
   {
     id: 1,
@@ -71,7 +72,8 @@ const products = [
       avg: 4.9,
       total: 302
     },
-    promo: ['25% OFF']
+    promo: ['25% OFF'],
+    price:200,
   },
   {
     id: 2,
@@ -84,7 +86,8 @@ const products = [
       avg: 4.5,
       total: 1003
     },
-    promo: ['FREE DELIVERY']
+    promo: ['FREE DELIVERY'],
+    price:300,
   },
   {
     id: 3,
@@ -97,7 +100,8 @@ const products = [
       avg: 4.5,
       total: 10
     },
-    promo: []
+    promo: [],
+    price:400,
   }
 ]
 

@@ -1,29 +1,18 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Image,
-  TouchableHighlight,
-  Text,
-  ScrollView,
-  FlatList,
-  Dimensions
-} from 'react-native';
+import {View, Image,TouchableHighlight,Text,ScrollView,FlatList, Dimensions,TouchableOpacity,TextInput} from 'react-native';
 import { NavigationActions } from 'react-navigation';
+import { Thumbnail, List, ListItem, Separator } from 'native-base';
 import { connect } from 'react-redux';
-import {
-  faUserCircle,
-  faMapMarker,
-  faUniversity,
-  faKaaba,
-} from '@fortawesome/free-solid-svg-icons';
+import {faUserCircle,faMapMarker, faUniversity,faKaaba,faFilter} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-
 import Style from './Style.js';
 import { Routes, Color, Helper, BasicStyles } from 'common';
 import { Spinner, Empty, SystemNotification } from 'components';
 import { MainCard, Feature, Card, MainFeature, PromoCard } from 'components/ProductThumbnail'
+import {Collapse,CollapseHeader, CollapseBody, AccordionList} from 'accordion-collapse-react-native';
 import Api from 'services/api/index.js';
 import Currency from 'services/Currency.js';
+import Geolocation from '@react-native-community/geolocation';
 const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
 
@@ -36,11 +25,18 @@ class Dashboard extends Component {
     this.state = {
       isLoading: false,
       selected: null,
-      data: null
-    };
-  }
+      data: null,
+      locationChoice:null,
+      location:{
+        latitude:null,
+        longitude:null,
+      }
+    }
+     
+    }
+  
 
-  componentDidMount() {
+  componentDidMount(){
     const { user } = this.props.state;
     if (user != null) {
     }
@@ -49,6 +45,71 @@ class Dashboard extends Component {
   redirect = route => {
     this.props.navigation.navigate(route);
   };
+
+  filterRedirect=()=>{
+    this.redirect('filterPicker')
+  }
+
+  currentLocation = () => {
+    Geolocation.getCurrentPosition(info => {
+    console.log(info)
+     this.setState({location:{
+       latitude:info.coords.latitude,
+       longitude:info.coords.longitude,
+     }})
+    })
+  }
+
+  
+
+
+
+  filterInput=()=>
+  {
+    return(
+      <View style={Style.searchSection}>
+    
+      <TextInput
+          style={Style.input}
+          placeholder="Search for Shops"
+          onChangeText={(searchString) => {this.setState({searchString})}}
+         
+      />
+      <TouchableOpacity onPress={()=>this.filterRedirect()}>
+      <FontAwesomeIcon style={Style.searchIcon} icon={faFilter} color={'orange'}/>
+      </TouchableOpacity>
+  </View>
+    )
+  }
+  locationChoices=()=>
+  {
+    return(
+      <View style={{width:'100%',paddingBottom:10}}>
+      <Collapse>
+        <CollapseHeader style={{flexDirection:'row',alignItems:'center',justifyContent:'center',width:'100%',backgroundColor:'white',height:40}}>
+          <View>
+            <Text>Choose Location</Text>
+          </View>
+        </CollapseHeader>
+        <CollapseBody style={{alignItems:'center',justifyContent:'center',flexDirection:'column',backgroundColor:'white'}}>
+          <TouchableOpacity
+         
+          style={{borderBottomWidth:1,width:'100%',padding:10}}
+          onPress={()=>this.currentLocation()}>
+            <Text>Use Current Location</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+          style={{borderBottomWidth:1,width:'100%',padding:10}}
+          onPress={()=>this.redirect('selectLocation')}>
+            <Text>Set Location</Text>
+          </TouchableOpacity>
+          
+        </CollapseBody>
+      </Collapse>
+    </View>
+    )
+  }
 
   FlatListItemSeparator = () => {
     return <View style={BasicStyles.Separator} />;
@@ -72,6 +133,9 @@ class Dashboard extends Component {
             },
           ]}>
           {isLoading ? <Spinner mode="overlay" /> : null}
+          {this.locationChoices()}
+       
+       {this.filterInput()}
 
           {/* Main Feature Product */}
           <Text style={{ fontSize: 17, fontWeight: '600' }}>Main Featured Product</Text>

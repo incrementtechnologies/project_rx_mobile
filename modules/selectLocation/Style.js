@@ -1,13 +1,14 @@
 import { Color } from 'common';
 import { Dimensions } from 'react-native';
 const width = Math.round(Dimensions.get('window').width);
+const height = Math.round(Dimensions.get('window').height);
 export default {
   ScrollView: {
-    padding: 20
+    padding: 10
   },
   MainContainer: {
     width: '100%',
-    paddingBottom: 50
+    alignItems: 'center'
   },
   TextContainer: {
     flex: 1
@@ -52,24 +53,28 @@ export default {
     paddingLeft: 10,
     paddingRight: 10
   },
-  searchSection: {
-   
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+  map:{
+    position:'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width,
+    height,
+  },
+  container:{
+    flex:1,
+    alignItems:'center',
+  },
+  imageContainer:{
+    flex:1,
+    justifyContent:'center',
     
-},
-searchIcon: {
-    paddingRight: 30,
-},
-input: {
-    flex: 1,
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
-    paddingLeft: 20,
-    backgroundColor: '#fff',
-    color: '#424242',
-},
+  },
+  image:{
+    
+    height: 45, 
+    width: 45,
+    bottom:'3%'
+  }
 }
