@@ -1,5 +1,5 @@
 import Color from './Color.js';
-import { faEdit, faComments, faCheck, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faComments, faCheck, faPaperPlane, faUser, faMapMarker, faCreditCard, faQuestionCircle, faUsers } from '@fortawesome/free-solid-svg-icons';
 export default {
   company: 'Increment Technologies',
   APP_NAME: '@RunwayExpress_',
@@ -9,12 +9,77 @@ export default {
   APP_HOST: 'com.runwayexpress',
   DrawerMenu: [{
     title: 'Dashboard',
-    route: 'Dashboard'
+    route: 'Dashboard',
+    icon: faUser,
+    iconStyle: {
+      color: Color.primary
+    }
+  }, {
+    title: 'Homepage',
+    route: 'Homepage',
+    icon: faUser,
+    iconStyle: {
+      color: Color.primary
+    }
   }, {
     title: 'My Profile',
-    route: 'Profile'
-  }
-  ],
+    route: 'Profile',
+    icon: faUser,
+    iconStyle: {
+      color: Color.primary
+    }
+  }, {
+    title: 'My Address',
+    route: 'MyAddress',
+    icon: faMapMarker,
+    iconStyle: {
+      color: Color.primary
+    }
+  }, {
+    title: 'Payment Methods',
+    route: 'PaymentMethods',
+    icon: faCreditCard,
+    iconStyle: {
+      color: Color.primary
+    }
+  }, {
+    title: 'Help Center',
+    route: 'HelpCenter',
+    icon: faQuestionCircle,
+    iconStyle: {
+      color: Color.primary
+    }
+  }, {
+    title: 'Invite Friends',
+    route: 'InviteFriends',
+    icon: faUsers,
+    iconStyle: {
+      color: Color.primary
+    }
+  }],
+  DrawerMenuBottom: [{
+    title: 'Settings',
+    route: 'Settings'
+  }, {
+    title: 'Terms and Conditions',
+    route: 'TermsAndConditions'
+  }, {
+    title: 'Privacy Policy',
+    route: 'PrivacyPolicy'
+  }],
+  pagerMenu: [{
+    title: 'FEATURED',
+    value: 'featured'
+  }, {
+    title: 'CATEGORIES',
+    value: 'categories'
+  }, {
+    title: 'SHOPS',
+    value: 'shops'
+  }, {
+    title: 'OTHERS',
+    value: 'others'
+  }],
   pusher: {
     broadcast_type: 'pusher',
     channel: 'runwayexpress',
