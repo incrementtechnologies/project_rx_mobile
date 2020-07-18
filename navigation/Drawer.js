@@ -11,6 +11,8 @@ import Dashboard from 'modules/dashboard';
 import Notification from 'modules/notification';
 import Profile from 'modules/profile';
 import OptionRight from './OptionRight';
+import Merchant from 'modules/merchant';
+
 class MenuDrawerStructure extends Component {
   constructor(props){
     super(props);
@@ -50,6 +52,13 @@ const Homepage_StackNavigator = createStackNavigator({
       headerTintColor: '#fff',
     }),
   },
+  Merchant: {
+    screen: Merchant,
+    navigationOptions: {
+      headerTransparent: true,
+      headerTintColor: '#fff'
+    }
+  }
 });
 
  
