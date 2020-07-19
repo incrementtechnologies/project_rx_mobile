@@ -10,5 +10,6 @@ export default {
   darkGray: '#555555',
   normalGray: '#999',
   black: '#000',
-  success: '#4BB543'
+  success: '#4BB543',
+  goldenYellow: '#FFDF00' 
 }

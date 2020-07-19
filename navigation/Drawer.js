@@ -14,6 +14,7 @@ import HelpCenter from 'modules/helpCenter';
 import OptionRight from './OptionRight';
 import TermsAndConditions from 'modules/terms';
 import PrivacyPolicy from 'modules/privacy';
+import Merchant from 'modules/merchant';
 
 class MenuDrawerStructure extends Component {
   constructor(props){
@@ -54,6 +55,13 @@ const Homepage_StackNavigator = createStackNavigator({
       headerTintColor: '#fff',
     }),
   },
+  Merchant: {
+    screen: Merchant,
+    navigationOptions: {
+      headerTransparent: true,
+      headerTintColor: '#fff'
+    }
+  }
 });
 
  

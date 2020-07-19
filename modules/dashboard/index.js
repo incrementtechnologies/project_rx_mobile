@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {View, Image,TouchableHighlight,Text,ScrollView,FlatList, Dimensions,TouchableOpacity,TextInput} from 'react-native';
 import { NavigationActions } from 'react-navigation';
-import { Thumbnail, List, ListItem, Separator } from 'native-base';
+// import { Thumbnail, List, ListItem, Separator } from 'native-base';
 import { connect } from 'react-redux';
 import {faUserCircle,faMapMarker, faUniversity,faKaaba,faFilter} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
