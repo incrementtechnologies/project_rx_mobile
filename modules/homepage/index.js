@@ -51,7 +51,7 @@ class Homepage extends Component {
               <Categories {...this.props} />
             </View>
             <View style={Style.sliderContainer}>
-              <Shops {...this.props} />
+              <Shops {...this.props}/>
             </View>
             <View style={Style.sliderContainer}>
               <Text>Others</Text>
