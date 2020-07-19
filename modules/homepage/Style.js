@@ -6,16 +6,16 @@ export default {
   modal: {
     backgroundColor: Color.gray
   },
-  mainContainer: {
-    // flex: 1
-    // justifyContent: 'center',
-    // alignItems: 'center'
+  MainContainer: {
+    flex: 1,
   },
   sliderContainer: {
     flex: 1,
     minHeight: height,
     width: '100%',
-    paddingHorizontal: 20,
-    paddingBottom: height * .2
+    paddingHorizontal: 20
+  },
+  ScrollView: {
+    flex: 1
   }
 }

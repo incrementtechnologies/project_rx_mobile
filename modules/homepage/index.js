@@ -33,17 +33,16 @@ class Homepage extends Component {
 
   render() {
     const { activeIndex } = this.state;
+    const onPageChange = (activeIndex) => this.setState({ activeIndex })
     return (
       <View style={Style.MainContainer}>
         <Pagination
           activeIndex={activeIndex}
-          onChange={(index) => this.setState({
-            activeIndex: index
-          })}
-          >
+          onChange={(index) => onPageChange(index)}
+        >
         </Pagination>
         <PagerProvider activeIndex={activeIndex}>
-          <Pager>
+          <Pager panProps={{enabled: false}}>
             <View style={Style.sliderContainer}>
               <Featured {...this.props} />
             </View>

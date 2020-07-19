@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
+import {
+  View,
+  ScrollView,
+  Dimensions,
+  TouchableOpacity,
+  SafeAreaView
+} from 'react-native';
 import { connect } from 'react-redux';
 import Style from './Style.js';
 import { Spinner } from 'components';
@@ -29,71 +35,73 @@ class Featured extends Component {
     const { isLoading, data } = this.state;
     const { navigate } = this.props.navigation
     return (
-      <ScrollView showsVerticalScrollIndicator={false}
-      >
-        <View
-          style={[
-            Style.MainContainer,
-            {
-              minHeight: height,
-            },
-          ]}>
-          {isLoading ? <Spinner mode="overlay" /> : null}
-
-          {/* Main Feature Product */}
-          <TouchableOpacity onPress={() => navigate('Merchant', mainFeaturedProduct)}>
-            <MainFeature details={mainFeaturedProduct} />
-          </TouchableOpacity>
-
-          {/* Scrollable Features */}
-          <View style={{ height: 150, marginBottom: 10 }}>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View
+            style={[
+              Style.MainContainer,
               {
-                featuredProducts.map(featuredProduct => (
-                  <TouchableOpacity
-                    key={featuredProduct.id}
-                    onPress={() => navigate('Merchant', featuredProduct)}
-                  >
-                    <Feature details={featuredProduct} />
-                  </TouchableOpacity>
-                ))
-              }
-            </ScrollView>
-          </View>
+                minHeight: height,
+                paddingBottom: 150
+              },
+            ]}>
+            {isLoading ? <Spinner mode="overlay" /> : null}
 
-          {/* Divider */}
-          <View 
-            style={{ 
-              borderBottomColor: 'rgba(0,0,0,0.1)',
-              borderBottomWidth: 2,
-              marginVertical: 5
-            }}
-          />
+            {/* Main Feature Product */}
+            <TouchableOpacity onPress={() => navigate('Merchant', mainFeaturedProduct)}>
+              <MainFeature details={mainFeaturedProduct} />
+            </TouchableOpacity>
 
-          {/* Promo Card */}
-          <View style={{ marginVertical: 10 }}>
-            <PromoCard details={promo} />
-          </View>
-
-          {/* Main Product Card */}
-          <View style={{ alignItems: 'center' }}>
-            {/* width: 98% !important */}
-            <View style={{ width: '98%' }}>
-              {
-                products.map((product) => (
-                  <TouchableOpacity
-                    key={product.id}
-                    onPress={() => navigate('Merchant', product)}
-                  >
-                    <MainCard key={product.id} details={product} />
-                  </TouchableOpacity>
-                ))
-              }
+            {/* Scrollable Features */}
+            <View style={{ height: 150, marginBottom: 10 }}>
+              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                {
+                  featuredProducts.map(featuredProduct => (
+                    <TouchableOpacity
+                      key={featuredProduct.id}
+                      onPress={() => navigate('Merchant', featuredProduct)}
+                    >
+                      <Feature details={featuredProduct} />
+                    </TouchableOpacity>
+                  ))
+                }
+              </ScrollView>
             </View>
-          </View>
 
-        </View>
-      </ScrollView>
+            {/* Divider */}
+            <View 
+              style={{ 
+                borderBottomColor: 'rgba(0,0,0,0.1)',
+                borderBottomWidth: 2,
+                marginVertical: 5
+              }}
+            />
+
+            {/* Promo Card */}
+            <View style={{ marginVertical: 10 }}>
+              <PromoCard details={promo} />
+            </View>
+
+            {/* Main Product Card */}
+            <View style={{ alignItems: 'center' }}>
+              {/* width: 98% !important */}
+              <View style={{ width: '98%' }}>
+                {
+                  products.map((product) => (
+                    <TouchableOpacity
+                      key={product.id}
+                      onPress={() => navigate('Merchant', product)}
+                    >
+                      <MainCard key={product.id} details={product} />
+                    </TouchableOpacity>
+                  ))
+                }
+              </View>
+            </View>
+
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 }
