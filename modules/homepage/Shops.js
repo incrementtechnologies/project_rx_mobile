@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
+import { 
+  View,
+  ScrollView,
+  Dimensions,
+  TouchableOpacity,
+  SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
 import Style from './Style.js';
 import { Spinner } from 'components';
@@ -29,35 +34,38 @@ class Shops extends Component {
     const { isLoading, data } = this.state;
     const { navigate } = this.props.navigation
     return (
-      <ScrollView
-        style={Style.ScrollView}
-        showsVerticalScrollIndicator={false}
-      >
-        <View
-          style={[
-            Style.MainContainer,
-            {
-              minHeight: height,
-            },
-          ]}>
-          {isLoading ? <Spinner mode="overlay" /> : null}
-
-          {
-            merchants.length > 0 ?
-            <View style={{ paddingTop: 10 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView
+          style={Style.ScrollView}
+          showsVerticalScrollIndicator={false}
+        >
+          <View
+            style={[
+              Style.MainContainer,
               {
-                merchants.map((merchant, id) => (
-                  <TouchableOpacity key={id} onPress={() => navigate('Merchant', { merchant_id: merchant.id })}>
-                    <ShopThumbnail details={merchant} />
-                  </TouchableOpacity>
-                ))
-              }
-            </View>
-            : null
-          }
-        
-        </View>
-      </ScrollView>
+                minHeight: height,
+                paddingBottom: 150
+              },
+            ]}>
+            {isLoading ? <Spinner mode="overlay" /> : null}
+
+            {
+              merchants.length > 0 ?
+              <View style={{ paddingTop: 10 }}>
+                {
+                  merchants.map((merchant, id) => (
+                    <TouchableOpacity key={id} onPress={() => navigate('Merchant', { merchant_id: merchant.id })}>
+                      <ShopThumbnail details={merchant} />
+                    </TouchableOpacity>
+                  ))
+                }
+              </View>
+              : null
+            }
+          
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 }
