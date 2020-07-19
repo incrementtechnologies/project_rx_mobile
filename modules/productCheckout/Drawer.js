@@ -37,9 +37,9 @@ const CartStack = createStackNavigator({
   CartScreen: {
     screen: CartCheckout, 
     navigationOptions: ({ navigation }) => ({
-      title: 'Customer Cart',
+      title: 'Your Cart',
       headerLeft: <HeaderOptions navigationProps={navigation} />,
-      drawerLabel: 'Customer Cart',
+      drawerLabel: 'Your Cart',
       headerStyle: {
         backgroundColor: Color.primary,
       },
