@@ -45,7 +45,7 @@ class SelectLocation extends Component{
   }
 
   onRegionChange=(regionUpdate)=> {
-    console.log(regionUpdate);
+    console.log('test',regionUpdate);
     this.setState({ region:regionUpdate });
   }
 
@@ -93,7 +93,7 @@ class SelectLocation extends Component{
     ref={(ref)=>this.mapView=ref}
     provider={PROVIDER_GOOGLE}
     region={this.state.region}
-     onRegionChangeComplete={this.onRegionChange}
+    onRegionChangeComplete={(e)=>this.onRegionChange(e)}
     //onPress={()=>this.animate()}
     >    
 
