@@ -12,6 +12,7 @@ import Notification from 'modules/notification';
 import Profile from 'modules/profile';
 import OptionRight from './OptionRight';
 import Merchant from 'modules/merchant';
+import Settings from 'modules/settings';
 
 class MenuDrawerStructure extends Component {
   constructor(props){
@@ -105,6 +106,20 @@ const Profile_StackNavigator = createStackNavigator({
   },
 });
 
+const Settings_StackNavigator = createStackNavigator({
+  Settings: {
+    screen: Settings,
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
+      headerRight: <OptionRight navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: Color.white,
+      },
+      headerTintColor: '#fff',
+    }),
+  },
+});
+
 
 
 const Drawer = createDrawerNavigator({
@@ -128,6 +143,12 @@ const Drawer = createDrawerNavigator({
   },
   Notification: {
     screen: Notification_StackNavigator,
+    navigationOptions: {
+      drawerLabel: '',
+    },
+  },
+  Settings: {
+    screen: Settings_StackNavigator,
     navigationOptions: {
       drawerLabel: '',
     },

@@ -11,6 +11,7 @@ const types = {
   ADD_PRODUCT_TO_CART: 'ADD_PRODUCT_TO_CART',
   UPDATE_PRODUCT_TO_CART: 'UPDATE_PRODUCT_TO_CART',
   REMOVE_PRODUCT_TO_CART: 'REMOVE_PRODUCT_TO_CART',
+  SET_THEME: 'SET_THEME',
   nav: null,
 }
 
@@ -38,6 +39,9 @@ export const actions = {
   },
   removeProductToCart(product){
     return { type: types.REMOVE_PRODUCT_TO_CART, product };
+  },
+  setTheme(theme){
+    return { type: types.SET_THEME, theme };
   }
 };
 
@@ -45,7 +49,8 @@ const initialState = {
   token: null,
   user: null,
   notifications: null,
-  cart: []
+  cart: [],
+  theme: null
 }
 
 storeData = async (key, value) => {
@@ -61,6 +66,7 @@ const reducer = (state = initialState, action) => {
   const { unread } = action;
   const { notification } = action;
   const { product } = action;
+  const { theme } = action;
 
   switch (type) {
     case types.LOGOUT:
@@ -159,6 +165,11 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         cart: removeCart
+      }
+    case types.SET_THEME:
+      return{
+        ...state,
+        theme
       }
     default:
       return {...state, nav: state.nav};
