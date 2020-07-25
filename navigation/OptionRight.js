@@ -37,7 +37,7 @@ class NavigationDrawerStructureRight extends Component {
       }}>
 
       <TouchableOpacity
-        onPress={() => this.goTo('Location')}
+        onPress={() => this.goTo('selectLocation')}
         style={{
           width: '85%'
         }}>

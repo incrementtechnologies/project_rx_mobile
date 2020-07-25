@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: "row",
     justifyContent:'space-between',
-    marginBottom: 20,
+    marginBottom: 30,
   },
   checkbox: {
     alignSelf: "center",

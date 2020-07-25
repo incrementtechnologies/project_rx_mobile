@@ -34,7 +34,48 @@ class productCheckout extends Component{
     const { user } = this.props.state;
      if(user != null){
     }
-    console.log(this.state.products)
+
+  }
+
+  deliveryDetails=()=>{
+    return(
+      <React.Fragment>
+        <View style={Style.DelvToContainer}><Text style={{fontSize:15}}>Deliver To</Text></View>
+        <Divider style={{height:3}}/>
+        <View style={Style.locationContainer}>
+          <View style={{marginLeft:-10,width:'60%'}}>
+            <View style={{flexDirection:'row'}}>
+           <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}>Dulce Village, Tabok, Mandaue City</Text>
+           <TouchableOpacity onPress={() => this.goTo()}><FontAwesomeIcon style={{paddingRight:10}} icon={faEdit} color={'orange'}/></TouchableOpacity>
+           </View>
+           <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}>Block 7 Lot 42</Text>
+           <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}>+63 9143058173</Text>
+           <Text numberOfLines={1}>"Description Here"</Text>
+          </View> 
+          
+          <MapView
+    style={Style.map}
+    provider={PROVIDER_GOOGLE}
+    initialRegion={{ latitude: 10.327429298142116,
+      longitude: 123.87934366241097,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421}}
+    >    
+     <Marker
+      coordinate={{ latitude: 10.327429298142116,
+        longitude: 123.87934366241097,      latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421}}
+      title="Hello"
+      
+    />
+    </MapView>
+
+        </View>
+      </React.Fragment>
+    )
+  }
+  goTo = () => {
+    this.props.navigation.navigate('selectLocation')
   }
 
   renderAll=()=>
@@ -80,40 +121,33 @@ class productCheckout extends Component{
         if (event.nativeEvent.contentOffset.y <= 0) {
         }
       }}>
-        <View style={Style.DelvToContainer}><Text style={{fontSize:15}}>Deliver To</Text></View>
-        <Divider style={{height:3}}/>
-        <View style={Style.locationContainer}>
-          <View style={{marginLeft:-10,width:'60%'}}>
-            <View style={{flexDirection:'row'}}>
-           <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}>Dulce Village, Tabok, Mandaue City</Text>
-           <TouchableOpacity><FontAwesomeIcon style={{paddingRight:10}} icon={faEdit} color={'orange'}/></TouchableOpacity>
-           </View>
-           <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}>Block 7 Lot 42</Text>
-           <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}>+63 9143058173</Text>
-           <Text numberOfLines={1}>"Description Here"</Text>
-          </View> 
-          <View>
-            <Text>Hello</Text>
-          </View>
-          <MapView
-    style={Style.map}
-    provider={PROVIDER_GOOGLE}
-    initialRegion={{ latitude: 10.327429298142116,
-      longitude: 123.87934366241097,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421}}
-    >    
-     <Marker
-      coordinate={{ latitude: 10.327429298142116,
-        longitude: 123.87934366241097,      latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421}}
-      title="Hello"
-      
-    />
-    </MapView>
+            <View style={{flexDirection:'row',justifyContent:'space-evenly',marginTop:25, marginBottom:15}}>
+        <TouchableOpacity
+              onPress={()=>{this.setState({type:"Delivery"})}}
+              style={this.state.type=="Delivery" ? Style.buttonPicked : Style.notPicked}
+              >
+              <Text style={{
+                  color:this.state.type=="Delivery" ? '#FF5B04' : '#CCCCCC',
+                textAlign: 'center',
+                
+              }}>Delivery</Text>
+            </TouchableOpacity>
 
+            <TouchableOpacity
+             onPress={()=>{this.setState({type:"Pickup"})}}
+             style={this.state.type=="Pickup" ? Style.buttonPicked : Style.notPicked}
+              >
+              <Text style={{
+                color:this.state.type=="Pickup" ? '#FF5B04' : '#CCCCCC',
+                textAlign: 'center',
+                
+              }}>Pickup</Text>
+            </TouchableOpacity>
         </View>
         <Divider style={{height:3}}/>
+        {this.state.type=="Delivery" ? this.deliveryDetails() : null}
+        
+    
         <View style={Style.TitleContainer}>
         <Text style={{fontSize:15}}>Your Order</Text>
         <TouchableOpacity><Text style={{fontSize:15,color:'#FF5B04'}}>Add more Items</Text></TouchableOpacity>

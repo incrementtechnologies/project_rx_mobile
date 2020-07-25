@@ -100,4 +100,24 @@ map:{
     right: 10,
     bottom: 10,
   },
+  buttonPicked: {
+    justifyContent: 'center',
+    height: 35,
+    width: '30%',
+    backgroundColor: 'white',
+    borderRadius:50,
+    borderColor:'#FF5B04',
+    borderWidth:1,
+  },
+
+
+  notPicked:{
+    justifyContent: 'center',
+    height: 35,
+    width: '30%',
+    backgroundColor: 'white',
+    borderRadius:50,
+    borderWidth:1,
+    borderColor:'#CCCCCC'
+  }
 }

@@ -15,6 +15,7 @@ import OptionRight from './OptionRight';
 import TermsAndConditions from 'modules/terms';
 import PrivacyPolicy from 'modules/privacy';
 import Merchant from 'modules/merchant';
+import MyAddress from 'modules/myAddresses';
 
 class MenuDrawerStructure extends Component {
   constructor(props){
@@ -106,7 +107,6 @@ const Privacy_StackNavigator = createStackNavigator({
     }),
   },
 });
-
 const Terms_StackNavigator = createStackNavigator({
   TermsAndConditions: {
     screen: TermsAndConditions,
@@ -134,8 +134,6 @@ const Notification_StackNavigator = createStackNavigator({
     }),
   },
 });
-
-
 const Profile_StackNavigator = createStackNavigator({
   Profile: {
     screen: Profile,
@@ -149,7 +147,19 @@ const Profile_StackNavigator = createStackNavigator({
     }),
   },
 });
-
+const MyAddress_StackNavigator = createStackNavigator({
+  MyAddress: {
+    screen: MyAddress,
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
+      headerRight: <OptionRight navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: Color.white,
+      },
+      headerTintColor: '#fff',
+    }),
+  },
+});
 
 
 const Drawer = createDrawerNavigator({
@@ -173,6 +183,12 @@ const Drawer = createDrawerNavigator({
   },
   Profile: {
     screen: Profile_StackNavigator,
+    navigationOptions: {
+      drawerLabel: '',
+    },
+  },
+  MyAddress: {
+    screen: MyAddress_StackNavigator,
     navigationOptions: {
       drawerLabel: '',
     },

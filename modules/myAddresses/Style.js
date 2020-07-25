@@ -71,5 +71,15 @@ input: {
     paddingLeft: 20,
     backgroundColor: '#fff',
     color: '#424242',
+    
+},
+circleButton:{
+ 
+    padding: 5,
+    height: 75,
+    width: 75,  
+    borderRadius:400, 
+    backgroundColor:'#FF5B04',
+    justifyContent:'center',
 },
 }

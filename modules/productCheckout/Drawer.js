@@ -14,6 +14,9 @@ class HeaderOptions extends Component {
   back = () => {
     this.props.navigationProps.navigate('drawerStack');
   };
+  goTo = () => {
+    this.props.navigationProps.navigate('addressMap')
+  }
   render() {
     return (
       <View style={{ flexDirection: 'row' }}>

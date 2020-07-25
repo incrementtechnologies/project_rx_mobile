@@ -50,6 +50,7 @@ class SelectLocation extends Component{
   }
 
   manageLocation = (location) => {
+    console.log(location)
    
     this.setState({
       location: location
@@ -84,6 +85,7 @@ class SelectLocation extends Component{
               placeholder={'Start typing location'}
               onChange={() => {}}
               zIndex={100}
+              initialRegion={this.state.region}
             />
           </View>
     

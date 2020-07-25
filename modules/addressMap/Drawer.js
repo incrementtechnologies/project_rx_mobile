@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Text } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import SelectLocation from 'modules/selectLocation';
+import addressMap from 'modules/addressMap';
 import { Color, BasicStyles } from 'common';
 import { connect } from 'react-redux';
 
@@ -33,13 +33,13 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-const SelectLocationStack = createStackNavigator({
-  selectLocationScreen: {
-    screen: SelectLocation, 
+const addressMapStack = createStackNavigator({
+  addressMapScreen: {
+    screen: addressMap, 
     navigationOptions: ({ navigation }) => ({
-      title: 'Select Location',
+      title: 'Select Address',
       headerLeft: <HeaderOptions navigationProps={navigation} />,
-      drawerLabel: 'Select Location',
+      drawerLabel: 'Select Address',
       headerStyle: {
         backgroundColor: Color.primary,
       },
@@ -51,4 +51,4 @@ const SelectLocationStack = createStackNavigator({
 export default connect(
   
   mapDispatchToProps
-)(SelectLocationStack);
+)(addressMapStack);
