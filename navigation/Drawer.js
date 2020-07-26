@@ -15,8 +15,9 @@ import Merchant from 'modules/merchant';
 import Settings from 'modules/settings';
 import Referral from 'modules/referral';
 import MyOrders from 'modules/orders';
+import { connect } from 'react-redux';
 
-class MenuDrawerStructure extends Component {
+class MenuDrawerContentStructure extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -27,13 +28,14 @@ class MenuDrawerStructure extends Component {
     this.props.navigationProps.toggleDrawer();
   };
   render() {
+    const { theme } = this.props.state;
     return (
       <View style={{ flexDirection: 'row' }}>
         {this.state.loginState === true && 
           <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
             {/*Donute Button Image */}
             <FontAwesomeIcon icon={ faBars } size={BasicStyles.iconSize} style={[BasicStyles.iconStyle, {
-              color: Color.primary
+              color: theme ? theme.primary : Color.primary
             }]}/>
           </TouchableOpacity>
         }
@@ -42,6 +44,17 @@ class MenuDrawerStructure extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({state: state});
+
+const mapDispatchToProps = dispatch => {
+  const { actions } = require('@redux');
+  return {
+    setActiveRoute: (route) => dispatch(actions.setActiveRoute(route))
+  };
+};
+
+let MenuDrawerStructure = connect(mapStateToProps, mapDispatchToProps)(MenuDrawerContentStructure);
  
 const Homepage_StackNavigator = createStackNavigator({
   Homepage: {
