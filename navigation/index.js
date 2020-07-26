@@ -5,9 +5,10 @@ import ForgotPassword from 'modules/basics/ForgotPassword';
 import Register from 'modules/basics/Register';
 import Drawer from './Drawer';
 import NotificationStack from 'modules/notification/Drawer.js';
-import selectLocationStack from 'modules/selectLocation/Drawer.js'
-import selectFilterStack from 'modules/FilterPicker/Drawer.js'
-import CartStack from 'modules/productCheckout/Drawer.js'
+import selectLocationStack from 'modules/selectLocation/Drawer.js';
+import selectFilterStack from 'modules/FilterPicker/Drawer.js';
+import CartStack from 'modules/productCheckout/Drawer.js';
+import addressMapStack from 'modules/addressMap/Drawer.js';
 
 
 // login stack
@@ -48,7 +49,8 @@ const PrimaryNav = createStackNavigator({
   selectLocation:{screen:selectLocationStack},
   filterPicker:{screen:selectFilterStack},
   notificationStack: { screen: NotificationStack},
-  Cart:{screen:CartStack}
+  Cart:{screen:CartStack},
+  addressMap:{screen:addressMapStack},
 }, {
   // Default config for all screens
   headerMode: 'none',

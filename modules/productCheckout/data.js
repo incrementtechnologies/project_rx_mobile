@@ -8,6 +8,7 @@
       img_url:
         'd1sag4ddilekf6.cloudfront.net/compressed/merchants/2-CY6UPAMWNB3KUA/hero/8d1709e4b3154a729f331433c97432ac_1579168237757907381.jpeg',
       price: 50,
+      quantity:0
      
     },
     {
@@ -18,6 +19,7 @@
       img_url:
         'www.sunstar.com.ph/uploads/images/2019/11/12/190406.jpg',
      price:100,
+     quantity:0
     },
     {
       id: 2,
@@ -26,6 +28,7 @@
       img_url:
         'www.balambanliempo.com/assets/images/2-676x450-676x450.jpg',
      price:150,
+     quantity:0
     },
     {
       id: 3,
@@ -34,6 +37,7 @@
       img_url:
         'res.cloudinary.com/dvlzsjbb9/image/upload/v1594141565/64faeaf5715a4e10871b029de577d93f_1580720411412861278_uc77it.jpg',
     price:200,
+    quantity:0
     },
     {
       id: 4,
@@ -42,6 +46,7 @@
       img_url:
         'res.cloudinary.com/dvlzsjbb9/image/upload/v1594141565/64faeaf5715a4e10871b029de577d93f_1580720411412861278_uc77it.jpg',
     price:200,
+    quantity:0
     },
     {
       id:5,
@@ -50,6 +55,7 @@
       img_url:
         'res.cloudinary.com/dvlzsjbb9/image/upload/v1594141565/64faeaf5715a4e10871b029de577d93f_1580720411412861278_uc77it.jpg',
     price:200,
+    quantity:0
     },
     {
       id: 6,
@@ -58,6 +64,7 @@
       img_url:
         'res.cloudinary.com/dvlzsjbb9/image/upload/v1594141565/64faeaf5715a4e10871b029de577d93f_1580720411412861278_uc77it.jpg',
     price:200,
+    quantity:0
     }
   ]
   

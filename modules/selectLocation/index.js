@@ -45,11 +45,12 @@ class SelectLocation extends Component{
   }
 
   onRegionChange=(regionUpdate)=> {
-    console.log(regionUpdate);
+    console.log('test',regionUpdate);
     this.setState({ region:regionUpdate });
   }
 
   manageLocation = (location) => {
+    console.log(location)
    
     this.setState({
       location: location
@@ -84,6 +85,7 @@ class SelectLocation extends Component{
               placeholder={'Start typing location'}
               onChange={() => {}}
               zIndex={100}
+              initialRegion={this.state.region}
             />
           </View>
     
@@ -93,7 +95,7 @@ class SelectLocation extends Component{
     ref={(ref)=>this.mapView=ref}
     provider={PROVIDER_GOOGLE}
     region={this.state.region}
-     onRegionChangeComplete={this.onRegionChange}
+    onRegionChangeComplete={(e)=>this.onRegionChange(e)}
     //onPress={()=>this.animate()}
     >    
 

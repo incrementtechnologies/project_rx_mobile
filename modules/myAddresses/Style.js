@@ -1,34 +1,13 @@
 import { Color } from 'common';
 import { Dimensions } from 'react-native';
-import { Row } from 'native-base';
 const width = Math.round(Dimensions.get('window').width);
 export default {
-  TitleContainer: {
-    padding: 25,
-    flexDirection:'row',
-    justifyContent:'space-between',
-    backgroundColor:Color.white,
-    marginLeft:-15,
-    marginRight:-15,
+  ScrollView: {
+    padding: 20
   },
-  DelvToContainer:
-  {
-      marginLeft:-5,
-      padding:15,
-      backgroundColor:Color.white,
-  },
-  circleContainer:{
-      height:20,
-      width:20,
-      borderRadius:20/2,
-      backgroundColor:'white',
-      marginLeft:10
-  },
-  locationContainer:{
-    padding:15,
-    backgroundColor:Color.white,
-    justifyContent:'space-between',
-    flexDirection:'row',
+  MainContainer: {
+    width: '100%',
+    paddingBottom: 50
   },
   TextContainer: {
     flex: 1
@@ -92,32 +71,15 @@ input: {
     paddingLeft: 20,
     backgroundColor: '#fff',
     color: '#424242',
+    
 },
-map:{
-    position: 'absolute',
-    top: 10,
-    left: 250,
-    right: 10,
-    bottom: 10,
-  },
-  buttonPicked: {
-    justifyContent: 'center',
-    height: 35,
-    width: '30%',
-    backgroundColor: 'white',
-    borderRadius:50,
-    borderColor:'#FF5B04',
-    borderWidth:1,
-  },
-
-
-  notPicked:{
-    justifyContent: 'center',
-    height: 35,
-    width: '30%',
-    backgroundColor: 'white',
-    borderRadius:50,
-    borderWidth:1,
-    borderColor:'#CCCCCC'
-  }
+circleButton:{
+ 
+    padding: 5,
+    height: 75,
+    width: 75,  
+    borderRadius:400, 
+    backgroundColor:'#FF5B04',
+    justifyContent:'center',
+},
 }

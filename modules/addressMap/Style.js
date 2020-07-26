@@ -1,34 +1,14 @@
 import { Color } from 'common';
 import { Dimensions } from 'react-native';
-import { Row } from 'native-base';
 const width = Math.round(Dimensions.get('window').width);
+const height = Math.round(Dimensions.get('window').height);
 export default {
-  TitleContainer: {
-    padding: 25,
-    flexDirection:'row',
-    justifyContent:'space-between',
-    backgroundColor:Color.white,
-    marginLeft:-15,
-    marginRight:-15,
+  ScrollView: {
+    padding: 10
   },
-  DelvToContainer:
-  {
-      marginLeft:-5,
-      padding:15,
-      backgroundColor:Color.white,
-  },
-  circleContainer:{
-      height:20,
-      width:20,
-      borderRadius:20/2,
-      backgroundColor:'white',
-      marginLeft:10
-  },
-  locationContainer:{
-    padding:15,
-    backgroundColor:Color.white,
-    justifyContent:'space-between',
-    flexDirection:'row',
+  MainContainer: {
+    width: '100%',
+    alignItems: 'center'
   },
   TextContainer: {
     flex: 1
@@ -73,33 +53,40 @@ export default {
     paddingLeft: 10,
     paddingRight: 10
   },
-  searchSection: {
-   
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    
-},
-searchIcon: {
-    paddingRight: 30,
-},
-input: {
-    flex: 1,
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
-    paddingLeft: 20,
-    backgroundColor: '#fff',
-    color: '#424242',
-},
-map:{
-    position: 'absolute',
-    top: 10,
-    left: 250,
-    right: 10,
-    bottom: 10,
+  map:{
+    position:'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width,
+    height,
   },
+  container:{
+    flex:1,
+    alignItems:'center',
+    height
+  },
+  imageContainer:{
+    flex:1,
+    justifyContent:'center',
+    
+  },
+  image:{
+    
+    height: 45, 
+    width: 45,
+    marginBottom:-50,
+  },
+  icon_claw: {
+    position: 'absolute',
+    top: 2,
+    bottom: 0,
+    left: (width / 2) - 16,
+    right: (width / 2) - 16,
+    width: 32,
+    height: 6,
+},
   buttonPicked: {
     justifyContent: 'center',
     height: 35,

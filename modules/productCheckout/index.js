@@ -17,7 +17,7 @@ import { CheckoutCard } from 'components/Checkout';
 import { products } from './data';
 import TearLines from "react-native-tear-lines";
 
-const rest=products.slice(2);
+
 class productCheckout extends Component{
   
   constructor(props){
@@ -25,8 +25,8 @@ class productCheckout extends Component{
     this.state = {
     
      showStatus:true,
-     
-     
+     products,
+     totalPrice:0
     }
   }
 
@@ -34,48 +34,25 @@ class productCheckout extends Component{
     const { user } = this.props.state;
      if(user != null){
     }
+
   }
 
-  renderAll=()=>
-  {    
-    if(this.state.showStatus==true)
-    {
-      this.setState({showStatus:false});
-    }
-    else
-    {
-      this.setState({showStatus:true});
-    }
-  }
-
-  render() {
-    const { isLoading, data } = this.state;
-    const { user } = this.props.state;
-    const first=products.slice(0,2);
- 
-    return (
-      <View style={{height:'100%',backgroundColor:'white'}}>
-      <ScrollView
-      style={Style.ScrollView}
-      onScroll={event => {
-        if (event.nativeEvent.contentOffset.y <= 0) {
-        }
-      }}>
+  deliveryDetails=()=>{
+    return(
+      <React.Fragment>
         <View style={Style.DelvToContainer}><Text style={{fontSize:15}}>Deliver To</Text></View>
         <Divider style={{height:3}}/>
         <View style={Style.locationContainer}>
           <View style={{marginLeft:-10,width:'60%'}}>
             <View style={{flexDirection:'row'}}>
            <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}>Dulce Village, Tabok, Mandaue City</Text>
-           <TouchableOpacity><FontAwesomeIcon style={{paddingRight:10}} icon={faEdit} color={'orange'}/></TouchableOpacity>
+           <TouchableOpacity onPress={() => this.goTo()}><FontAwesomeIcon style={{paddingRight:10}} icon={faEdit} color={'orange'}/></TouchableOpacity>
            </View>
            <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}>Block 7 Lot 42</Text>
            <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}>+63 9143058173</Text>
            <Text numberOfLines={1}>"Description Here"</Text>
           </View> 
-          <View>
-            <Text>Hello</Text>
-          </View>
+          
           <MapView
     style={Style.map}
     provider={PROVIDER_GOOGLE}
@@ -94,7 +71,83 @@ class productCheckout extends Component{
     </MapView>
 
         </View>
+      </React.Fragment>
+    )
+  }
+  goTo = () => {
+    this.props.navigation.navigate('selectLocation')
+  }
+
+  renderAll=()=>
+  {    
+    if(this.state.showStatus==true)
+    {
+      this.setState({showStatus:false});
+    }
+    else
+    {
+      this.setState({showStatus:true});
+    }
+  }
+
+  onAdd=(index)=>
+  {
+    const products=[...this.state.products]
+    products[index].quantity+=1
+    this.setState({products})
+  }
+
+  onSubtract=(index)=>
+  {
+    const products=[...this.state.products]
+    products[index].quantity-=1
+    this.setState({products})
+  }
+
+  render() {
+    const { isLoading, data } = this.state;
+    const { user } = this.props.state;
+    const first=this.state.products.slice(0,2);
+    const rest=this.state.products.slice(2);
+    let totalPrices=0
+    this.state.products.forEach(product=>{
+      totalPrices+=product.quantity*product.price
+    })
+    return (
+      <View style={{height:'100%',backgroundColor:'white'}}>
+      <ScrollView
+      style={Style.ScrollView}
+      onScroll={event => {
+        if (event.nativeEvent.contentOffset.y <= 0) {
+        }
+      }}>
+            <View style={{flexDirection:'row',justifyContent:'space-evenly',marginTop:25, marginBottom:15}}>
+        <TouchableOpacity
+              onPress={()=>{this.setState({type:"Delivery"})}}
+              style={this.state.type=="Delivery" ? Style.buttonPicked : Style.notPicked}
+              >
+              <Text style={{
+                  color:this.state.type=="Delivery" ? '#FF5B04' : '#CCCCCC',
+                textAlign: 'center',
+                
+              }}>Delivery</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+             onPress={()=>{this.setState({type:"Pickup"})}}
+             style={this.state.type=="Pickup" ? Style.buttonPicked : Style.notPicked}
+              >
+              <Text style={{
+                color:this.state.type=="Pickup" ? '#FF5B04' : '#CCCCCC',
+                textAlign: 'center',
+                
+              }}>Pickup</Text>
+            </TouchableOpacity>
+        </View>
         <Divider style={{height:3}}/>
+        {this.state.type=="Delivery" ? this.deliveryDetails() : null}
+        
+    
         <View style={Style.TitleContainer}>
         <Text style={{fontSize:15}}>Your Order</Text>
         <TouchableOpacity><Text style={{fontSize:15,color:'#FF5B04'}}>Add more Items</Text></TouchableOpacity>
@@ -103,11 +156,11 @@ class productCheckout extends Component{
           <View style={{ alignItems: 'center',width:'100%',backgroundColor:'white'}}>
           
              {
-                first.map(product => (
-                  <CheckoutCard key={product.id} details={product} />
+                first.map((product,index) => (
+                  <CheckoutCard key={product.id} details={product} onSubtract={()=>this.onSubtract(index)} onAdd={()=>this.onAdd(index)} />
                 ))
               } 
-            {this.state.showStatus ? <TouchableOpacity onPress={()=>this.renderAll()}><Text style={{marginTop:15,fontSize:15,color:'#FF5B04'}}>Show More({rest.length})</Text></TouchableOpacity> : rest.map(product => (<CheckoutCard key={product.id} details={product} />))}
+            {this.state.showStatus ? <TouchableOpacity onPress={()=>this.renderAll()}><Text style={{marginTop:15,fontSize:15,color:'#FF5B04'}}>Show More({rest.length})</Text></TouchableOpacity> : rest.map((product,index)  => (<CheckoutCard key={product.id} details={product} onSubtract={()=>this.onSubtract(index+2)} onAdd={()=>this.onAdd(index+2)} />))}
             {this.state.showStatus? null : <TouchableOpacity onPress={()=>this.renderAll()}><Text style={{marginTop:15,fontSize:15,color:'#FF5B04'}}>Show Less</Text></TouchableOpacity>}
          
           </View>
@@ -125,7 +178,7 @@ class productCheckout extends Component{
     }} >
    <View style={{ flexDirection:'row', justifyContent:'space-between'}}>
       <Text style={{fontSize:15,fontWeight:'bold'}}>Subtotal</Text>
-      <Text style={{fontSize:15,fontWeight:'bold'}}>₱1000</Text>
+      <Text style={{fontSize:15,fontWeight:'bold'}}>{totalPrices}</Text>
       </View>
       <View style={{ flexDirection:'row', justifyContent:'space-between',marginTop:15}}>
       <Text style={{fontSize:15,fontWeight:'bold'}}>Delivery</Text>
@@ -166,7 +219,7 @@ class productCheckout extends Component{
                   <Text style={{
                 color:'white',
                 
-              }}>₱1,050</Text>
+              }}>{totalPrices}</Text>
              </View>
         </TouchableOpacity>
         </View>

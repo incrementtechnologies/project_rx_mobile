@@ -10,8 +10,12 @@ import Homepage from 'modules/homepage';
 import Dashboard from 'modules/dashboard';
 import Notification from 'modules/notification';
 import Profile from 'modules/profile';
+import HelpCenter from 'modules/helpCenter';
 import OptionRight from './OptionRight';
+import TermsAndConditions from 'modules/terms';
+import PrivacyPolicy from 'modules/privacy';
 import Merchant from 'modules/merchant';
+import MyAddress from 'modules/myAddresses';
 import Settings from 'modules/settings';
 import Referral from 'modules/referral';
 import MyOrders from 'modules/orders';
@@ -92,6 +96,47 @@ const Dashboard_StackNavigator = createStackNavigator({
   },
 });
 
+const HelpCenter_StackNavigator = createStackNavigator({
+  HelpCenter: {
+    screen: HelpCenter,
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
+      headerRight: <OptionRight navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: Color.white,
+      },
+      headerTintColor: '#fff',
+    }),
+  },
+});
+
+const Privacy_StackNavigator = createStackNavigator({
+  PrivacyPolicy: {
+    screen: PrivacyPolicy,
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
+      headerRight: <OptionRight navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: Color.white,
+      },
+      headerTintColor: '#fff',
+    }),
+  },
+});
+const Terms_StackNavigator = createStackNavigator({
+  TermsAndConditions: {
+    screen: TermsAndConditions,
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
+      headerRight: <OptionRight navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: Color.white,
+      },
+      headerTintColor: '#fff',
+    }),
+  },
+});
+
 const Notification_StackNavigator = createStackNavigator({
   Notification: {
     screen: Notification,
@@ -123,6 +168,20 @@ const MyOrders_StackNavigator = createStackNavigator({
 const Profile_StackNavigator = createStackNavigator({
   Profile: {
     screen: Profile,
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
+      headerRight: <OptionRight navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: Color.white,
+      },
+      headerTintColor: '#fff',
+    }),
+  },
+});
+
+const MyAddress_StackNavigator = createStackNavigator({
+  MyAddress: {
+    screen: MyAddress,
     navigationOptions: ({ navigation }) => ({
       headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
       headerRight: <OptionRight navigationProps={navigation} />,
@@ -176,6 +235,12 @@ const Drawer = createDrawerNavigator({
       drawerLabel: '',
     },
   },
+  HelpCenter: {
+    screen: HelpCenter_StackNavigator,
+    navigationOptions: {
+      drawerLabel: '',
+    },
+  },
   MyOrders: {
     screen: MyOrders_StackNavigator,
     navigationOptions: {
@@ -184,6 +249,24 @@ const Drawer = createDrawerNavigator({
   },
   Profile: {
     screen: Profile_StackNavigator,
+    navigationOptions: {
+      drawerLabel: '',
+    },
+  },
+  MyAddress: {
+    screen: MyAddress_StackNavigator,
+    navigationOptions: {
+      drawerLabel: '',
+    },
+  },
+  TermsAndConditions: {
+    screen: Terms_StackNavigator,
+    navigationOptions: {
+      drawerLabel: '',
+    },
+  },
+  PrivacyPolicy: {
+    screen: Privacy_StackNavigator,
     navigationOptions: {
       drawerLabel: '',
     },

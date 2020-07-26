@@ -14,6 +14,9 @@ class HeaderOptions extends Component {
   back = () => {
     this.props.navigationProps.navigate('drawerStack');
   };
+  goTo = () => {
+    this.props.navigationProps.navigate('addressMap')
+  }
   render() {
     return (
       <View style={{ flexDirection: 'row' }}>
@@ -37,9 +40,9 @@ const CartStack = createStackNavigator({
   CartScreen: {
     screen: CartCheckout, 
     navigationOptions: ({ navigation }) => ({
-      title: 'Customer Cart',
+      title: 'Your Cart',
       headerLeft: <HeaderOptions navigationProps={navigation} />,
-      drawerLabel: 'Customer Cart',
+      drawerLabel: 'Your Cart',
       headerStyle: {
         backgroundColor: Color.primary,
       },

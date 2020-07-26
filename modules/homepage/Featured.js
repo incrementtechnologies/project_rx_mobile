@@ -4,7 +4,8 @@ import {
   ScrollView,
   Dimensions,
   TouchableOpacity,
-  SafeAreaView
+  SafeAreaView,
+  TextInput
 } from 'react-native';
 import { connect } from 'react-redux';
 import Style from './Style.js';
@@ -12,6 +13,8 @@ import { Spinner } from 'components';
 import { MainCard, Feature, MainFeature, PromoCard } from 'components/ProductThumbnail'
 const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
+import {faUserCircle,faMapMarker, faUniversity,faKaaba,faFilter} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 
 // TEST DATA FOR PRODUCTS
 import { mainFeaturedProduct, featuredProducts, promo, products } from './data-test';
@@ -29,6 +32,13 @@ class Featured extends Component {
     const { user } = this.props.state;
     if (user != null) {
     }
+  }
+  redirect = route => {
+    this.props.navigation.navigate(route);
+  };
+
+  filterRedirect=()=>{
+    this.redirect('filterPicker')
   }
 
   render() {
@@ -81,7 +91,18 @@ class Featured extends Component {
             <View style={{ marginVertical: 10 }}>
               <PromoCard details={promo} />
             </View>
-
+            <View style={Style.searchSection}>
+    
+    <TextInput
+        style={Style.input}
+        placeholder="Search for Shops"
+        onChangeText={(searchString) => {this.setState({searchString})}}
+       
+    />
+    <TouchableOpacity onPress={()=>this.filterRedirect()}>
+    <FontAwesomeIcon style={Style.searchIcon} icon={faFilter} color={'orange'}/>
+    </TouchableOpacity>
+</View>
             {/* Main Product Card */}
             <View style={{ alignItems: 'center' }}>
               {/* width: 98% !important */}
