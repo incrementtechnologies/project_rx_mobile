@@ -15,7 +15,7 @@ export default {
       color: Color.primary
     }
   }, {
-    title: 'My Orders',
+    title: 'My Order History',
     route: 'MyOrders',
     icon: faUser,
     iconStyle: {
@@ -58,6 +58,14 @@ export default {
     }
   }],
   DrawerMenuLogout: [{
+    title: 'Homepage',
+    route: 'Homepage',
+    icon: faUser,
+    iconStyle: {
+      color: Color.primary
+    }
+  },
+  {
     title: 'My Orders',
     route: 'MyOrders',
     icon: faFile,
@@ -118,6 +126,13 @@ export default {
       colors: [Color.primary, Color.lightGray]
     }
   ],
+  referral: {
+    message:
+      `Share the benefits of <<popular products>> with your friends and family. ` +
+      `Give them ₱100 towards their first purchase when they confirm your invite. ` +
+      `You’ll get ₱100 when they do!`,
+    emailMessage: 'I\'d like to invite you on RunwayExpress!'
+  },
   retrieveDataFlag: 1,
   validateEmail(email){
     let reg = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+.[a-zA-Z0-9]*$/
