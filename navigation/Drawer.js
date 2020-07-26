@@ -13,6 +13,8 @@ import Profile from 'modules/profile';
 import OptionRight from './OptionRight';
 import Merchant from 'modules/merchant';
 import Settings from 'modules/settings';
+import Referral from 'modules/referral';
+import MyOrders from 'modules/orders';
 
 class MenuDrawerStructure extends Component {
   constructor(props){
@@ -91,6 +93,19 @@ const Notification_StackNavigator = createStackNavigator({
   },
 });
 
+const MyOrders_StackNavigator = createStackNavigator({
+  MyOrders: {
+    screen: MyOrders,
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
+      headerRight: <OptionRight navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: Color.white,
+      },
+      headerTintColor: '#fff',
+    }),
+  },
+});
 
 const Profile_StackNavigator = createStackNavigator({
   Profile: {
@@ -120,6 +135,19 @@ const Settings_StackNavigator = createStackNavigator({
   },
 });
 
+const Referral_StackNavigator = createStackNavigator({
+  InviteFriends: {
+    screen: Referral,
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
+      headerRight: <OptionRight navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: Color.white,
+      },
+      headerTintColor: '#fff',
+    }),
+  },
+});
 
 
 const Drawer = createDrawerNavigator({
@@ -131,6 +159,12 @@ const Drawer = createDrawerNavigator({
   },
   Dashboard: {
     screen: Dashboard_StackNavigator,
+    navigationOptions: {
+      drawerLabel: '',
+    },
+  },
+  MyOrders: {
+    screen: MyOrders_StackNavigator,
     navigationOptions: {
       drawerLabel: '',
     },
@@ -153,6 +187,12 @@ const Drawer = createDrawerNavigator({
       drawerLabel: '',
     },
   },
+  InviteFriends: {
+    screen: Referral_StackNavigator,
+    navigationOptions: {
+      drawerLabel: '',
+    }
+  }
 }, {
   contentComponent: Slider
 });
