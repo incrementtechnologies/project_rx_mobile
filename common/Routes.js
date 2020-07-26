@@ -15,5 +15,9 @@ export default {
   accountProfileUpdate: apiUrl + 'account_profiles/update',
   accountInformationRetrieve: apiUrl + 'account_informations/retrieve',
   accountInformationUpdate: apiUrl + 'account_informations/update',
-  emailAlert: apiUrl + 'emails/alert'
+  emailAlert: apiUrl + 'emails/alert',
+  invitationCreate: apiUrl + 'invitations/create',
+  invitationRetrieve: apiUrl + 'invitations/retrieve',
+  imageUpload: apiUrl + 'images/upload',
+  imageRetrieve: apiUrl + 'images/retrieve',
 }

@@ -323,7 +323,7 @@ class Declaration extends Component{
                <View style={Style.sectionHeadingStyle}>
                 <TouchableHighlight
                   onPress={() => {
-                    /*this.setState({isImageUpload: true})*/
+                    this.setState({isImageUpload: true})
                   }}
                   underlayColor={Color.white}>
                   <View>
@@ -364,7 +364,8 @@ class Declaration extends Component{
                 <Text  style={{
                   color: Color.primary,
                   fontWeight: 'bold',
-                  fontSize: 16
+                  fontSize: 16,
+                  marginTop: 15,
                 }}>
                   Hi {user.username}!
                 </Text>

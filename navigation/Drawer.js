@@ -16,8 +16,12 @@ import TermsAndConditions from 'modules/terms';
 import PrivacyPolicy from 'modules/privacy';
 import Merchant from 'modules/merchant';
 import MyAddress from 'modules/myAddresses';
+import Settings from 'modules/settings';
+import Referral from 'modules/referral';
+import MyOrders from 'modules/orders';
+import { connect } from 'react-redux';
 
-class MenuDrawerStructure extends Component {
+class MenuDrawerContentStructure extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -28,13 +32,14 @@ class MenuDrawerStructure extends Component {
     this.props.navigationProps.toggleDrawer();
   };
   render() {
+    const { theme } = this.props.state;
     return (
       <View style={{ flexDirection: 'row' }}>
         {this.state.loginState === true && 
           <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
             {/*Donute Button Image */}
             <FontAwesomeIcon icon={ faBars } size={BasicStyles.iconSize} style={[BasicStyles.iconStyle, {
-              color: Color.primary
+              color: theme ? theme.primary : Color.primary
             }]}/>
           </TouchableOpacity>
         }
@@ -43,6 +48,17 @@ class MenuDrawerStructure extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({state: state});
+
+const mapDispatchToProps = dispatch => {
+  const { actions } = require('@redux');
+  return {
+    setActiveRoute: (route) => dispatch(actions.setActiveRoute(route))
+  };
+};
+
+let MenuDrawerStructure = connect(mapStateToProps, mapDispatchToProps)(MenuDrawerContentStructure);
  
 const Homepage_StackNavigator = createStackNavigator({
   Homepage: {
@@ -134,6 +150,21 @@ const Notification_StackNavigator = createStackNavigator({
     }),
   },
 });
+
+const MyOrders_StackNavigator = createStackNavigator({
+  MyOrders: {
+    screen: MyOrders,
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
+      headerRight: <OptionRight navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: Color.white,
+      },
+      headerTintColor: '#fff',
+    }),
+  },
+});
+
 const Profile_StackNavigator = createStackNavigator({
   Profile: {
     screen: Profile,
@@ -147,9 +178,38 @@ const Profile_StackNavigator = createStackNavigator({
     }),
   },
 });
+
 const MyAddress_StackNavigator = createStackNavigator({
   MyAddress: {
     screen: MyAddress,
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
+      headerRight: <OptionRight navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: Color.white,
+      },
+      headerTintColor: '#fff',
+    }),
+  },
+});
+
+const Settings_StackNavigator = createStackNavigator({
+  Settings: {
+    screen: Settings,
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
+      headerRight: <OptionRight navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: Color.white,
+      },
+      headerTintColor: '#fff',
+    }),
+  },
+});
+
+const Referral_StackNavigator = createStackNavigator({
+  InviteFriends: {
+    screen: Referral,
     navigationOptions: ({ navigation }) => ({
       headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
       headerRight: <OptionRight navigationProps={navigation} />,
@@ -177,6 +237,12 @@ const Drawer = createDrawerNavigator({
   },
   HelpCenter: {
     screen: HelpCenter_StackNavigator,
+    navigationOptions: {
+      drawerLabel: '',
+    },
+  },
+  MyOrders: {
+    screen: MyOrders_StackNavigator,
     navigationOptions: {
       drawerLabel: '',
     },
@@ -211,6 +277,18 @@ const Drawer = createDrawerNavigator({
       drawerLabel: '',
     },
   },
+  Settings: {
+    screen: Settings_StackNavigator,
+    navigationOptions: {
+      drawerLabel: '',
+    },
+  },
+  InviteFriends: {
+    screen: Referral_StackNavigator,
+    navigationOptions: {
+      drawerLabel: '',
+    }
+  }
 }, {
   contentComponent: Slider
 });

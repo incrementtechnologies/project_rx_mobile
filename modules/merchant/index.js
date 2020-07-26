@@ -8,8 +8,9 @@ import {
   SafeAreaView,
   Dimensions
 } from 'react-native';
+import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faStar, faStopwatch, faCircle } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faStopwatch, faCircle, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import InView from './InViewPort'
 import { Color } from 'common';
@@ -27,6 +28,7 @@ class Merchant extends Component {
     this.state = {
       merchant_data: null,
       active_category: null,
+      cart: []
     }
   }
 
@@ -39,14 +41,31 @@ class Merchant extends Component {
       animated: true,
     })
 
-    this.setState({ merchant_data, active_category: 0 })
+    this.setState({ 
+      merchant_data,
+      active_category: 0,
+      cart: [...this.props.state.cart]
+    })
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (prevState.cart.length !== nextProps.state.cart.length) {
+      return {
+        cart: [...nextProps.state.cart]
+      };
+    }
+    return null
   }
 
   shouldComponentUpdate(_, nextState) {
-    return nextState.active_category !== this.state.active_category
+    return (
+      nextState.active_category !== this.state.active_category ||
+      nextState.cart.length !== this.state.cart.length
+    )
   }
 
   componentDidUpdate(_, prevState) {
+    console.log('Component updated')
     if (prevState.active_category !== this.state.active_category) {
       this.products_navigator_scrollview_ref.scrollTo({
         x: this.products_navigator_layout[this.state.active_category],
@@ -80,6 +99,20 @@ class Merchant extends Component {
     Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) + 'k+' : Math.sign(num)*Math.abs(num)
   )
 
+  addToCart = (product) => {
+    const { addProductToCart, removeProductToCart } = this.props
+    const { cart } = this.props.state
+    if (cart.find(item => item.id === product.id)) {
+      removeProductToCart(product)
+    } else {
+      addProductToCart(product)
+    }
+  }
+
+  goToCart = () => {
+    console.log('Go to cart')
+  }
+
   render() {
     const [ name, ratings, delivery_time, distance, merchant_products, logo ] = [
       this.state.merchant_data ? this.state.merchant_data.name : null,
@@ -104,9 +137,25 @@ class Merchant extends Component {
     }
 
     const categories = merchant_products ? merchant_products.map(d => d.category) : null
-
+    const { cart } = this.state
+    const { theme } = this.props.state
     return (
       <View style={Style.MainContainer}>
+        <View style={[Style.cartIconContainer, { backgroundColor: theme ? theme.primary : Color.primary }]}>
+          <TouchableOpacity onPress={() => this.goToCart()}>
+            <FontAwesomeIcon icon={ faShoppingCart } size={30} 
+              style={{ color: theme ? theme.description === 'Darker' ? Color.white : Color.black : Color.black }}
+            />
+            {
+              cart.length > 0 &&
+              <View style={Style.cartNumItems}>
+                <Text style={{ color: Color.black, fontSize: 10 }}>
+                  {cart.length}
+                </Text>
+              </View>
+            }
+          </TouchableOpacity>
+        </View>
         <View style={Style.upperSection}>
           <ScrollView ref={ref => this.products_scrollview_ref = ref}>
             <View style={Style.merchantHeader}>
@@ -159,20 +208,32 @@ class Merchant extends Component {
                         {
                           d.products.length > 0 ?
                           d.products.map((product, idx) => (
-                            <View key={idx} style={Style.product}>
-                              <View style={Style.productDetails}>
-                                <Text style={Style.productTitle} numberOfLines={2}>
-                                  { product.title }
-                                </Text>
-                                <Text style={Style.productPrice} numberOfLines={1}>
-                                  { '₱' + product.price }
-                                </Text>
+                            <TouchableOpacity
+                              key={idx}
+                              onPress={() => this.addToCart(product)}
+                            >
+                              <View style={Style.product}>
+                                <View style={Style.productDetails}>
+                                  <Text
+                                    style={[
+                                      Style.productTitle,
+                                      cart.find(item => item.id === product.id) ?
+                                      { color: Color.primary } : {}
+                                    ]}
+                                    numberOfLines={2}
+                                  >
+                                    { product.title }
+                                  </Text>
+                                  <Text style={Style.productPrice} numberOfLines={1}>
+                                    { '₱' + product.price }
+                                  </Text>
+                                </View>
+                                <Image
+                                  source={{ uri: 'https://' + product.png_img_url }}
+                                  style={Style.productImg}
+                                />
                               </View>
-                              <Image
-                                source={{ uri: 'https://' + product.png_img_url }}
-                                style={Style.productImg}
-                              />
-                            </View>
+                            </TouchableOpacity>
                           ))
                           : null
                         }
@@ -231,4 +292,17 @@ class Merchant extends Component {
   }
 }
 
-export default Merchant;
+const mapStateToProps = state => ({state: state});
+
+const mapDispatchToProps = dispatch => {
+  const { actions } = require('@redux');
+  return {
+    addProductToCart: (product) => dispatch(actions.addProductToCart(product)),
+    removeProductToCart: (product) => dispatch(actions.removeProductToCart(product)),
+  }
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Merchant);
