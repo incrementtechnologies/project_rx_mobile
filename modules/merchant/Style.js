@@ -6,7 +6,8 @@ const height = Math.round(Dimensions.get('window').height);
 
 export default {
   MainContainer: {
-    flex: 1
+    flex: 1,
+    position: 'relative'
   },
   container: {
     flex: 1,
@@ -20,7 +21,28 @@ export default {
   bottomSection: {
     height: '10%'
   },
-
+  cartIconContainer: {
+    alignItems: 'center',
+    zIndex: 999,
+    position: 'absolute',
+    bottom: '15%',
+    right: '10%',
+    padding: 10,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  cartNumItems: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: Color.white,
+    height: 12,
+    width: 12,
+    borderRadius: 6
+  },
   ScrollViewVertical: {
     flex: 1
   },
