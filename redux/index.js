@@ -12,6 +12,8 @@ const types = {
   UPDATE_PRODUCT_TO_CART: 'UPDATE_PRODUCT_TO_CART',
   REMOVE_PRODUCT_TO_CART: 'REMOVE_PRODUCT_TO_CART',
   SET_THEME: 'SET_THEME',
+  ADD_PRODUCT_FILTER: 'ADD_PRODUCT_FILTER',
+  REMOVE_PRODUCT_FILTER: 'REMOVE_PRODUCT_FILTER',
   nav: null,
 }
 
@@ -42,6 +44,12 @@ export const actions = {
   },
   setTheme(theme){
     return { type: types.SET_THEME, theme };
+  },
+  addProductFilter(productFilter){
+    return { type: types.ADD_PRODUCT_FILTER, productFilter };
+  },
+  removeProductFilter(productFilter){
+    return { type: types.ADD_PRODUCT_FILTER, productFilter };
   }
 };
 
@@ -50,7 +58,8 @@ const initialState = {
   user: null,
   notifications: null,
   cart: [],
-  theme: null
+  theme: null,
+  productFilter: []
 }
 
 storeData = async (key, value) => {
@@ -67,6 +76,7 @@ const reducer = (state = initialState, action) => {
   const { notification } = action;
   const { product } = action;
   const { theme } = action;
+  const { productFilter } = action;
 
   switch (type) {
     case types.LOGOUT:
@@ -173,6 +183,31 @@ const reducer = (state = initialState, action) => {
       return{
         ...state,
         theme
+      }
+    case types.ADD_PRODUCT_FILTER:
+      let productFilterTemp = state.productFilter
+      let flagFilter = false
+      for (var i = 0; i < state.productFilter.length; i++) {
+        let item = state.productFilter[i]
+        if(productFilter == item){
+          flagFilter = true
+          break
+        }
+      }
+      if(flagFilter == false){
+        productFilterTemp.push(productFilter)
+      }
+      return {
+        ...state,
+        productFilter: productFilterTemp
+      }
+    case types.REMOVE_PRODUCT_FILTER:
+      let removeProductFilter = state.productFilter.filter(item => {
+        return productFilter != item
+      })
+      return {
+        ...state,
+        productFilter: removeProductFilter
       }
     default:
       return {...state, nav: state.nav};
