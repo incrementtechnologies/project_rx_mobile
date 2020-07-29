@@ -106,8 +106,31 @@ class SelectLocation extends Component{
 
   onFormSubmit=()=>
   {
-    // API REQUEST HERE
-    this.props.navigation.pop()
+    const {user}=this.props.state
+    if(user === null){
+      return
+    }
+    let parameter = [{
+      account_id: 4,
+      address_type:"Home",
+      latitude:"10.325098279684404",
+      longitude:"123.88028847053647",
+      route:"Yaps Residence Gabutan Compound",
+      locality:"Cebu City",
+      region:"7",
+      country:"Philippines",
+    }]
+
+    let parameter2=JSON.stringify(parameter)
+    console.log(parameter)
+
+    Api.request(Routes.locationCreate, parameter, response => {
+      console.log(response)
+    }, error => {
+      console.log(error)
+    });
+
+    
   }
   onFinish = () => {
     console.log(this.state.region)

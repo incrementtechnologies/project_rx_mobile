@@ -14,6 +14,8 @@ import MapView, { PROVIDER_GOOGLE, Marker,Callout } from 'react-native-maps';
 const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
 import Geolocation from '@react-native-community/geolocation';
+let collectedFilters=[];
+
 
 class filterPicker extends Component{
   
@@ -24,60 +26,98 @@ class filterPicker extends Component{
       selected: null,
       data: null,
       checked:false,
-      passingTags:{
-        search:{
-          inputTerm:""
-        },
-      
-      cuisine:{
-        asian:false,
-        american:false,
-        beverages:false,
-        desserts:false,
-        fastfood:false,
-        healthy:false,
-        seafood:false,
-        southeastasian:false,
-        international:false,
-      }
-      }
-     
-     
+      collectedFilterState:[],
+ 
     }
   }
 
   stackRedirect=()=>
   {
-    this.redirect('drawerStack')
+    this.props.navigation.pop()
+    collectedFilters=[]
   }
 
   redirect = (route) => {
     this.props.navigation.navigate(route)
   }
+
   componentDidMount(){
     const { user } = this.props.state;
      if(user != null){
     }
   }
 
+  collectFilters=(filter,type)=>
+  {
+    
+    let indexType=collectedFilters.indexOf(type)
+    console.log(filter) 
+    if(filter)
+    {
+      if(collectedFilters.indexOf(type)<0)
+      {collectedFilters.push(type)}
+    }
+    else
+    {
+      collectedFilters.splice(indexType,1)
+    }
+
+    console.log(collectedFilters);
+
+    this.setState({collectedFilterState:collectedFilters});
+  }
+
+ checkFilters=()=>
+ {
+   console.log('current filters',this.state.collectedFilterState);
+   this.stackRedirect()
+ }
+
   filterCuisine=()=>
   {
     return (
       
     <React.Fragment>
-          <Card
-      title='Cuisines'
-      >
+          <Card title='Cuisines'>
+     
    
        <View style={styles.checkboxContainer}>
        <Text style={styles.label}>Asian</Text>
       
-       <CheckBox
-    value={this.state.toggleCheckBox}
-    onValueChange={value => this.setState({toggleCheckBox:value})}
-  />
+      <CheckBox
+        value={this.state.collectedFilterState.indexOf('asian')>-1 ? true:false}
+        onValueChange={value => this.collectFilters(value,'asian')}
+      />
+        </View>
 
-          </View>    
+
+      <View style={styles.checkboxContainer}>
+       <Text style={styles.label}>American</Text>
+      
+      <CheckBox
+        value={this.state.collectedFilterState.indexOf('american')>-1 ? true:false}
+        onValueChange={value => this.collectFilters(value,'american')}
+      />
+        </View> 
+
+
+        <View style={styles.checkboxContainer}>
+       <Text style={styles.label}>Beverages</Text>
+      
+      <CheckBox
+        value={this.state.collectedFilterState.indexOf('beverages')>-1 ? true:false}
+        onValueChange={value => this.collectFilters(value,'beverages')}
+      />
+        </View> 
+
+
+
+
+
+
+
+
+
     </Card>
 
             </React.Fragment>
@@ -93,7 +133,7 @@ class filterPicker extends Component{
       <View style={Style.MainContainer}>
       {this.filterCuisine()}
       <TouchableOpacity
-              onPress={()=>this.stackRedirect()}
+              onPress={()=>this.checkFilters()}
               style={{
             
                 justifyContent: 'center',
