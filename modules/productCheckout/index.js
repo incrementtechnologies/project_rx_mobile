@@ -5,6 +5,7 @@ import { View, Image, TouchableHighlight, Text, ScrollView, FlatList,TouchableOp
 import { Spinner, Empty, SystemNotification,GooglePlacesAutoComplete } from 'components';
 import { connect } from 'react-redux';
 import { Dimensions } from 'react-native';
+import {Color} from 'common';
 import MapView, { PROVIDER_GOOGLE, Marker,Callout } from 'react-native-maps';
 const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
@@ -26,7 +27,9 @@ class productCheckout extends Component{
     
      showStatus:true,
      products,
-     totalPrice:0
+     totalPrice:0,
+     type:'Delivery',
+     paymentType:'Cash on Delivery',
     }
   }
 
@@ -100,13 +103,21 @@ class productCheckout extends Component{
   onSubtract=(index)=>
   {
     const products=[...this.state.products]
-    products[index].quantity-=1
+
+    if(products[index].quantity>1)
+    {
+      products[index].quantity-=1 
+    }
+    else(products[index].quantity=0)
+    {
+      products.splice(index,1)
+    }
+    
     this.setState({products})
   }
 
   render() {
-    const { isLoading, data } = this.state;
-    const { user } = this.props.state;
+    const {navigate} = this.props.navigation;
     const first=this.state.products.slice(0,2);
     const rest=this.state.products.slice(2);
     let totalPrices=0
@@ -123,7 +134,7 @@ class productCheckout extends Component{
       }}>
             <View style={{flexDirection:'row',justifyContent:'space-evenly',marginTop:25, marginBottom:15}}>
         <TouchableOpacity
-              onPress={()=>{this.setState({type:"Delivery"})}}
+              onPress={()=>{this.setState({type:"Delivery",paymentType:"Cash on Delivery"})}}
               style={this.state.type=="Delivery" ? Style.buttonPicked : Style.notPicked}
               >
               <Text style={{
@@ -134,7 +145,7 @@ class productCheckout extends Component{
             </TouchableOpacity>
 
             <TouchableOpacity
-             onPress={()=>{this.setState({type:"Pickup"})}}
+             onPress={()=>{this.setState({type:"Pickup",paymentType:"Cash on Pickup"})}}
              style={this.state.type=="Pickup" ? Style.buttonPicked : Style.notPicked}
               >
               <Text style={{
@@ -157,10 +168,10 @@ class productCheckout extends Component{
           
              {
                 first.map((product,index) => (
-                  <CheckoutCard key={product.id} details={product} onSubtract={()=>this.onSubtract(index)} onAdd={()=>this.onAdd(index)} />
+                 <CheckoutCard key={product.id} details={product} onSubtract={()=>this.onSubtract(index)} onAdd={()=>this.onAdd(index)} />
                 ))
               } 
-            {this.state.showStatus ? <TouchableOpacity onPress={()=>this.renderAll()}><Text style={{marginTop:15,fontSize:15,color:'#FF5B04'}}>Show More({rest.length})</Text></TouchableOpacity> : rest.map((product,index)  => (<CheckoutCard key={product.id} details={product} onSubtract={()=>this.onSubtract(index+2)} onAdd={()=>this.onAdd(index+2)} />))}
+            {this.state.showStatus ? <TouchableOpacity onPress={()=>this.renderAll()}><Text style={{marginTop:15,fontSize:15,color:'#FF5B04'}}>Show More({rest.length})</Text></TouchableOpacity> : rest.map((product,index)  => (product.quantity>1?<CheckoutCard key={product.id} details={product} onSubtract={()=>this.onSubtract(index+2)} onAdd={()=>this.onAdd(index+2)} />:null))}
             {this.state.showStatus? null : <TouchableOpacity onPress={()=>this.renderAll()}><Text style={{marginTop:15,fontSize:15,color:'#FF5B04'}}>Show Less</Text></TouchableOpacity>}
          
           </View>
@@ -174,25 +185,44 @@ class productCheckout extends Component{
     style={{ backgroundColor: "#CCCCC",padding:15 }}
     onLayout={e => {
       this.refs.top.onLayout(e);
-
+      this.refs.bottom.onLayout(e);
     }} >
    <View style={{ flexDirection:'row', justifyContent:'space-between'}}>
       <Text style={{fontSize:15,fontWeight:'bold'}}>Subtotal</Text>
       <Text style={{fontSize:15,fontWeight:'bold'}}>{totalPrices}</Text>
       </View>
-      <View style={{ flexDirection:'row', justifyContent:'space-between',marginTop:15}}>
+     {this.state.type=="Delivery" ?  <View style={{ flexDirection:'row', justifyContent:'space-between',marginTop:15}}>
       <Text style={{fontSize:15,fontWeight:'bold'}}>Delivery</Text>
       <Text style={{fontSize:15,fontWeight:'bold'}}>₱50</Text>
-     </View>
+     </View>: null}
      <Divider style={{height:3}}/>
      <View style={{ flexDirection:'row', justifyContent:'space-between',marginTop:15}}>
       <Text style={{fontSize:15,fontWeight:'bold'}}>Total</Text>
-      <Text style={{fontSize:15,fontWeight:'bold'}}>₱1050</Text>
+      <Text style={{fontSize:15,fontWeight:'bold'}}>₱{this.state.type=="Delivery"?totalPrices+50:totalPrices}</Text>
      </View>
+     <TearLines
+    isUnder
+    ref="bottom"
+    color="#CCCCCC"
+    tearSize={5}
+    style={{marginTop:15}}
+    backgroundColor="#FFFFFF"/>
       </View>
 
- 
 </View> 
+
+<TouchableOpacity onPress={()=>this.props.navigation.navigate('paymentOptions',{paymentType:this.state.paymentType})}>
+<View style={{padding:15,borderWidth:1,borderColor:'#CCCCCC',borderRadius:15,marginRight:50,marginLeft:50}}>
+  <View style={{flexDirection:'row', justifyContent:'space-between',marginTop:-10}}>
+  <Text>Payment Options</Text>
+  <Text style={{color:Color.primary}}>Change</Text>
+  </View>
+  <View style={{marginTop:15,flexDirection:'row',justifyContent:'space-between'}}>
+  <Text>{this.state.paymentType}</Text>
+  <Text>₱{this.state.type=="Delivery"?totalPrices+50:totalPrices}</Text>
+  </View>
+</View>
+</TouchableOpacity>
      </ScrollView>
      <View style={{justifyContent:'center',width:'100%',flexDirection:'row',backgroundColor:'white',height:90}}>
      <TouchableOpacity
@@ -219,7 +249,7 @@ class productCheckout extends Component{
                   <Text style={{
                 color:'white',
                 
-              }}>{totalPrices}</Text>
+              }}>₱{this.state.type=="Delivery"?totalPrices+50:totalPrices}</Text>
              </View>
         </TouchableOpacity>
         </View>

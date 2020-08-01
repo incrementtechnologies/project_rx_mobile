@@ -14,7 +14,7 @@ import MapView, { PROVIDER_GOOGLE, Marker,Callout } from 'react-native-maps';
 const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
 import Geolocation from '@react-native-community/geolocation';
-let collectedFilters=[];
+let collectedFilters=[]
 
 
 class filterPicker extends Component{
@@ -26,15 +26,14 @@ class filterPicker extends Component{
       selected: null,
       data: null,
       checked:false,
-      collectedFilterState:[],
- 
+      filters:[],
     }
   }
 
   stackRedirect=()=>
   {
     this.props.navigation.pop()
-    collectedFilters=[]
+    
   }
 
   redirect = (route) => {
@@ -45,43 +44,59 @@ class filterPicker extends Component{
     const { user } = this.props.state;
      if(user != null){
     }
+    this.setState({ 
+      
+      filters: [...this.props.state.productFilter]
+    })
   }
+  
 
-  collectFilters=(filter,type)=>
-  {
-    
-    let indexType=collectedFilters.indexOf(type)
-    console.log(filter) 
-    if(filter)
-    {
-      if(collectedFilters.indexOf(type)<0)
-      {collectedFilters.push(type)}
-    }
-    else
-    {
-      collectedFilters.splice(indexType,1)
-    }
-
-    console.log(collectedFilters);
-
-    this.setState({collectedFilterState:collectedFilters});
-  }
 
  checkFilters=()=>
  {
-   console.log('current filters',this.state.collectedFilterState);
-   this.stackRedirect()
+  const {productFilter}=this.props.state
+   console.log(productFilter)
+   
+ }
+
+ addFilter=(bool,type)=>
+ {
+   if(bool)
+   {
+     this.props.addProductFilter(type);
+   }
+   else{
+     this.props.removeProductFilter(type)
+   }
+ }
+
+ checkBox=(filter)=>
+ {
+  
+   const {productFilter}=this.props.state
+   return(
+    <View style={styles.checkboxContainer}>
+    <Text style={styles.label}>{filter.type}</Text>
+   
+   <CheckBox
+     value={productFilter.indexOf(filter.type)>-1 ? true:false}
+     onValueChange={value=>this.addFilter(value,filter.type)}
+   />
+     </View> 
+   )
+
  }
 
   filterCuisine=()=>
   {
+    const {productFilter}=this.props.state;
     return (
       
     <React.Fragment>
           <Card title='Cuisines'>
      
    
-       <View style={styles.checkboxContainer}>
+       {/* <View style={styles.checkboxContainer}>
        <Text style={styles.label}>Asian</Text>
       
       <CheckBox
@@ -98,23 +113,15 @@ class filterPicker extends Component{
         value={this.state.collectedFilterState.indexOf('american')>-1 ? true:false}
         onValueChange={value => this.collectFilters(value,'american')}
       />
-        </View> 
+        </View>  */}
 
-
-        <View style={styles.checkboxContainer}>
-       <Text style={styles.label}>Beverages</Text>
+      {Helper.categories.map(products=>(this.checkBox(products)))}
       
-      <CheckBox
-        value={this.state.collectedFilterState.indexOf('beverages')>-1 ? true:false}
-        onValueChange={value => this.collectFilters(value,'beverages')}
-      />
-        </View> 
 
 
 
 
-
-
+{/* Helpers.categories.map */}
 
 
 
@@ -157,6 +164,8 @@ const mapStateToProps = state => ({ state: state });
 const mapDispatchToProps = dispatch => {
   const { actions } = require('@redux');
   return {
+    addProductFilter: (productFilter) => dispatch(actions.addProductFilter(productFilter)),
+    removeProductFilter: (productFilter) => dispatch(actions.removeProductFilter(productFilter)),
   };
 };
 

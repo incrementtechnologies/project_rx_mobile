@@ -133,6 +133,17 @@ export default {
       `You’ll get ₱100 when they do!`,
     emailMessage: 'I\'d like to invite you on RunwayExpress!'
   },
+  categories:[
+    {
+      type:'Asian',
+    },
+    {
+      type:'American',
+    },
+    {
+      type:'Beverages',
+    }
+  ],
   retrieveDataFlag: 1,
   validateEmail(email){
     let reg = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+.[a-zA-Z0-9]*$/
