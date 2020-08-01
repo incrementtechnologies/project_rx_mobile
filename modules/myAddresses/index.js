@@ -3,6 +3,7 @@ import {View, Image,TouchableHighlight,Text,ScrollView,FlatList, Dimensions,Touc
 import { NavigationActions } from 'react-navigation';
 import { Thumbnail, List, ListItem, Separator } from 'native-base';
 import { connect } from 'react-redux';
+import Api from 'services/api/index.js';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import Style from './Style.js';
 import { Routes, Color, Helper, BasicStyles } from 'common';
@@ -27,10 +28,37 @@ class MyAddresses extends Component {
 
   componentDidMount(){
     const { user } = this.props.state;
-    console.log(dataAddress.locality)
-    if (user != null) {
-    }
+      this.retrieve()
   }
+
+  retrieve = () => {
+    const { user } = this.props.state;
+  
+    const parameter = {
+      condition: [{
+        value: 1,
+        column: 'account_id',
+        clause: '=',
+      }]
+    }
+    this.setState({
+      isLoading: true
+    })
+    Api.request(Routes.locationRetrieve, parameter, response => {
+      this.setState({isLoading: false})
+      console.log('test',response)
+      if(response.data.length > 0){
+        this.setState({data: response.data})
+        console.log(response.data)
+      }else{
+      
+        this.setState({data: null})
+      }
+    },error => {
+      console.log(error)
+    });
+  }
+  
 
   goTo=()=>
   {

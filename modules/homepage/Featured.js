@@ -5,26 +5,29 @@ import {
   Dimensions,
   TouchableOpacity,
   SafeAreaView,
-  TextInput
+  TextInput,
+  ColorPropType
 } from 'react-native';
 import { connect } from 'react-redux';
+import {  Color } from 'common';
 import Style from './Style.js';
 import { Spinner } from 'components';
 import { MainCard, Feature, MainFeature, PromoCard } from 'components/ProductThumbnail'
 const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
-import {faUserCircle,faMapMarker, faUniversity,faKaaba,faFilter} from '@fortawesome/free-solid-svg-icons';
+import {faUserCircle,faMapMarker, faUniversity,faKaaba,faFilter,faSearch} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 
 // TEST DATA FOR PRODUCTS
 import { mainFeaturedProduct, featuredProducts, promo, products } from './data-test';
-
+let collectedFilters=['Filipino','City Choices'];
 class Featured extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: false,
-      data: null
+      data: null,
+      searchString:'',
     };
   }
 
@@ -32,6 +35,12 @@ class Featured extends Component {
     const { user } = this.props.state;
     if (user != null) {
     }
+   console.log("current State",this.props.state.productFilter)
+  //  console.log(this.props.state.productFilter.length)
+  //  if(!this.props.state.productFilter.length)
+  //  {
+  //    console.log("hello")
+  //  }
   }
   redirect = route => {
     this.props.navigation.navigate(route);
@@ -40,6 +49,29 @@ class Featured extends Component {
   filterRedirect=()=>{
     this.redirect('filterPicker')
   }
+
+  searchedString=(list)=>
+ {
+  const getValue = value => (typeof value === 'string' ? value.toLowerCase() : value);
+  const filteredProducts=this.filterSearch(list,this.props.state.productFilter);
+
+   return filteredProducts.filter(filteredProducts=>getValue(filteredProducts.title).includes(this.state.searchString.toLowerCase())  )
+ }
+
+ filterSearch=(products,filters)=>{
+  const getValue = value => (typeof value === 'string' ? value.toLowerCase() : value);
+
+   let filtered= products.filter(product=>{
+     if(filters.length==0)
+     {
+       return true
+     }
+     return filters.some(tag => {
+       return product.tags.includes(tag)})
+   })
+
+   return(filtered)
+ }
 
   render() {
     const { isLoading, data } = this.state;
@@ -91,31 +123,35 @@ class Featured extends Component {
             <View style={{ marginVertical: 10 }}>
               <PromoCard details={promo} />
             </View>
-            <View style={Style.searchSection}>
+            <View style={{flexDirection:'row',justifyContent:'space-between',borderWidth:0.5,borderColor:'black',}}>
+            <View style={{padding:14,width:'15%'}}>
+    <FontAwesomeIcon style={Style.searchIcon} size={23} icon={faSearch} color={Color.primary}/>
     
-    <TextInput
-        style={Style.input}
+    </View>
+            <TextInput
+        style={{width:'70%'}}
         placeholder="Search for Shops"
         onChangeText={(searchString) => {this.setState({searchString})}}
        
     />
-    <TouchableOpacity onPress={()=>this.filterRedirect()}>
-    <FontAwesomeIcon style={Style.searchIcon} icon={faFilter} color={'orange'}/>
+    <TouchableOpacity style={{padding:14,width:'15%'}} onPress={()=>this.filterRedirect()}>
+    <FontAwesomeIcon style={Style.searchIcon} size={23} icon={faFilter} color={Color.primary}/>
     </TouchableOpacity>
 </View>
-            {/* Main Product Card */}
-            <View style={{ alignItems: 'center' }}>
+
+    {/* Main Product Card */}
+    <View style={{ alignItems: 'center' }}>
               {/* width: 98% !important */}
               <View style={{ width: '98%' }}>
-                {
-                  products.map((product) => (
-                    <TouchableOpacity
-                      key={product.id}
-                      onPress={() => navigate('Merchant', product)}
-                    >
-                      <MainCard key={product.id} details={product} />
-                    </TouchableOpacity>
-                  ))
+
+{this.searchedString(products).map((product)=>(
+                         <TouchableOpacity
+                         key={product.id}
+                         onPress={() => navigate('Merchant', product)}
+                       >
+                         <MainCard key={product.id} details={product} />
+                       </TouchableOpacity>
+                    ))
                 }
               </View>
             </View>

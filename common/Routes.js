@@ -20,4 +20,6 @@ export default {
   invitationRetrieve: apiUrl + 'invitations/retrieve',
   imageUpload: apiUrl + 'images/upload',
   imageRetrieve: apiUrl + 'images/retrieve',
+  locationCreate:apiUrl + 'locations/create',
+  locationRetrieve:apiUrl + 'locations/retrieve',
 }
