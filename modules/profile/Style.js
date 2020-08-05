@@ -16,4 +16,13 @@ export default {
     paddingBottom: 10,
     alignItems: 'center'
   },
+  alertMessage: {
+    width: '100%',
+    position: 'relative',
+    height: 50,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 10
+  }
 }

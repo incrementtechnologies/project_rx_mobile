@@ -145,7 +145,8 @@ export default {
   },
   productImg: {
     width: 100,
-    height: 100
+    height: 100,
+    resizeMode: 'contain'
   },
 
   //Bottom tab
@@ -156,7 +157,7 @@ export default {
     flexDirection: 'row',
   },
   tabItem: {
-    width: 150,
+    width: (width/2),
     alignItems: 'center',
     justifyContent: 'center'
   },

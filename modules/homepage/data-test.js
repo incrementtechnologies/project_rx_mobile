@@ -202,10 +202,16 @@ const merchants = [
   }
 ]
 
+const UserLocation = {
+  latitude: 10.3500708,
+  longitude: 123.9155313
+}
+
 export {
   mainFeaturedProduct,
   featuredProducts,
   promo,
   products,
-  merchants
+  merchants,
+  UserLocation
 }

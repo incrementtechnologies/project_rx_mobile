@@ -16,10 +16,23 @@ export default {
   accountInformationRetrieve: apiUrl + 'account_informations/retrieve',
   accountInformationUpdate: apiUrl + 'account_informations/update',
   emailAlert: apiUrl + 'emails/alert',
-  invitationCreate: apiUrl + 'invitations/create',
-  invitationRetrieve: apiUrl + 'invitations/retrieve',
-  imageUpload: apiUrl + 'images/upload',
-  imageRetrieve: apiUrl + 'images/retrieve',
   locationCreate:apiUrl + 'locations/create',
   locationRetrieve:apiUrl + 'locations/retrieve',
+  // referral
+  invitationCreate: apiUrl + 'invitations/create',
+  invitationRetrieve: apiUrl + 'invitations/retrieve',
+  // images
+  imageUpload: apiUrl + 'images/upload',
+  imageRetrieve: apiUrl + 'images/retrieve',
+  // carts
+  cartsCreate: apiUrl + 'carts/create',
+  cartsRetrieve: apiUrl + 'carts/retrieve',
+  cartsDelete: apiUrl + 'carts/delete',
+  // products
+  productsRetrieve: apiUrl + 'products/retrieve_basic',
+  // dashboard
+  dashboardRetrieveCategoryList: apiUrl + 'dashboard/categories',
+  dashboardRetrieveFeaturedProducts: apiUrl + 'dashboard/featured',
+  dashboardRetrieveCategoryProducts: apiUrl + 'dashboard/category',
+  dashboardRetrieveShops: apiUrl + 'dashboard/shops'
 }
