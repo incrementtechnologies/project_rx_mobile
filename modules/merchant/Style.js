@@ -118,7 +118,8 @@ export default {
   },
   categoryText: {
     fontSize: 17,
-    fontWeight: '600'
+    fontWeight: '600',
+    textTransform: 'capitalize'
   },
   section: {
     padding: 10
