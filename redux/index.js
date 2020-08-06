@@ -11,6 +11,7 @@ const types = {
   ADD_PRODUCT_TO_CART: 'ADD_PRODUCT_TO_CART',
   UPDATE_PRODUCT_TO_CART: 'UPDATE_PRODUCT_TO_CART',
   REMOVE_PRODUCT_TO_CART: 'REMOVE_PRODUCT_TO_CART',
+  RETRIEVE_CART: 'RETRIEVE_CART',
   SET_THEME: 'SET_THEME',
   ADD_PRODUCT_FILTER: 'ADD_PRODUCT_FILTER',
   REMOVE_PRODUCT_FILTER: 'REMOVE_PRODUCT_FILTER',
@@ -38,6 +39,9 @@ export const actions = {
   },
   updateProductToCart(product){
     return { type: types.UPDATE_PRODUCT_TO_CART, product };
+  },
+  retrieveCart: (cartItems) => {
+    return { type: types.RETRIEVE_CART, cartItems };
   },
   removeProductToCart(product){
     return { type: types.REMOVE_PRODUCT_TO_CART, product };
@@ -77,6 +81,7 @@ const reducer = (state = initialState, action) => {
   const { product } = action;
   const { theme } = action;
   const { productFilter } = action;
+  const { cartItems } = action;
 
   switch (type) {
     case types.LOGOUT:
@@ -155,6 +160,11 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         cart: cartProduct
+      }
+    case types.RETRIEVE_CART:
+      return {
+        ...state,
+        cart: cartItems
       }
     case types.UPDATE_PRODUCT_TO_CART:
       let updateCart = state.cart.map(item => {
