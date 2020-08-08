@@ -19,15 +19,8 @@ import Style from './Style.js';
 const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
 
-// TEST DATA FOR CATEGORIES TAB PRODUCTS
-import { products, UserLocation } from './data-test';
-// const ProductCategories = [
-//   'Filipino Choices',
-//   'Asian Choices',
-//   'Korean Barbeque Choices',
-//   'Fast Food Choices',
-//   'Milk Tea Choices'
-// ]
+// TEST DATA USER LOC.
+import { UserLocation } from './data-test';
 
 class Categories extends Component {
   constructor(props) {
@@ -42,7 +35,12 @@ class Categories extends Component {
   }
 
   componentDidMount() {
-    this.setState({ isLoading: true })
+    this.retrieve()
+  }
+
+  retrieve = () => {
+    console.log('retrieving...')
+    this.setState({ isLoading: true, isError: false })
 
     Api.request(Routes.dashboardRetrieveCategoryList, {},
     (response) => {
@@ -79,14 +77,17 @@ class Categories extends Component {
         console.log({ errorCategoryProducts: error })
         this.setState({
           isLoading: false,
-          isError: true,
-          errorMessage: 'Error fetching products'
+          isError: true
         })
       })
     },
     (error) => {
       console.log({ errorCategoryList: error })
-      this.setState({ categories: [] })
+      this.setState({
+        categories: [],
+        isLoading: false,
+        isError: true
+      })
     })
   }
 
@@ -114,14 +115,30 @@ class Categories extends Component {
   }
 
   render() {
-    const { isLoading, products } = this.state
+    const { isLoading, isError, products, selected_category } = this.state
     const { navigate } = this.props.navigation
     return (
       <SafeAreaView style={{ flex: 1 }}>
+        {isLoading ? <Spinner mode="full" /> : null}
         <ScrollView
           ref={ref => this.ScrollViewRef = ref}
-          style={Style.ScrollView}
           showsVerticalScrollIndicator={false}
+          scrollEventThrottle={100}
+          onScroll={(event) => {
+            console.log({ y: event.nativeEvent.contentOffset.y })
+            if (event.nativeEvent.contentOffset.y < -30) {
+              if (isLoading == false) {
+                this.setState({ isLoading: true })
+              }
+            }
+          }}
+          onScrollEndDrag={(event) => {
+            if (event.nativeEvent.contentOffset.y < -30) {
+              this.retrieve()
+            } else {
+              this.setState({ isLoading: false })
+            }
+          }}
         >
           <View
             style={[
@@ -130,10 +147,10 @@ class Categories extends Component {
                 minHeight: height,
                 paddingBottom: 150
               },
-            ]}>
-            { isLoading ? <Spinner mode="overlay" /> : null }
+            ]}
+          >
             {
-              this.state.selected_category
+              selected_category
               ? (
                   <View style={{ width: '100%' }}>
                     <TouchableOpacity onPress={() => this.setState({ selected_category: null })}>
@@ -150,12 +167,12 @@ class Categories extends Component {
                     </TouchableOpacity>
                     <View style={{ width: '100%', marginTop: 20, padding: 5 }}>
                       <Text style={{ fontSize: 17, fontWeight: '600'}}>
-                        {this.state.selected_category}
+                        {selected_category}
                       </Text>
                     </View>
                     <View style={{ paddingHorizontal: 5 }}>
                       {
-                        this.viewMoreProducts(this.state.selected_category)
+                        this.viewMoreProducts(selected_category)
                       }
                     </View>
                   </View>
@@ -227,18 +244,15 @@ class Categories extends Component {
                           )
                       }
                     </View>
-                  ))
+                  )) //end products map
                 )
             }
-            <Text
-              style={{ 
-                fontSize: 11,
-                marginLeft: 5,
-                marginBottom: 10
-              }}
-            >
-              Can't find what you're looking for? Try searching!
-            </Text>
+            {
+              isError && 
+              <Text style={{ textAlign: 'center', marginTop: 80, fontSize: 12, color: Color.darkGray }}>
+                There is a problem in fetching data. Please try again
+              </Text>
+            }
           </View>
         </ScrollView>
       </SafeAreaView>

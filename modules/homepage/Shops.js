@@ -4,31 +4,37 @@ import {
   ScrollView,
   Dimensions,
   TouchableOpacity,
-  SafeAreaView } from 'react-native';
+  SafeAreaView,
+  Text
+} from 'react-native';
 import { connect } from 'react-redux';
 import Style from './Style.js';
 import { Spinner } from 'components';
 import { ShopThumbnail } from 'components';
-import { Routes } from 'common';
+import { Routes, Color } from 'common';
 import Api from 'services/api/index.js';
 const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
 
-// TEST DATA FOR PRODUCTS
-import { merchants, UserLocation } from './data-test';
+// TEST DATA USER LOC.
+import { UserLocation } from './data-test';
 
 class Shops extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: false,
-      data: null,
-      isError: false
+      isError: false,
+      data: null
     };
   }
 
   componentDidMount() {
-    this.setState({ isLoading: true })
+    this.retrieve()
+  }
+
+  retrieve = () => {
+    this.setState({ isLoading: true, isError: false })
 
     const parameter = {
       limit: 100,
@@ -49,14 +55,30 @@ class Shops extends Component {
   }
 
   render() {
-    const { isLoading, data } = this.state;
+    const { isLoading, isError, data } = this.state;
     const { navigate } = this.props.navigation
 
     return (
       <SafeAreaView style={{ flex: 1 }}>
+        {isLoading ? <Spinner mode="full" /> : null}
         <ScrollView
-          style={Style.ScrollView}
           showsVerticalScrollIndicator={false}
+          scrollEventThrottle={100}
+          onScroll={(event) => {
+            console.log({ y: event.nativeEvent.contentOffset.y })
+            if (event.nativeEvent.contentOffset.y < -30) {
+              if (isLoading == false) {
+                this.setState({ isLoading: true })
+              }
+            }
+          }}
+          onScrollEndDrag={(event) => {
+            if (event.nativeEvent.contentOffset.y < -30) {
+              this.retrieve()
+            } else {
+              this.setState({ isLoading: false })
+            }
+          }}
         >
           <View
             style={[
@@ -66,21 +88,6 @@ class Shops extends Component {
                 paddingBottom: 150
               },
             ]}>
-            {isLoading ? <Spinner mode="overlay" /> : null}
-{/* 
-            {
-              merchants.length > 0 ?
-              <View style={{ paddingTop: 10 }}>
-                {
-                  merchants.map((merchant, id) => (
-                    <TouchableOpacity key={id} onPress={() => navigate('Merchant', { merchant_id: merchant.id })}>
-                      <ShopThumbnail details={merchant} />
-                    </TouchableOpacity>
-                  ))
-                }
-              </View>
-              : null
-            } */}
             {
               data && data.length > 0 && (
                 <View style={{ paddingTop: 10 }}>
@@ -94,7 +101,12 @@ class Shops extends Component {
                 </View>
               )
             }
-          
+            {
+              isError && 
+              <Text style={{ textAlign: 'center', marginTop: 80, fontSize: 12, color: Color.darkGray }}>
+                There is a problem in fetching data. Please try again
+              </Text>
+            }
           </View>
         </ScrollView>
       </SafeAreaView>

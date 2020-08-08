@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   TextInput,
-  ColorPropType
+  ColorPropType,
+  Text
 } from 'react-native';
 import { connect } from 'react-redux';
 import {  Color } from 'common';
@@ -20,14 +21,15 @@ const height = Math.round(Dimensions.get('window').height);
 import {faUserCircle,faMapMarker, faUniversity,faKaaba,faFilter,faSearch} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 
-// TEST DATA FOR PRODUCTS
-import { mainFeaturedProduct, featuredProducts, promo, products, UserLocation } from './data-test';
+// TEST DATA USER LOC. & PROMO
+import { promo, UserLocation } from './data-test';
 let collectedFilters=['Filipino','City Choices'];
 class Featured extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: false,
+      isError: false,
       data: null,
       searchString:'',
       featured: []
@@ -35,15 +37,15 @@ class Featured extends Component {
   }
 
   componentDidMount() {
-    const { user } = this.props.state;
-    if (user != null) {
-    }
+    this.retrieve()
+  }
 
+  retrieve = () => {
     const featured_products_parameter = {
       latitude: UserLocation.latitude,
       longitude: UserLocation.longitude
     }
-    this.setState({ isLoading: true })
+    this.setState({ isLoading: true, isError: false })
     Api.request(Routes.dashboardRetrieveFeaturedProducts, featured_products_parameter, response => {
       console.log({ responseFeaturedProducts: response })
       if (response.data.length) {
@@ -60,7 +62,8 @@ class Featured extends Component {
     }, (error) => {
       console.log({ errorFeaturedProducts: error })
       this.setState({
-        isLoading: false
+        isLoading: false,
+        isError: true
       })
     })
   }
@@ -96,11 +99,31 @@ class Featured extends Component {
   }
 
   render() {
-    const { isLoading, data, featured } = this.state;
+    const { isLoading, data, featured, isError } = this.state;
     const { navigate } = this.props.navigation
+
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        {isLoading ? <Spinner mode="full" /> : null}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={100}
+          onScroll={(event) => {
+            console.log({ y: event.nativeEvent.contentOffset.y })
+            if (event.nativeEvent.contentOffset.y < -30) {
+              if (isLoading == false) {
+                this.setState({ isLoading: true })
+              }
+            }
+          }}
+          onScrollEndDrag={(event) => {
+            if (event.nativeEvent.contentOffset.y < -30) {
+              this.retrieve()
+            } else {
+              this.setState({ isLoading: false })
+            }
+          }}
+        >
           <View
             style={[
               Style.MainContainer,
@@ -109,7 +132,6 @@ class Featured extends Component {
                 paddingBottom: 150
               },
             ]}>
-            {isLoading ? <Spinner mode="overlay" /> : null}
 
             {/* Main Feature Product */}
             {/* <TouchableOpacity onPress={() => navigate('Merchant', mainFeaturedProduct)}>
@@ -133,13 +155,13 @@ class Featured extends Component {
             </View> */}
 
             {/* Divider */}
-            <View 
+            {/* <View 
               style={{ 
                 borderBottomColor: 'rgba(0,0,0,0.1)',
                 borderBottomWidth: 2,
                 marginVertical: 5
               }}
-            />
+            /> */}
 
             {/* Promo Card */}
             <View style={{ marginVertical: 10 }}>
@@ -147,21 +169,40 @@ class Featured extends Component {
             </View>
 
             {/* Filter */}
-            <View style={{flexDirection:'row',justifyContent:'space-between',borderWidth:0.5,borderColor:'black',}}>
-              <View style={{padding:14,width:'15%'}}>
-                <FontAwesomeIcon style={Style.searchIcon} size={23} icon={faSearch} color={Color.primary}/>
+            <View style={{ alignItems: 'center' }}>
+              <View 
+                style={{
+                  width: '98%',
+                  flexDirection:'row',
+                  justifyContent:'space-between',
+                  // box-shadow
+                  backgroundColor: Color.white,
+                  borderRadius: 5,
+                  borderColor: '#ddd',
+                  shadowColor: "#000",
+                  shadowOffset: {
+                    width: 0,
+                    height: 2,
+                  },
+                  shadowOpacity: 0.23,
+                  shadowRadius: 2.62,
+                  elevation: 2,
+                }}
+              >
+                <View style={{padding:14,width:'15%'}}>
+                  <FontAwesomeIcon style={Style.searchIcon} size={23} icon={faSearch} color={Color.primary}/>
+                </View>
+                <TextInput
+                  style={{width:'70%'}}
+                  placeholder="Search for Shops"
+                  onChangeText={(searchString) => {this.setState({searchString})}}
+                />
+                <TouchableOpacity style={{padding:14,width:'15%'}} onPress={()=>this.filterRedirect()}>
+                  <FontAwesomeIcon style={Style.searchIcon} size={23} icon={faFilter} color={Color.primary}/>
+                </TouchableOpacity>
               </View>
-              <TextInput
-                style={{width:'70%'}}
-                placeholder="Search for Shops"
-                onChangeText={(searchString) => {this.setState({searchString})}}
-              />
-              <TouchableOpacity style={{padding:14,width:'15%'}} onPress={()=>this.filterRedirect()}>
-                <FontAwesomeIcon style={Style.searchIcon} size={23} icon={faFilter} color={Color.primary}/>
-              </TouchableOpacity>
             </View>
 
-            {/* Main Product Card */}
             <View style={{ alignItems: 'center' }}>
               {/* width: 98% !important */}
               <View style={{ width: '98%' }}>
@@ -179,7 +220,12 @@ class Featured extends Component {
                 }
               </View>
             </View>
-
+            {
+              isError && 
+              <Text style={{ textAlign: 'center', marginTop: 80, fontSize: 12, color: Color.darkGray }}>
+                There is a problem in fetching data. Please try again
+              </Text>
+            }
           </View>
         </ScrollView>
       </SafeAreaView>
