@@ -5,11 +5,14 @@ import { View, Image, TouchableHighlight, Text, ScrollView, FlatList,TouchableOp
 import { Spinner, Empty, SystemNotification,GooglePlacesAutoComplete } from 'components';
 import { connect } from 'react-redux';
 import { Dimensions } from 'react-native';
-import {Color} from 'common';
+import { Color, Routes } from 'common'
+import Api from 'services/api/index.js'
+
 import MapView, { PROVIDER_GOOGLE, Marker,Callout } from 'react-native-maps';
 const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
 import { Divider } from 'react-native-elements';
+import _, { isError } from 'lodash'
 import {faEdit} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Geolocation from '@react-native-community/geolocation';
@@ -24,7 +27,7 @@ class productCheckout extends Component{
   constructor(props){
     super(props);
     this.state = {
-    
+    data:[],
      showStatus:true,
      products,
      totalPrice:0,
@@ -36,6 +39,19 @@ class productCheckout extends Component{
   componentDidMount(){
     const { user } = this.props.state;
      if(user != null){
+      const parameter = {
+        condition : [{
+          column: 'account_id',
+          clause: '=',
+          value: this.props.state.user.id
+      }]
+    }
+      
+      Api.request(Routes.cartsRetrieve, parameter, response => {
+       this.setState({data:JSON.parse(response.data[0].items)})
+      }, error => {
+        console.log({ error })
+      })
     }
 
   }
@@ -95,34 +111,72 @@ class productCheckout extends Component{
 
   onAdd=(index)=>
   {
-    const products=[...this.state.products]
+    const products=[...this.state.data]
     products[index].quantity+=1
-    this.setState({products})
+    this.setState({data:products,products})
+
+    const stringifyItems = JSON.stringify(products)
+    const parameter = {
+      account_id: this.props.state.user.id,
+      items: stringifyItems
+    }
+
+    this.setState({ isLoading: true })
+    Api.request(Routes.cartsCreate, parameter, response => {
+      console.log(response.data)
+      this.setState({ isLoading: false })
+    }, error => {
+      console.log({ error })
+    })
+    
   }
 
   onSubtract=(index)=>
   {
-    const products=[...this.state.products]
+    const { addProductToCart, removeProductToCart } = this.props
+    var products=[...this.state.data]
 
     if(products[index].quantity>1)
     {
       products[index].quantity-=1 
     }
-    else(products[index].quantity=0)
+    else if (products[index].quantity==1)
     {
-      products.splice(index,1)
+      removeProductToCart(products[index])
+     products.splice(index,1)
+     
     }
+   console.log(products.length)
     
-    this.setState({products})
+    this.setState({data:products,products})
+    const stringifyItems = JSON.stringify(products)
+    const parameter = {
+      account_id: this.props.state.user.id,
+      items: stringifyItems
+    }
+
+    this.setState({ isLoading: true })
+    Api.request(Routes.cartsCreate, parameter, response => {
+      console.log(response.data)
+      this.setState({ isLoading: false })
+    }, error => {
+      console.log({ error })
+    })
+  }
+
+  checkCart=()=>
+  {
+    console.log(this.state.data)
+  
   }
 
   render() {
     const {navigate} = this.props.navigation;
-    const first=this.state.products.slice(0,2);
-    const rest=this.state.products.slice(2);
+    const first=this.state.data.slice(0,2);
+    const rest=this.state.data.slice(2);
     let totalPrices=0
-    this.state.products.forEach(product=>{
-      totalPrices+=product.quantity*product.price
+    this.state.data.forEach(product=>{
+      totalPrices+=product.quantity*product.price[0].price
     })
     return (
       <View style={{height:'100%',backgroundColor:'white'}}>
@@ -168,10 +222,12 @@ class productCheckout extends Component{
           
              {
                 first.map((product,index) => (
-                 <CheckoutCard key={product.id} details={product} onSubtract={()=>this.onSubtract(index)} onAdd={()=>this.onAdd(index)} />
+                  <CheckoutCard key={product.id} details={product} onSubtract={()=>this.onSubtract(index)} onAdd={()=>this.onAdd(index)} />
+             
+                
                 ))
               } 
-            {this.state.showStatus ? <TouchableOpacity onPress={()=>this.renderAll()}><Text style={{marginTop:15,fontSize:15,color:'#FF5B04'}}>Show More({rest.length})</Text></TouchableOpacity> : rest.map((product,index)  => (product.quantity>1?<CheckoutCard key={product.id} details={product} onSubtract={()=>this.onSubtract(index+2)} onAdd={()=>this.onAdd(index+2)} />:null))}
+            {this.state.showStatus ? <TouchableOpacity onPress={()=>this.renderAll()}><Text style={{marginTop:15,fontSize:15,color:'#FF5B04'}}>Show More({rest.length})</Text></TouchableOpacity> : rest.map((product,index)  => (<CheckoutCard key={product.id} details={product} onSubtract={()=>this.onSubtract(index+2)} onAdd={()=>this.onAdd(index+2)} />))}
             {this.state.showStatus? null : <TouchableOpacity onPress={()=>this.renderAll()}><Text style={{marginTop:15,fontSize:15,color:'#FF5B04'}}>Show Less</Text></TouchableOpacity>}
          
           </View>
@@ -226,7 +282,7 @@ class productCheckout extends Component{
      </ScrollView>
      <View style={{justifyContent:'center',width:'100%',flexDirection:'row',backgroundColor:'white',height:90}}>
      <TouchableOpacity
-              onPress={() => alert("hello")} 
+              onPress={() => this.checkCart()} 
               style={{
                 position:'absolute',
                 justifyContent: 'center',
@@ -264,6 +320,8 @@ const mapStateToProps = state => ({ state: state });
 const mapDispatchToProps = dispatch => {
   const { actions } = require('@redux');
   return {
+    addProductToCart: (product) => dispatch(actions.addProductToCart(product)),
+    removeProductToCart: (product) => dispatch(actions.removeProductToCart(product)),
   };
 };
 
