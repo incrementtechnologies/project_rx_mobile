@@ -161,7 +161,7 @@ class Referral extends Component {
               style={[
                 Style.inputContainer,
                 {
-                  backgroundColor: isLoading ? Color.gray : Color.success,
+                  backgroundColor: isLoading ? Color.gray : theme ? theme.primary : Color.primary,
                   height: 50,
                   justifyContent: 'center'
                 }
