@@ -100,6 +100,7 @@ class Featured extends Component {
 
   render() {
     const { isLoading, data, featured, isError } = this.state;
+    const { theme } = this.props.state
     const { navigate } = this.props.navigation
 
     return (
@@ -165,7 +166,7 @@ class Featured extends Component {
 
             {/* Promo Card */}
             <View style={{ marginVertical: 10 }}>
-              <PromoCard details={promo} />
+              <PromoCard details={promo} theme={theme} />
             </View>
 
             {/* Filter */}
@@ -213,7 +214,7 @@ class Featured extends Component {
                         key={product.id}
                         onPress={() => navigate('Merchant', product)}
                       >
-                        <MainCard key={product.id} details={product} />
+                        <MainCard key={product.id} details={product} theme={theme} />
                       </TouchableOpacity>
                     )
                   })

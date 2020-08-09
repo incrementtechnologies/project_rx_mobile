@@ -202,7 +202,7 @@ class Merchant extends Component {
   }
 
   goToCart = () => {
-    console.log('Go to cart')
+    this.props.navigation.navigate('Cart')
   }
 
   render() {

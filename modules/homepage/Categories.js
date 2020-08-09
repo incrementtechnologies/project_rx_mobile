@@ -91,7 +91,7 @@ class Categories extends Component {
     })
   }
 
-  viewMoreProducts = (category) => {
+  viewMoreProducts = (category, theme = null) => {
     const { navigate } = this.props.navigation
     const _category = this.state.products.find(product => product.category === category)
     if (_category.data.length) {
@@ -101,7 +101,7 @@ class Categories extends Component {
             key={details.id}
             onPress={() => navigate('Merchant', { merchant_id: details.merchant_id })}
           >
-          <MainCard details={details} />
+          <MainCard details={details} theme={theme} />
         </TouchableOpacity>
         ))
       )
@@ -117,6 +117,7 @@ class Categories extends Component {
   render() {
     const { isLoading, isError, products, selected_category } = this.state
     const { navigate } = this.props.navigation
+    const { theme } = this.props.state
     return (
       <SafeAreaView style={{ flex: 1 }}>
         {isLoading ? <Spinner mode="full" /> : null}
@@ -172,7 +173,7 @@ class Categories extends Component {
                     </View>
                     <View style={{ paddingHorizontal: 5 }}>
                       {
-                        this.viewMoreProducts(selected_category)
+                        this.viewMoreProducts(selected_category, theme)
                       }
                     </View>
                   </View>
@@ -229,7 +230,7 @@ class Categories extends Component {
                                         key={details.id}
                                         onPress={() => navigate('Merchant', { merchant_id: details.merchant_id })}
                                       >
-                                        <Card details={details} />
+                                        <Card details={details} theme={theme}/>
                                       </TouchableOpacity>
                                     )
                                   })
