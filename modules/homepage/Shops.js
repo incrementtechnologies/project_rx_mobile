@@ -38,7 +38,7 @@ class Shops extends Component {
       longitude: UserLocation.longitude
     }
     Api.request(Routes.dashboardRetrieveShops, parameter, response => {
-      console.log({ responseShops: response })
+     
       if (response.data.length) {
         this.setState({ isLoading: false, data: response.data[0] })
       }   

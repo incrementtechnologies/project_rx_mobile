@@ -46,7 +46,7 @@ class Categories extends Component {
 
     Api.request(Routes.dashboardRetrieveCategoryList, {},
     (response) => {
-      console.log({ responseCategoryList: response })
+    
       const categories = [...response]
       this.setState({ categories })
       const parameter = {
@@ -62,7 +62,7 @@ class Categories extends Component {
       }
   
       Api.request(Routes.dashboardRetrieveCategoryProducts, parameter, response => {
-        console.log({ responseCategoryProducts: response })
+       
         if (response.data.length) {
           const data = response.data.map((products, idx) => {
             return {

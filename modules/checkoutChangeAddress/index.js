@@ -9,19 +9,21 @@ import Style from './Style.js';
 import { Routes, Color, Helper, BasicStyles } from 'common';
 import { Spinner, Empty, SystemNotification ,GooglePlacesAutoComplete} from 'components';
 import Geolocation from '@react-native-community/geolocation';
-import AddressCard from 'modules/myAddresses/addressCard.js'
+import AddressCard from 'modules/checkoutChangeAddress/addressCard.js'
 import {faPlus,faMinus} from '@fortawesome/free-solid-svg-icons';
 const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
 import {dataAddress} from './data'
 
 
-class MyAddresses extends Component {
+class ChangeAddress extends Component {
   constructor(props) {
     super(props);
     this.state = {
      showInput:false,
      data:[],
+     value:0,
+     returnedAddress:{},
     }
      
     }
@@ -71,35 +73,21 @@ class MyAddresses extends Component {
     });
   }
   
-  checkData=(index)=>
-  {
-    console.log(this.state.data[index].id);
-  }
-
-  deleteAddress=(index)=>
-  {
-    const parameter={
-      id:this.state.data[index].id
-    }
-    
-
-    Api.request(Routes.locationDelete, parameter, response => {
-      console.log(response);
-    },error => {
-      console.log(error)
-    });
-  }
 
   goTo=()=>
   {
     this.props.navigation.navigate('addressMap')
   }
 
+  changeAddress=(index)=>
+  {
+    this.setState({value:index,returnedAddress:this.state.data[index]})
+  }
   showAddresses=()=>{
     const addresses=this.state.data
     return(
       <View style={{flex:1}}>
-      {addresses.map((address,index)=>(<AddressCard key={address.id} details={address} press={()=>this.checkData(index)} delete={()=>this.deleteAddress(index)}/>))}
+      {addresses.map((address,index)=>(<AddressCard index={index} current={this.state.value} key={address.id} details={address} pickAddress={()=>this.changeAddress(index)} />))}
       <View style={{flex:1,flexDirection:'row-reverse',padding:25}}>
         <View style={{flexDirection:'column-reverse'}}>
        <TouchableOpacity onPress={()=>this.goTo()}>
@@ -140,4 +128,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(MyAddresses);
+)(ChangeAddress);

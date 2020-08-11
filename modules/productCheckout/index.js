@@ -94,7 +94,7 @@ class productCheckout extends Component{
     )
   }
   goTo = () => {
-    this.props.navigation.navigate('selectLocation')
+    this.props.navigation.navigate('ChangeAddress')
   }
 
   renderAll=()=>
@@ -133,7 +133,7 @@ class productCheckout extends Component{
 
   onSubtract=(index)=>
   {
-    const { addProductToCart, removeProductToCart } = this.props
+    const { removeProductToCart } = this.props
     var products=[...this.state.data]
 
     if(products[index].quantity>1)

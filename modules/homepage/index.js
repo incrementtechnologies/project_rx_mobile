@@ -33,7 +33,7 @@ class Homepage extends Component {
 
   render() {
     const { activeIndex } = this.state;
-    console.log({ propsState: this.props.state })
+   
     const onPageChange = (activeIndex) => this.setState({ activeIndex })
     return (
       <View style={Style.MainContainer}>
