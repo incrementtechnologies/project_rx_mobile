@@ -44,8 +44,11 @@ class Merchant extends Component {
   }
 
   componentDidMount() {
-    this.setState({ isLoading: true })
+    this.retrieve()
+  }
 
+  retrieve = () => {
+    this.setState({ isLoading: true })
     const { merchant_id } = this.props.navigation.state.params
 
     const shop_parameter = {
@@ -163,7 +166,7 @@ class Merchant extends Component {
     // checking if unique merchant (RETURN IF UNIQUE)
     const isDifferentMerchant = _.uniqBy([...data, product], 'merchant_id').length > 1
     if (isDifferentMerchant) {
-      Alert.alert('Sorry, ordering to multiple merchants is not allowed yet')
+      Alert.alert('Notice', 'Sorry, ordering to multiple merchants is not allowed yet')
       return
     }
 
@@ -193,11 +196,13 @@ class Merchant extends Component {
       this.setState({ isLoading: false })
     }, error => {
       console.log({ error })
+      this.setState({ isLoading: false })
+      Alert.alert('Notice', 'Connection error, try again')
     })
   }
 
   goToCart = () => {
-    console.log('Go to cart')
+    this.props.navigation.navigate('Cart')
   }
 
   render() {
@@ -275,7 +280,16 @@ class Merchant extends Component {
           </TouchableOpacity>
         </View>
         <View style={Style.upperSection}>
-          <ScrollView ref={ref => this.products_scrollview_ref = ref}>
+          <ScrollView
+            ref={ref => this.products_scrollview_ref = ref}
+            onScroll={(event) => {
+              if (event.nativeEvent.contentOffset.y < 0) {
+                if (isLoading == false) {
+                  this.retrieve()
+                }
+              }
+            }}
+          >
             <View style={Style.merchantHeader}>
               { MerchantImage }
               {/* <Image source={ logo ? { uri: logo } : null } style={Style.image} /> */}

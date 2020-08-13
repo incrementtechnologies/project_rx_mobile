@@ -113,6 +113,7 @@ class ChangeAddress extends Component {
     const {user} = this.props.state;
     return (
      <View style={{flex:1}}>
+       
        {this.showAddresses()}
      </View>
     );

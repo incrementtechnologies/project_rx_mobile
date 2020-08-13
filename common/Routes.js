@@ -36,5 +36,8 @@ export default {
   dashboardRetrieveCategoryList: apiUrl + 'dashboard/categories',
   dashboardRetrieveFeaturedProducts: apiUrl + 'dashboard/featured',
   dashboardRetrieveCategoryProducts: apiUrl + 'dashboard/category',
-  dashboardRetrieveShops: apiUrl + 'dashboard/shops'
+  dashboardRetrieveShops: apiUrl + 'dashboard/shops',
+  // checkout
+  checkoutCreate: apiUrl + 'checkouts/create',
+  checkoutRetrieve: apiUrl + 'checkouts/retrieve'
 }
