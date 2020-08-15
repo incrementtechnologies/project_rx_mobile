@@ -38,5 +38,7 @@ export default {
   dashboardRetrieveShops: apiUrl + 'dashboard/shops',
   // checkout
   checkoutCreate: apiUrl + 'checkouts/create',
-  checkoutRetrieve: apiUrl + 'checkouts/retrieve'
+  checkoutRetrieve: apiUrl + 'checkouts/retrieve',
+  // notification settings
+  notificationSettingsRetrieve: apiUrl + 'notification_settings/retrieve'
 }
