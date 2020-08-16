@@ -28,6 +28,7 @@ class productCheckout extends Component{
     super(props);
     this.state = {
     data:[],
+    merchantID:null,
      showStatus:true,
      products,
      totalPrice:0,
@@ -48,6 +49,7 @@ class productCheckout extends Component{
     }
       
       Api.request(Routes.cartsRetrieve, parameter, response => {
+        console.log(response.data)
        this.setState({data:JSON.parse(response.data[0].items)})
       }, error => {
         console.log({ error })
@@ -94,7 +96,7 @@ class productCheckout extends Component{
     )
   }
   goTo = () => {
-    this.props.navigation.navigate('selectLocation')
+    this.props.navigation.navigate('ChangeAddress')
   }
 
   renderAll=()=>
@@ -133,7 +135,7 @@ class productCheckout extends Component{
 
   onSubtract=(index)=>
   {
-    const { addProductToCart, removeProductToCart } = this.props
+    const { removeProductToCart } = this.props
     var products=[...this.state.data]
 
     if(products[index].quantity>1)
@@ -166,10 +168,45 @@ class productCheckout extends Component{
 
   checkCart=()=>
   {
-    console.log(this.state.data)
-  
+    console.log(JSON.stringify(this.state.data.length))
+   
   }
 
+  onCheckOut=(totalPrice)=>
+  {
+    const paymentType=this.state.paymentType.toLowerCase();
+    const orders=JSON.stringify(this.state.data)
+    
+    if(this.state.data>0 && this.props.state.user.id!=null)
+    {
+      const parameter={
+        account_id:this.props.state.user.id,
+        merchant_id:this.state.data[0].merchant_id,
+        type:"cod",
+        payload:"null",
+        sub_total:totalPrice,
+        tax:0,
+        discount:0,
+        total:totalPrice,
+        payment_status:"pending",
+        status:"pending",
+      }
+      this.setState({ isLoading: true })
+      Api.request(Routes.checkoutCreate, parameter, response => {
+        console.log(response)
+        this.setState({ isLoading: false })
+        this.props.navigation.pop()
+      }, error => {
+        console.log({ error })
+        console.log(this.state.data)
+      })
+    }
+    else{
+      console.log("no items")
+      this.props.navigation.pop()
+    }
+    
+  }
   render() {
     const {navigate} = this.props.navigation;
     const first=this.state.data.slice(0,2);
@@ -282,7 +319,7 @@ class productCheckout extends Component{
      </ScrollView>
      <View style={{justifyContent:'center',width:'100%',flexDirection:'row',backgroundColor:'white',height:90}}>
      <TouchableOpacity
-              onPress={() => this.checkCart()} 
+              onPress={() => this.onCheckOut(totalPrices)} 
               style={{
                 position:'absolute',
                 justifyContent: 'center',

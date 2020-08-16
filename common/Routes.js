@@ -18,6 +18,7 @@ export default {
   emailAlert: apiUrl + 'emails/alert',
   locationCreate:apiUrl + 'locations/create',
   locationRetrieve:apiUrl + 'locations/retrieve',
+  locationDelete:apiUrl+'locations/delete',
   // referral
   invitationCreate: apiUrl + 'invitations/create',
   invitationRetrieve: apiUrl + 'invitations/retrieve',

@@ -100,6 +100,9 @@ class SelectLocation extends Component{
         longitude:location.longitude,
       },
       address:location.route,
+      area:location.region,
+     locality:location.locality,
+      country:location.country,
     })
  
   }
@@ -110,18 +113,18 @@ class SelectLocation extends Component{
     if(user === null){
       return
     }
-    let parameter = [{
-      account_id: 4,
-      address_type:"Home",
-      latitude:"10.325098279684404",
-      longitude:"123.88028847053647",
-      route:"Yaps Residence Gabutan Compound",
-      locality:"Cebu City",
-      region:"7",
-      country:"Philippines",
-    }]
+    let parameter = {
+      account_id: user.id,
+      address_type:this.state.type,
+      latitude:this.state.region.latitude,
+      longitude:this.state.region.longitude,
+      route:this.state.address,
+      locality:this.state.locality,
+      region:this.state.area,
+      country:this.state.country,
+    }
 
-    let parameter2=JSON.stringify(parameter)
+   
     console.log(parameter)
 
     Api.request(Routes.locationCreate, parameter, response => {
@@ -130,10 +133,10 @@ class SelectLocation extends Component{
       console.log(error)
     });
 
-    
+    this.props.navigation.pop()
+
   }
   onFinish = () => {
-    console.log(this.state.region)
     if(this.state.address==null)
     {
       alert("Please Input an Address or Use the Pin")
