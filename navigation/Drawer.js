@@ -78,11 +78,7 @@ const Homepage_StackNavigator = createStackNavigator({
       headerTransparent: true,
       headerTintColor: '#fff'
     }
-  }
-});
-
- 
-const Dashboard_StackNavigator = createStackNavigator({
+  },
   Dashboard: {
     screen: Dashboard,
     navigationOptions: ({ navigation }) => ({
@@ -94,9 +90,6 @@ const Dashboard_StackNavigator = createStackNavigator({
       headerTintColor: '#fff',
     }),
   },
-});
-
-const HelpCenter_StackNavigator = createStackNavigator({
   HelpCenter: {
     screen: HelpCenter,
     navigationOptions: ({ navigation }) => ({
@@ -108,9 +101,6 @@ const HelpCenter_StackNavigator = createStackNavigator({
       headerTintColor: '#fff',
     }),
   },
-});
-
-const Privacy_StackNavigator = createStackNavigator({
   PrivacyPolicy: {
     screen: PrivacyPolicy,
     navigationOptions: ({ navigation }) => ({
@@ -122,8 +112,6 @@ const Privacy_StackNavigator = createStackNavigator({
       headerTintColor: '#fff',
     }),
   },
-});
-const Terms_StackNavigator = createStackNavigator({
   TermsAndConditions: {
     screen: TermsAndConditions,
     navigationOptions: ({ navigation }) => ({
@@ -135,9 +123,6 @@ const Terms_StackNavigator = createStackNavigator({
       headerTintColor: '#fff',
     }),
   },
-});
-
-const Notification_StackNavigator = createStackNavigator({
   Notification: {
     screen: Notification,
     navigationOptions: ({ navigation }) => ({
@@ -149,9 +134,6 @@ const Notification_StackNavigator = createStackNavigator({
       headerTintColor: '#fff',
     }),
   },
-});
-
-const MyOrders_StackNavigator = createStackNavigator({
   MyOrders: {
     screen: MyOrders,
     navigationOptions: ({ navigation }) => ({
@@ -163,9 +145,6 @@ const MyOrders_StackNavigator = createStackNavigator({
       headerTintColor: '#fff',
     }),
   },
-});
-
-const Profile_StackNavigator = createStackNavigator({
   Profile: {
     screen: Profile,
     navigationOptions: ({ navigation }) => ({
@@ -177,9 +156,6 @@ const Profile_StackNavigator = createStackNavigator({
       headerTintColor: '#fff',
     }),
   },
-});
-
-const MyAddress_StackNavigator = createStackNavigator({
   MyAddress: {
     screen: MyAddress,
     navigationOptions: ({ navigation }) => ({
@@ -191,9 +167,6 @@ const MyAddress_StackNavigator = createStackNavigator({
       headerTintColor: '#fff',
     }),
   },
-});
-
-const Settings_StackNavigator = createStackNavigator({
   Settings: {
     screen: Settings,
     navigationOptions: ({ navigation }) => ({
@@ -205,9 +178,6 @@ const Settings_StackNavigator = createStackNavigator({
       headerTintColor: '#fff',
     }),
   },
-});
-
-const Referral_StackNavigator = createStackNavigator({
   InviteFriends: {
     screen: Referral,
     navigationOptions: ({ navigation }) => ({
@@ -221,7 +191,6 @@ const Referral_StackNavigator = createStackNavigator({
   },
 });
 
-
 const Drawer = createDrawerNavigator({
   Homepage: {
     screen: Homepage_StackNavigator,
@@ -230,61 +199,61 @@ const Drawer = createDrawerNavigator({
     },
   },
   Dashboard: {
-    screen: Dashboard_StackNavigator,
+    screen: Homepage_StackNavigator,
     navigationOptions: {
       drawerLabel: '',
     },
   },
   HelpCenter: {
-    screen: HelpCenter_StackNavigator,
+    screen: Homepage_StackNavigator,
     navigationOptions: {
       drawerLabel: '',
     },
   },
   MyOrders: {
-    screen: MyOrders_StackNavigator,
+    screen: Homepage_StackNavigator,
     navigationOptions: {
       drawerLabel: '',
     },
   },
   Profile: {
-    screen: Profile_StackNavigator,
+    screen: Homepage_StackNavigator,
     navigationOptions: {
       drawerLabel: '',
     },
   },
   MyAddress: {
-    screen: MyAddress_StackNavigator,
+    screen: Homepage_StackNavigator,
     navigationOptions: {
       drawerLabel: '',
     },
   },
   TermsAndConditions: {
-    screen: Terms_StackNavigator,
+    screen: Homepage_StackNavigator,
     navigationOptions: {
       drawerLabel: '',
     },
   },
   PrivacyPolicy: {
-    screen: Privacy_StackNavigator,
+    screen: Homepage_StackNavigator,
     navigationOptions: {
       drawerLabel: '',
     },
   },
   Notification: {
-    screen: Notification_StackNavigator,
+    screen: Homepage_StackNavigator,
     navigationOptions: {
       drawerLabel: '',
     },
   },
   Settings: {
-    screen: Settings_StackNavigator,
+    screen: Homepage_StackNavigator,
     navigationOptions: {
       drawerLabel: '',
     },
   },
   InviteFriends: {
-    screen: Referral_StackNavigator,
+    screen: Homepage_StackNavigator,
     navigationOptions: {
       drawerLabel: '',
     }
