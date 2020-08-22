@@ -114,6 +114,7 @@ export default {
     broadcast_type: 'pusher',
     channel: 'runwayexpress',
     notifications: 'App\\Events\\Notifications',
+    orders: 'App\\Events\\Orders',
     typing: 'typing'
   },
   tutorials: [

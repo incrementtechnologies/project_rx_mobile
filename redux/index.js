@@ -15,6 +15,7 @@ const types = {
   SET_THEME: 'SET_THEME',
   ADD_PRODUCT_FILTER: 'ADD_PRODUCT_FILTER',
   REMOVE_PRODUCT_FILTER: 'REMOVE_PRODUCT_FILTER',
+  SET_LOCATION: 'SET_LOCATION',
   nav: null,
 }
 
@@ -54,6 +55,9 @@ export const actions = {
   },
   removeProductFilter(productFilter){
     return { type: types.ADD_PRODUCT_FILTER, productFilter };
+  },
+  setLocation(location){
+    return { type: types.SET_THEME, location };
   }
 };
 
@@ -63,6 +67,7 @@ const initialState = {
   notifications: null,
   cart: [],
   theme: null,
+  location: null,
   productFilter: []
 }
 
@@ -81,7 +86,7 @@ const reducer = (state = initialState, action) => {
   const { product } = action;
   const { theme } = action;
   const { productFilter } = action;
-  const { cartItems } = action;
+  const { cartItems, location } = action;
 
   switch (type) {
     case types.LOGOUT:
@@ -218,6 +223,11 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         productFilter: removeProductFilter
+      }
+    case types.SET_LOCATION:
+      return{
+        ...state,
+        location
       }
     default:
       return {...state, nav: state.nav};
