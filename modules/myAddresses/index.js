@@ -62,9 +62,6 @@ class MyAddresses extends Component {
       if(response.data.length > 0){
         this.setState({data: response.data})
         console.log(response.data)
-      }else{
-      
-        this.setState({data: null})
       }
     },error => {
       console.log(error)
@@ -81,8 +78,6 @@ class MyAddresses extends Component {
     const parameter={
       id:this.state.data[index].id
     }
-    
-
     Api.request(Routes.locationDelete, parameter, response => {
       console.log(response);
     },error => {
@@ -95,11 +90,47 @@ class MyAddresses extends Component {
     this.props.navigation.navigate('addressMap')
   }
 
+  validate = (index) => {
+    const { user } = this.props.state;
+    if(user === null){
+      return
+    }
+    let parameter = {
+      id: user.account_information.account_id,
+      account_id: user.id,
+      address: index,
+    }
+    let reloadProfile={
+      condition: [{
+        value: user.id,
+        clause: '=',
+        column: 'id'
+      }]
+    }
+    this.setState({isLoading: true})
+    Api.request(Routes.accountInformationUpdate, parameter, response => {
+      this.setState({isLoading: false})
+      if(response.data!=null)
+      {
+        Api.request(Routes.accountRetrieve, reloadProfile, response => {
+          this.setState({isLoading: false})
+          const { updateUser } = this.props;
+          updateUser(response.data[0])
+        });
+        
+      }
+ 
+    }, (error) => {
+      console.log(error)
+    });
+  }
+
   showAddresses=()=>{
-    const addresses=this.state.data
+    const addresses=this.state.data;
+    const test=[];
     return(
       <View style={{flex:1}}>
-      {addresses.map((address,index)=>(<AddressCard key={address.id} details={address} press={()=>this.checkData(index)} delete={()=>this.deleteAddress(index)}/>))}
+      {this.state.data && (addresses.map((address,index)=>(<AddressCard key={address.id} details={address} press={()=>this.checkData(index)} delete={()=>this.validate(address.id)}/>)))}
       <View style={{flex:1,flexDirection:'row-reverse',padding:25}}>
         <View style={{flexDirection:'column-reverse'}}>
        <TouchableOpacity onPress={()=>this.goTo()}>
@@ -134,7 +165,10 @@ const mapStateToProps = state => ({state: state});
 
 const mapDispatchToProps = dispatch => {
   const {actions} = require('@redux');
-  return {};
+  return {
+    updateUser: (user) => dispatch(actions.updateUser(user)),
+
+  };
 };
 
 export default connect(
