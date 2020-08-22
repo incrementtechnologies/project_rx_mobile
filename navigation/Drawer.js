@@ -189,6 +189,17 @@ const Homepage_StackNavigator = createStackNavigator({
       headerTintColor: '#fff',
     }),
   },
+  PaymentMethods: {
+    screen: Referral,
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
+      headerRight: <OptionRight navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: Color.white,
+      },
+      headerTintColor: '#fff',
+    }),
+  },
 });
 
 const Drawer = createDrawerNavigator({
@@ -253,6 +264,12 @@ const Drawer = createDrawerNavigator({
     },
   },
   InviteFriends: {
+    screen: Homepage_StackNavigator,
+    navigationOptions: {
+      drawerLabel: '',
+    }
+  },
+  PaymentMethods: {
     screen: Homepage_StackNavigator,
     navigationOptions: {
       drawerLabel: '',
