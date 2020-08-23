@@ -10,33 +10,43 @@ class addressCard extends Component {
   constructor(props){
     super(props);
   }
+  componentDidMount()
+  {
+    console.log(this.props.keys)
+  }
 
  
   render() {
     const { details } = this.props;
     return (
       <View style={Style.container}>
-        <View style={Style.details}>
+      
+      <View  style={Style.buttonContainer}>
+   <TouchableOpacity style={Style.circle} onPress={()=>this.props.pickAddress()}>
+   {this.props.current===this.props.keys && (<View style={Style.checkedCircle} />)}
+    </TouchableOpacity>
+    <View style={Style.details}>
           <View style={{flexDirection:'row'}}>
-              <FontAwesomeIcon size={24} icon={faHome} color={'#FF5B04'}/>
-              {/* <Text style={Style.AddressType}>{details.address_type}</Text> */}
+              <Text style={Style.AddressType}>{details.type}</Text>
           </View>     
-          <View style={Style.editDeleteIcons}>
-            <TouchableOpacity onPress={()=>this.props.press()}>
-              <FontAwesomeIcon style={{marginRight:25}}size={24} icon={faEdit} color={'#FF5B04'}/>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={()=>this.props.delete()}>
-              <FontAwesomeIcon size={23} icon={faTrash} color={'#FF5B04'}/>
-              </TouchableOpacity>
-          </View>
         </View>
+    </View>
+
+
+
+
+
+
+
+
+
+       
         <Divider style={{marginTop:-15,height:1}}/>
       <View style={Style.locationInformation}>
         <Text style={Style.locationText}>{details.route}</Text>
         <Text style={Style.locationText}>{`${details.locality} , ${details.country}`}</Text>
         <Text style={Style.locationText}>Notes Somewhere Here</Text>
       </View>
-     
       </View>
     );
   }

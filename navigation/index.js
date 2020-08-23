@@ -9,7 +9,8 @@ import selectLocationStack from 'modules/selectLocation/Drawer.js';
 import selectFilterStack from 'modules/FilterPicker/Drawer.js';
 import CartStack from 'modules/productCheckout/Drawer.js';
 import addressMapStack from 'modules/addressMap/Drawer.js';
-import paymentOptionStack from 'modules/paymentOptions/Drawer.js'
+import paymentOptionStack from 'modules/paymentOptions/Drawer.js';
+import ChangeAddressStack from 'modules/checkoutChangeAddress/Drawer.js';
 
 
 // login stack
@@ -52,7 +53,9 @@ const PrimaryNav = createStackNavigator({
   notificationStack: { screen: NotificationStack},
   Cart:{screen:CartStack},
   addressMap:{screen:addressMapStack},
-  paymentOptions:{screen:paymentOptionStack}
+  paymentOptions:{screen:paymentOptionStack},
+  ChangeAddress:{screen:ChangeAddressStack}
+
 }, {
   // Default config for all screens
   headerMode: 'none',

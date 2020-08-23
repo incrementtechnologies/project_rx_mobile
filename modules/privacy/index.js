@@ -41,7 +41,7 @@ class Privacy extends Component {
         <View style={{flexDirection:'row',justifyContent:'center',height:70,padding:20,backgroundColor:Color.primary}}>
        <Text style={{fontWeight:'bold',fontSize:25, color: Color.white}}>Privacy Policy</Text>
        </View>
-      <View style={{padding:15,}}>
+      <View style={{padding:15}}>
        <Text>We take your privacy very seriously. Any personal information you submit to us when setting up an account shall be subject to our Privacy and Cookie Policies which are incorporated into these Terms. You understand that through your use of the Services, you consent to the collection and use (to the extent stated in the Privacy and Cookie Policies) of this information. You further understand, acknowledge and agree that any personal information you provide on your Profile is in the public domain and is provided at your sole liability. We accept no responsibility whatsoever for the use of any personal information you share on your Profile by you or any other individual.</Text>
       </View>
     <Collapse style={{backgroundColor:Color.white}}>

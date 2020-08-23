@@ -1,13 +1,13 @@
 import React, { Component, useState } from 'react';
 import Style from './Style.js';
-import { View, Image, TouchableHighlight, Text, ScrollView, FlatList,TouchableOpacity,Button,StyleSheet, ColorPropType} from 'react-native';
+import { View, Image, TouchableHighlight, Text, ScrollView, FlatList,TouchableOpacity,Button,StyleSheet, ColorPropType,TextInput} from 'react-native';
 
 import { Spinner, Empty, SystemNotification,GooglePlacesAutoComplete } from 'components';
 import { connect } from 'react-redux';
 import { Dimensions } from 'react-native';
-import { Color, Routes } from 'common'
+import { Color, Routes ,BasicStyles} from 'common'
 import Api from 'services/api/index.js'
-
+import { NavigationActions } from 'react-navigation'
 import MapView, { PROVIDER_GOOGLE, Marker,Callout } from 'react-native-maps';
 const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
@@ -22,41 +22,81 @@ import { products } from './data';
 import TearLines from "react-native-tear-lines";
 
 
+
 class productCheckout extends Component{
   
   constructor(props){
     super(props);
     this.state = {
     data:[],
+    address:[],
+    merchantID:null,
      showStatus:true,
      products,
      totalPrice:0,
      type:'Delivery',
-     paymentType:'Cash on Delivery',
+     paymentType:'cod',
     }
   }
 
+  
   componentDidMount(){
     const { user } = this.props.state;
-     if(user != null){
-      const parameter = {
-        condition : [{
-          column: 'account_id',
-          clause: '=',
-          value: this.props.state.user.id
-      }]
-    }
-      
-      Api.request(Routes.cartsRetrieve, parameter, response => {
-       this.setState({data:JSON.parse(response.data[0].items)})
-      }, error => {
-        console.log({ error })
-      })
-    }
-
+    console.log("currentprops",this.props.state)
+      this.retrieve()
+      console.log("mount")
+      this.willFocusSubscription = this.props.navigation.addListener(
+        'willFocus',
+        () => {
+          this.retrieve()
+          console.log("remount")
+        }
+      );
   }
 
+  componentWillUnmount(){
+    this.willFocusSubscription.remove()
+  }
+
+    retrieve=()=>
+    {
+      const { user } = this.props.state;
+      if(user != null){
+       const parameter = {
+         condition : [{
+           column: 'account_id',
+           clause: '=',
+           value: this.props.state.user.id
+       }]
+     }
+     this.setState({
+       isLoading: true
+     })
+     console.log(this.props.state.user)
+       Api.request(Routes.cartsRetrieve, parameter, response => {
+         console.log(response.data)
+        this.setState({data:JSON.parse(response.data[0].items)})
+       }, error => {
+         console.log({ error })
+       })
+ 
+       Api.request(Routes.locationRetrieve, parameter, response => {
+         this.setState({isLoading: false})
+         console.log('test',response)
+         if(response.data.length > 0){
+           this.setState({address: response.data.find(def=>{return def.id==parseInt(this.props.state.user.account_information.address)})})
+
+         }
+       },error => {
+         console.log(error)
+       });
+     }
+    }
+ 
+
   deliveryDetails=()=>{
+   
+  
     return(
       <React.Fragment>
         <View style={Style.DelvToContainer}><Text style={{fontSize:15}}>Deliver To</Text></View>
@@ -64,7 +104,7 @@ class productCheckout extends Component{
         <View style={Style.locationContainer}>
           <View style={{marginLeft:-10,width:'60%'}}>
             <View style={{flexDirection:'row'}}>
-           <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}>Dulce Village, Tabok, Mandaue City</Text>
+           <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}>{this.props.state.location ? this.props.state.location.route :this.state.address.route}</Text>
            <TouchableOpacity onPress={() => this.goTo()}><FontAwesomeIcon style={{paddingRight:10}} icon={faEdit} color={'orange'}/></TouchableOpacity>
            </View>
            <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}>Block 7 Lot 42</Text>
@@ -94,7 +134,14 @@ class productCheckout extends Component{
     )
   }
   goTo = () => {
-    this.props.navigation.navigate('selectLocation')
+    if (this.props.state.user == null) {
+      const proceedToLogin = NavigationActions.navigate({
+        routeName: 'loginStack'
+      });
+      this.props.navigation.dispatch(proceedToLogin)
+      return
+    }
+    this.props.navigation.navigate('ChangeAddress')
   }
 
   renderAll=()=>
@@ -133,9 +180,8 @@ class productCheckout extends Component{
 
   onSubtract=(index)=>
   {
-    const { addProductToCart, removeProductToCart } = this.props
+    const { removeProductToCart } = this.props
     var products=[...this.state.data]
-
     if(products[index].quantity>1)
     {
       products[index].quantity-=1 
@@ -166,10 +212,97 @@ class productCheckout extends Component{
 
   checkCart=()=>
   {
-    console.log(this.state.data)
-  
+    console.log(JSON.stringify(this.state.data.length))
+   
   }
 
+  onCheckOut=(totalPrice)=>
+  {
+    const paymentType=this.state.paymentType.toLowerCase();
+    const orders=JSON.stringify(this.state.data)
+
+
+    if(this.state.data.length>0 && this.props.state.user.id!=null){
+      if(this.state.amount_tendered!=null && this.state.amount_tendered<totalPrice)
+      {
+        this.setState({error:1})
+      }
+      else{
+        alert("Successful")
+      const parameter= this.state.paymentType=="cod" && this.state.amount_tendered>0 ? {
+        account_id:this.props.state.user.id,
+        merchant_id:this.state.data[0].merchant_id,
+        type:this.state.paymentType,
+        payload:"null",
+        sub_total:totalPrice,
+        tax:0,
+        discount:0,
+        total:totalPrice,
+        payment_status:"pending",
+        status:"pending",
+        tendered_amount:this.state.amount_tendered,
+        change:this.state.amount_tendered!=null ? parseInt(this.state.amount_tendered)-totalPrice : totalPrice,
+        currency:"PHP",
+        location_id:this.props.state.location?this.props.state.location.id : this.state.address.id,
+        shipping_fee:"5",
+      } 
+        :
+        {
+          account_id:this.props.state.user.id,
+        merchant_id:this.state.data[0].merchant_id,
+        type:this.state.paymentType,
+        payload:"null",
+        sub_total:totalPrice,
+        tax:0,
+        discount:0,
+        total:totalPrice,
+        payment_status:"pending",
+        status:"pending",
+        currency:"PHP",
+        location_id:this.props.state.location?this.props.state.location.id : this.state.address.id,
+        shipping_fee:"5",
+      }
+
+
+
+
+
+
+
+
+      this.setState({ isLoading: true })
+      console.log(parameter)
+      Api.request(Routes.checkoutCreate,parameter , response => {
+        console.log(response)
+        this.setState({ isLoading: false })
+        this.props.navigation.pop()
+      }, error => {
+        console.log({ error })
+        this.setState({ isLoading: false })
+        console.log(this.state.data)
+      })
+      }
+    }
+    else
+    {
+      alert("Failed")
+
+    }    
+  }
+
+  inputErrorCheck=(tenderedAmount,totalPrices)=>
+  {
+    
+    if(tenderedAmount<totalPrices)
+    {
+      this.setState({amount_tendered:tenderedAmount.replace(/[^0-9]/g, '')})
+      this.setState({error:1})
+    }
+    else{
+      this.setState({amount_tendered:tenderedAmount.replace(/[^0-9]/g, '')})
+      this.setState({error:0})
+    }
+  }
   render() {
     const {navigate} = this.props.navigation;
     const first=this.state.data.slice(0,2);
@@ -180,15 +313,16 @@ class productCheckout extends Component{
     })
     return (
       <View style={{height:'100%',backgroundColor:'white'}}>
-      <ScrollView
+         {this.state.isLoading ? <Spinner mode="overlay"/> : <ScrollView
       style={Style.ScrollView}
       onScroll={event => {
         if (event.nativeEvent.contentOffset.y <= 0) {
         }
       }}>
+        
             <View style={{flexDirection:'row',justifyContent:'space-evenly',marginTop:25, marginBottom:15}}>
         <TouchableOpacity
-              onPress={()=>{this.setState({type:"Delivery",paymentType:"Cash on Delivery"})}}
+              onPress={()=>{this.setState({type:"Delivery",paymentType:"cod"})}}
               style={this.state.type=="Delivery" ? Style.buttonPicked : Style.notPicked}
               >
               <Text style={{
@@ -199,7 +333,7 @@ class productCheckout extends Component{
             </TouchableOpacity>
 
             <TouchableOpacity
-             onPress={()=>{this.setState({type:"Pickup",paymentType:"Cash on Pickup"})}}
+             onPress={()=>{this.setState({type:"Pickup",paymentType:"cop",error:0})}}
              style={this.state.type=="Pickup" ? Style.buttonPicked : Style.notPicked}
               >
               <Text style={{
@@ -266,7 +400,18 @@ class productCheckout extends Component{
       </View>
 
 </View> 
-
+{this.state.error ? <Text style={{height: 25,
+    
+    alignSelf: 'center',
+    justifyContent: 'center',
+    color: Color.danger}}>Money on Hand is not enough for the Order!</Text> : null}
+           {this.state.paymentType=="cod" && ( <TextInput
+              keyboardType={"numeric"}
+              style={{padding:10,borderWidth:1,borderColor: this.state.error? Color.danger : '#CCCCCC',borderRadius:15,marginRight:50,marginLeft:50,marginBottom:10}}
+              onChangeText={(amount_tendered) => this.inputErrorCheck(amount_tendered,totalPrices)}
+              value={this.state.amount_tendered}
+              placeholder={'Money on Hand'}
+            />)}
 <TouchableOpacity onPress={()=>this.props.navigation.navigate('paymentOptions',{paymentType:this.state.paymentType})}>
 <View style={{padding:15,borderWidth:1,borderColor:'#CCCCCC',borderRadius:15,marginRight:50,marginLeft:50}}>
   <View style={{flexDirection:'row', justifyContent:'space-between',marginTop:-10}}>
@@ -274,15 +419,16 @@ class productCheckout extends Component{
   <Text style={{color:Color.primary}}>Change</Text>
   </View>
   <View style={{marginTop:15,flexDirection:'row',justifyContent:'space-between'}}>
-  <Text>{this.state.paymentType}</Text>
+  <Text>{this.state.paymentType==="cod"? "Cash on Delivery" : "Cash on Pickup"}</Text>
   <Text>₱{this.state.type=="Delivery"?totalPrices+50:totalPrices}</Text>
   </View>
 </View>
 </TouchableOpacity>
-     </ScrollView>
+     </ScrollView>}
+     {this.state.isLoading ? null :   
      <View style={{justifyContent:'center',width:'100%',flexDirection:'row',backgroundColor:'white',height:90}}>
      <TouchableOpacity
-              onPress={() => this.checkCart()} 
+              onPress={() => this.onCheckOut(totalPrices)} 
               style={{
                 position:'absolute',
                 justifyContent: 'center',
@@ -290,10 +436,10 @@ class productCheckout extends Component{
                 width: '80%',
                 borderRadius:10,
                 bottom:20,
-                backgroundColor:'#FF5B04',
-              
+                backgroundColor: this.state.error ? '#CCCCCC' : '#FF5B04',
                 
               }}
+              disabled={this.state.error ? true : false}
               >
                 <View style={{flexDirection:'row',justifyContent:'space-between',marginRight:5}}>
               <View style={Style.circleContainer}><Text style={{alignSelf:'center',color:'#FF5B04'}}>{products.length}</Text></View>
@@ -308,8 +454,10 @@ class productCheckout extends Component{
               }}>₱{this.state.type=="Delivery"?totalPrices+50:totalPrices}</Text>
              </View>
         </TouchableOpacity>
-        </View>
- 
+            </View> }
+   
+      
+       
      </View>
 
     );
@@ -320,8 +468,7 @@ const mapStateToProps = state => ({ state: state });
 const mapDispatchToProps = dispatch => {
   const { actions } = require('@redux');
   return {
-    addProductToCart: (product) => dispatch(actions.addProductToCart(product)),
-    removeProductToCart: (product) => dispatch(actions.removeProductToCart(product)),
+
   };
 };
 
