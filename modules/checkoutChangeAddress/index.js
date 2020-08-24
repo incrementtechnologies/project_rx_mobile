@@ -22,7 +22,6 @@ class ChangeAddress extends Component {
     this.state = {
      showInput:false,
      data:[],
-     value:0,
      returnedAddress:{},
     }
      
@@ -81,13 +80,20 @@ class ChangeAddress extends Component {
 
   changeAddress=(index)=>
   {
-    this.setState({value:index,returnedAddress:this.state.data[index]})
+    const addresses=this.state.data;
+    const pickedLocation=addresses.find(address => {
+      return address.id===index
+    })
+    console.log(pickedLocation)
+    this.setState({value:index})
+    this.props.setLocation(pickedLocation)
+    this.props.navigation.pop()
   }
   showAddresses=()=>{
     const addresses=this.state.data
     return(
       <View style={{flex:1}}>
-      {addresses.map((address,index)=>(<AddressCard index={index} current={this.state.value} key={address.id} details={address} pickAddress={()=>this.changeAddress(index)} />))}
+      {addresses.map((address,index)=>(<AddressCard index={index} current={this.state.value} keys={address.id} details={address} pickAddress={()=>{this.changeAddress(address.id)}} />))}
       <View style={{flex:1,flexDirection:'row-reverse',padding:25}}>
         <View style={{flexDirection:'column-reverse'}}>
        <TouchableOpacity onPress={()=>this.goTo()}>
@@ -123,7 +129,9 @@ const mapStateToProps = state => ({state: state});
 
 const mapDispatchToProps = dispatch => {
   const {actions} = require('@redux');
-  return {};
+  return {
+    setLocation: (location) => dispatch(actions.setLocation(location)),
+  };
 };
 
 export default connect(

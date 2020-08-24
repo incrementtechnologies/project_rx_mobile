@@ -10,6 +10,10 @@ class addressCard extends Component {
   constructor(props){
     super(props);
   }
+  componentDidMount()
+  {
+    console.log(this.props.keys)
+  }
 
  
   render() {
@@ -19,7 +23,7 @@ class addressCard extends Component {
       
       <View  style={Style.buttonContainer}>
    <TouchableOpacity style={Style.circle} onPress={()=>this.props.pickAddress()}>
-   {this.props.current===this.props.index && (<View style={Style.checkedCircle} />)}
+   {this.props.current===this.props.keys && (<View style={Style.checkedCircle} />)}
     </TouchableOpacity>
     <View style={Style.details}>
           <View style={{flexDirection:'row'}}>
