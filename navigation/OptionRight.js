@@ -52,7 +52,7 @@ class NavigationDrawerStructureRight extends Component {
             <Text style={{
               fontSize: 12
             }}>
-              Casili, Casili, Consolacion
+              {this.props.state.user ? console.log(this.props.state):"Lacion"}
             </Text>
           </View>
         </TouchableOpacity>
