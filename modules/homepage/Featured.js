@@ -10,6 +10,7 @@ import {
   Text
 } from 'react-native';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import {  Color } from 'common';
 import Style from './Style.js';
 import { Spinner } from 'components';
@@ -32,32 +33,37 @@ class Featured extends Component {
       isError: false,
       data: null,
       searchString:'',
-      featured: []
+      featured: [],
+      limit: 5,
+      offset: 0,
     };
   }
 
   componentDidMount() {
-    this.retrieve()
+    this.retrieve({ offset: this.state.offset })
   }
 
-  retrieve = () => {
+  retrieve = ({ offset, fetchMore = false }) => {
+    const { limit } = this.state
     const featured_products_parameter = {
       latitude: UserLocation.latitude,
-      longitude: UserLocation.longitude
+      longitude: UserLocation.longitude,
+      limit,
+      offset,
     }
-    this.setState({ isLoading: true, isError: false })
+    if (!fetchMore) {
+      this.setState({ isLoading: true, isError: false })
+    }
     Api.request(Routes.dashboardRetrieveFeaturedProducts, featured_products_parameter, response => {
-      console.log({ responseFeaturedProducts: response })
-      if (response.data.length) {
+      if (response.data.length > 0 && response.data[0].length > 0) {
+        const joined = _.uniqBy([...this.state.featured, ...response.data[0]], 'id')
         this.setState({
           isLoading: false,
-          featured: response.data[0]
+          featured: joined,
+          offset
         })        
       } else {
-        this.setState({
-          isLoading: false,
-          featured: []
-        })        
+        this.setState({ isLoading: false })        
       }   
     }, (error) => {
       console.log({ errorFeaturedProducts: error })
@@ -67,6 +73,22 @@ class Featured extends Component {
       })
     })
   }
+
+  onPullRefresh = ({ contentOffset }) => {
+    const { offset, isLoading } = this.state
+    if (contentOffset.y < -30 && !isLoading) {
+      this.retrieve({ offset })
+    }
+  }
+
+  isOnBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+    const { offset, limit, isLoading } = this.state
+    const paddingToBottom = 0;
+    const shouldFetchData = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+    if (shouldFetchData && !isLoading) {
+      this.retrieve({ offset: offset + limit, fetchMore: true })
+    }
+  };
 
   redirect = route => {
     this.props.navigation.navigate(route);
@@ -109,20 +131,9 @@ class Featured extends Component {
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={100}
-          onScroll={(event) => {
-            console.log({ y: event.nativeEvent.contentOffset.y })
-            if (event.nativeEvent.contentOffset.y < -30) {
-              if (isLoading == false) {
-                this.setState({ isLoading: true })
-              }
-            }
-          }}
-          onScrollEndDrag={(event) => {
-            if (event.nativeEvent.contentOffset.y < -30) {
-              this.retrieve()
-            } else {
-              this.setState({ isLoading: false })
-            }
+          onScrollEndDrag={({ nativeEvent }) => {
+            this.isOnBottom(nativeEvent)
+            this.onPullRefresh(nativeEvent)
           }}
         >
           <View

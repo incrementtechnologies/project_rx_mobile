@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   SafeAreaView
 } from 'react-native';
+import _, { join, update } from 'lodash';
 import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import { faArrowCircleRight, faArrowCircleLeft } from '@fortawesome/free-solid-svg-icons';
@@ -28,58 +29,66 @@ class Categories extends Component {
     this.state = {
       isLoading: false,
       isError: false,
+      isFetchingMoreProduct: false,
       categories: [],
       products: [],
-      selected_category: null
+      selected_category: null,
+      limit: 5,
+      offset: 0,
+      productsLimit: 5,
+      productsOffset: 0
     };
   }
 
   componentDidMount() {
-    this.retrieve()
+    this.retrieve({ newOffset: this.state.offset })
   }
 
-  retrieve = () => {
-    console.log('retrieving...')
+  retrieve = ({ newOffset }) => {
+    const { limit, productsLimit } = this.state
     this.setState({ isLoading: true, isError: false })
-
-    Api.request(Routes.dashboardRetrieveCategoryList, {},
+    Api.request(Routes.dashboardRetrieveCategoryList, { limit, offset: newOffset },
     (response) => {
-    
-      const categories = [...response]
-      this.setState({ categories })
-      const parameter = {
-        condition: categories.map(category => {
-          return { 
-            column: 'category',
-            clause: '=',
-            value: category
-          }
-        }),
-        latitude: UserLocation.latitude,
-        longitude: UserLocation.longitude
-      }
-  
-      Api.request(Routes.dashboardRetrieveCategoryProducts, parameter, response => {
-       
-        if (response.data.length) {
-          const data = response.data.map((products, idx) => {
-            return {
-              category: categories[idx].category,
-              data: products
+      const AllCategories = _.uniqBy([...this.state.categories, ...response ], 'category')
+      const newCategories = [...response]
+
+      if (newCategories.length > 0) {
+        this.setState({ categories: AllCategories, offset: newOffset })
+        const parameter = {
+          condition: newCategories.map(category => {
+            return { 
+              column: 'category',
+              clause: '=',
+              value: category
             }
-          })
+          }),
+          latitude: UserLocation.latitude,
+          longitude: UserLocation.longitude,
+          limit: productsLimit,
+          offset: 0,
+        }
+    
+        Api.request(Routes.dashboardRetrieveCategoryProducts, parameter, response => {
+          if (response.data.length) {
+            const data = response.data.map((products, idx) => {
+              return {
+                category: newCategories[idx].category,
+                data: products
+              }
+            })
+            const joinedData = _.uniqBy([...this.state.products, ...data ], 'category')
+            this.setState({ isLoading: false, products: joinedData })
+          }   
+        }, (error) => {
+          console.log({ errorCategoryProducts: error })
           this.setState({
             isLoading: false,
-            products: data
+            isError: true
           })
-        }   
-      }, (error) => {
-        console.log({ errorCategoryProducts: error })
-        this.setState({
-          isLoading: false,
-          isError: true
         })
-      })
+      } else {
+        this.setState({ isLoading: false, isError: true })
+      }
     },
     (error) => {
       console.log({ errorCategoryList: error })
@@ -90,6 +99,82 @@ class Categories extends Component {
       })
     })
   }
+
+  onPullRefreshCategories = ({ contentOffset }) => {
+    const { offset, isLoading } = this.state
+    if (contentOffset.y < -30 && !isLoading) {
+      this.retrieve({ newOffset: offset })
+    }
+  }
+
+  isOnBottomCategories = ({layoutMeasurement, contentOffset, contentSize}) => {
+    const { offset, limit, isLoading } = this.state
+    const paddingToBottom = 0;
+    const shouldFetchData = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+    if (shouldFetchData && !isLoading) {
+      this.retrieve({ newOffset: offset + limit })
+    }
+  };
+
+  retrieveMoreProducts({ newOffset, category }) {
+    const { productsLimit, products } = this.state;
+    const ExistingData = products.find(product => product.category === category)
+
+    const parameter = {
+      condition: [{ 
+        column: 'category',
+        clause: '=',
+        value: category
+      }],
+      latitude: UserLocation.latitude,
+      longitude: UserLocation.longitude,
+      limit: productsLimit,
+      offset: newOffset,
+    }
+
+    this.setState({ isFetchingMoreProduct: true, isError: false })
+    Api.request(Routes.dashboardRetrieveCategoryProducts, parameter, response => {
+      if (response.data.length > 0 && response.data[0].length > 0) {
+        const newProducts = [...response.data[0]]
+        const joinedProducts = _.uniqBy([...ExistingData.data, ...newProducts ], 'id')
+        const categoryIndex = _.findIndex(products, (data) => data.category === category);
+        
+        const updatedData = [...products]
+        updatedData[categoryIndex].data = joinedProducts
+
+        this.setState({
+          isLoading: false,
+          isFetchingMoreProduct: false,
+          products: updatedData,
+          productsOffset: newOffset
+        })
+      } else {
+        this.setState({ isLoading: false, isFetchingMoreProduct: false })
+      }
+    }, (error) => {
+      console.log({ errorViewMoreProducts: error })
+      this.setState({
+        isLoading: false,
+        isError: true,
+      })
+    })
+  }
+
+  onPullRefreshProducts = ({ contentOffset }) => {
+    const { productsOffset, selected_category, isLoading } = this.state
+    if (contentOffset.y < -30 && !isLoading) {
+      this.retrieveMoreProducts({ newOffset: productsOffset, category: selected_category })
+    }
+  }
+
+  isOnBottomProducts = ({layoutMeasurement, contentOffset, contentSize}) => {
+    const { productsOffset, productsLimit, selected_category, isLoading, isFetchingMoreProduct } = this.state
+    const paddingToBottom = -10;
+    const shouldFetchData = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+    if (shouldFetchData && !isLoading && !isFetchingMoreProduct) {
+      this.retrieveMoreProducts({ newOffset: productsOffset + productsLimit, category: selected_category })
+    }
+  };
 
   viewMoreProducts = (category, theme = null) => {
     const { navigate } = this.props.navigation
@@ -121,38 +206,28 @@ class Categories extends Component {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         {isLoading ? <Spinner mode="full" /> : null}
-        <ScrollView
-          ref={ref => this.ScrollViewRef = ref}
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={100}
-          onScroll={(event) => {
-            console.log({ y: event.nativeEvent.contentOffset.y })
-            if (event.nativeEvent.contentOffset.y < -30) {
-              if (isLoading == false) {
-                this.setState({ isLoading: true })
-              }
-            }
-          }}
-          onScrollEndDrag={(event) => {
-            if (event.nativeEvent.contentOffset.y < -30) {
-              this.retrieve()
-            } else {
-              this.setState({ isLoading: false })
-            }
-          }}
-        >
-          <View
-            style={[
-              Style.MainContainer,
-              {
-                minHeight: height,
-                paddingBottom: 150
-              },
-            ]}
-          >
-            {
-              selected_category
-              ? (
+        {
+          selected_category
+          ? (
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                scrollEventThrottle={100}
+                onScroll={({ nativeEvent }) => {
+                  this.isOnBottomProducts(nativeEvent)
+                }}
+                onScrollEndDrag={({ nativeEvent }) => {
+                  this.onPullRefreshProducts(nativeEvent)
+                }}
+              >
+                <View
+                  style={[
+                    Style.MainContainer,
+                    {
+                      minHeight: height,
+                      paddingBottom: 150
+                    },
+                  ]}
+                >
                   <View style={{ width: '100%' }}>
                     <TouchableOpacity onPress={() => this.setState({ selected_category: null })}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
@@ -177,8 +252,29 @@ class Categories extends Component {
                       }
                     </View>
                   </View>
-                )
-              : (
+                </View>
+              </ScrollView>
+            )
+          : (
+              <ScrollView
+                ref={ref => this.ScrollViewRef = ref}
+                showsVerticalScrollIndicator={false}
+                scrollEventThrottle={100}
+                onScrollEndDrag={({ nativeEvent }) => {
+                  this.onPullRefreshCategories(nativeEvent)
+                  this.isOnBottomCategories(nativeEvent)
+                }}
+              >
+                <View
+                  style={[
+                    Style.MainContainer,
+                    {
+                      minHeight: height,
+                      paddingBottom: 150
+                    },
+                  ]}
+                >
+                {
                   products.map((product, idx) => (
                     <View key={idx}>
                       <View style={{ 
@@ -246,16 +342,17 @@ class Categories extends Component {
                       }
                     </View>
                   )) //end products map
-                )
-            }
-            {
-              isError && 
-              <Text style={{ textAlign: 'center', marginTop: 80, fontSize: 12, color: Color.darkGray }}>
-                There is a problem in fetching data. Please try again
-              </Text>
-            }
-          </View>
-        </ScrollView>
+                }
+                </View>
+              </ScrollView>
+            )
+        }
+        {
+          isError && 
+          <Text style={{ textAlign: 'center', marginTop: 80, fontSize: 12, color: Color.darkGray }}>
+            There is a problem in fetching data. Please try again
+          </Text>
+        }
       </SafeAreaView>
     );
   }
