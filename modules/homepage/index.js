@@ -53,9 +53,6 @@ class Homepage extends Component {
             <View style={Style.sliderContainer}>
               <Shops {...this.props}/>
             </View>
-            <View style={Style.sliderContainer}>
-              <Text>Others</Text>
-            </View>
           </Pager>
         </PagerProvider>
       </View>
