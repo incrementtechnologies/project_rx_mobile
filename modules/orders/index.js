@@ -11,31 +11,22 @@ import { Table, Row, Rows } from 'react-native-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBan } from '@fortawesome/free-solid-svg-icons';
 import { Spinner } from 'components';
+import OrderCard from './OrderCard';
 import Api from 'services/api';
 import { Routes, Helper, BasicStyles, Color } from 'common';
 import Style from './Style';
-
-import OrderCard from './OrderCard';
-
-const DATA = [
-  { orderNum: 'JTWKWKRPAQWE', to: 'M28, Nasipit Talamban, Cebu, Cebu City', amount: '₱350.00', status: 'pending' },
-  { orderNum: 'QWEFKELWQ14D', to: 'M28, Nasipit Talamban, Cebu, Cebu City', amount: '₱450.00', status: 'cancelled' },
-  { orderNum: 'XMQQWEJCJRL1', to: 'M28, Nasipit Talamban, Cebu, Cebu City', amount: '₱1650.00', status: 'completed' },
-  { orderNum: 'CJRODL1J46LF', to: 'M28, Nasipit Talamban, Cebu, Cebu City', amount: '₱750.00', status: 'completed' },
-  { orderNum: 'CMQKNRF2KJ23', to: 'M28, Nasipit Talamban, Cebu, Cebu City', amount: '₱655.00', status: 'completed' },
-  { orderNum: '43KJQKXIFJ4L', to: 'M28, Nasipit Talamban, Cebu, Cebu City', amount: '₱253.00', status: 'completed' },
-]
 
 class MyOrders extends Component {
   constructor(props){
     super(props);
     this.state = {
-      isLoading: false
+      isLoading: false,
+      data: []
     }
   }
 
   componentDidMount() {
-    // this.retrieve()
+    this.retrieve()
   }
 
   retrieve = () => {
@@ -48,20 +39,49 @@ class MyOrders extends Component {
       return
     }
 
-    console.log('Retriving user orders')
+    const parameter = {
+      condition: [{
+        column: 'account_id',
+        clause: '=',
+        value: user.id
+      }, {
+        column: 'order_number',
+        clause: '!=',
+        value: null
+      }],
+      sort: {
+        created_at: 'desc'
+      }
+    }
+
+    this.setState({ isLoading: true })
+    Api.request(Routes.ordersRetrieve, parameter, response => {
+      if (response.data.length) {
+        this.setState({ isLoading: false, data: response.data })
+      } else {
+        this.setState({ isLoading: true })
+      }
+    }, error => {
+      console.log({ RetrievingOrdersError: error })
+      this.setState({ isLoading: true })
+    })
   }
 
   render() {
     const { user, theme } = this.props.state
-    console.log({ user })
-    const { isLoading } = this.state
+    const { isLoading, data } = this.state
     return (
       <ScrollView style={Style.ScrollView} showsVerticalScrollIndicator={false}>
-        { isLoading ? <Spinner mode="overlay"/> : null }
         <View style={Style.MainContainer}>
           <View style={[Style.header, { backgroundColor: theme ? theme.primary : Color.primary }]}>
             <Text style={Style.textWhite}>Order History</Text>
           </View>
+          { isLoading
+            ? (<View style={{ marginTop: 50 }}>
+                <Spinner mode="overlay"/> 
+              </View>)
+            : null 
+          }
           {
             user === null ? 
             <View style={Style.notLoggedIn}>
@@ -78,8 +98,8 @@ class MyOrders extends Component {
             :
             <View style={Style.orderHistory}>
               {
-                DATA.map((order, idx) => (
-                  <OrderCard key={idx} data={order} />
+                data.length > 0 && data.map((delivery, idx) => (
+                  <OrderCard key={idx} data={delivery} {...this.props} />
                 ))
               }
             </View>
