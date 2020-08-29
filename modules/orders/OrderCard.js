@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCheckCircle, faTimesCircle, faMinusCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
-import Style from './Style';
 import { Color } from 'common';
+import Style from './Style';
 
 const CompletedIcon = () => <FontAwesomeIcon icon={faCheckCircle} size={30} style={{ color: Color.success}} />
 const PendingIcon = () => <FontAwesomeIcon icon={faMinusCircle} size={30} style={{ color: Color.warning}} />
@@ -11,8 +11,9 @@ const CancelledIcon = () => <FontAwesomeIcon icon={faTimesCircle} size={30} styl
 const DefaultIcon = () => <FontAwesomeIcon icon={faExclamationCircle} size={30} style={{ color: Color.darkGray}} />
 
 class OrderCard extends Component {
-  goToOrderDetails(detail) {
-    Alert.alert(`Order details: ${detail}`)
+  goToOrderDetails(data) {
+    const { navigate } = this.props.navigation
+    navigate('MyOrderDetails', { data })
   }
 
   render() {
@@ -32,13 +33,19 @@ class OrderCard extends Component {
         icon = <DefaultIcon />
         break
     }
+
     return (
-      <TouchableOpacity onPress={() => this.goToOrderDetails(data.status)}>
+      <TouchableOpacity onPress={() => this.goToOrderDetails(data)}>
         <View style={Style.orderCard}>
           <View style={{ flex: 0.8}}>
             <View>
-              <Text style={{ fontWeight: '700' }} numberOfLines={2}>
-                Order Number: {data.orderNum}
+              <Text numberOfLines={2}>
+                <Text style={{ fontWeight: '600' }}>
+                  Order Number: {' '}
+                </Text>
+                <Text>
+                  {data.order_number}
+                </Text>
               </Text>
             </View>
             <View style={{ paddingTop: 10 }}>
@@ -47,20 +54,20 @@ class OrderCard extends Component {
                   Delivery To: {' '}
                 </Text>
                 <Text>
-                  {data.to}
+                  {data.location}
                 </Text>
               </Text>
             </View>
           </View>
           <View style={{ flex: 0.2, alignItems: 'center' }}>
-            <View>
-              <Text style={{ fontWeight: '600' }}>
-                {data.amount}
-              </Text>
-            </View>
             <View style={{ paddingTop: 20 }}>
               <Text>
                 { icon }
+              </Text>
+            </View>
+            <View>
+              <Text>
+                {data.status}
               </Text>
             </View>
           </View>

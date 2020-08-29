@@ -1,0 +1,267 @@
+import React, { Component } from 'react';
+import {
+  ScrollView,
+  View,
+  Text,
+  TouchableOpacity,
+  Alert
+} from 'react-native';
+import { NavigationActions } from 'react-navigation'
+import { connect } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faCheckCircle, faTimesCircle, faMinusCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import { Spinner } from 'components';
+import Api from 'services/api';
+import Currency from 'services/Currency'
+import { Routes, Helper, BasicStyles, Color } from 'common';
+import Style from './Style';
+
+const CompletedIcon = () => <FontAwesomeIcon icon={faCheckCircle} size={15} style={{ color: Color.success}} />
+const PendingIcon = () => <FontAwesomeIcon icon={faMinusCircle} size={15} style={{ color: Color.warning}} />
+const CancelledIcon = () => <FontAwesomeIcon icon={faTimesCircle} size={15} style={{ color: Color.danger}} />
+const DefaultIcon = () => <FontAwesomeIcon icon={faExclamationCircle} size={15} style={{ color: Color.darkGray}} />
+
+class MyOrderDetails extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      isLoading: false,
+      data: []
+    }
+  }
+
+  componentDidMount() {
+  }
+
+  retrieve = () => {
+  }
+
+  render() {
+    const { theme } = this.props.state
+    const { isLoading, data } = this.state
+    const details = this.props.navigation.state?.params?.data
+
+    let icon = null
+    switch (details.status) {
+      case 'completed':
+        icon = <CompletedIcon />
+        break
+      case 'pending':
+        icon = <PendingIcon />
+        break
+      case 'cancelled':
+        icon = <CancelledIcon />
+        break
+      default:
+        icon = <DefaultIcon />
+        break
+    }
+    return (
+      <ScrollView style={Style.ScrollView} showsVerticalScrollIndicator={false}>
+        <View style={Style.myOrderDetailsContainer}>
+          <View style={[Style.header, { backgroundColor: theme ? theme.primary : Color.primary }]}>
+            <Text style={Style.textWhite}>Order Details</Text>
+          </View>
+          { isLoading
+            ? (<View style={{ marginTop: 50 }}>
+                <Spinner mode="overlay"/> 
+              </View>)
+            : null 
+          }
+          <View style={Style.orderDetails}>
+            <View style={Style.detailRow}>
+              <View style={{ alignSelf: 'flex-end', marginBottom: 20 }}>
+                <Text style={{ fontWeight: '600', fontSize: 12 }}>
+                  Date: {' '}
+                  <Text style={{ fontWeight: 'normal' }}>
+                    {details.date}
+                  </Text>
+                </Text>
+              </View>
+            </View>
+            <View style={Style.detailRow}>
+              <View>
+                <Text style={{ fontWeight: '600' }}>
+                  Status: {' '}
+                  <View style={{ marginHorizontal: 2}}>
+                    {icon}
+                  </View>
+                  <Text style={{ fontWeight: 'normal', textTransform: 'uppercase' }}>
+                    {details.status}
+                  </Text>
+                </Text>
+              </View>
+            </View>
+            <View style={Style.detailRow}>
+              <Text>
+                <Text style={{ fontWeight: '600' }}>
+                  Order Number: {' '}
+                </Text>
+                <Text>
+                  {details.order_number}
+                </Text>
+              </Text>
+            </View>
+            <View style={Style.detailRow}>
+              <Text>
+                <Text style={{ fontWeight: '600' }}>
+                  Type: {' '}
+                </Text>
+                <Text style={{ textTransform: 'uppercase' }}>
+                  {details.type}
+                </Text>
+              </Text>
+            </View>
+            <View style={Style.detailRow}>
+              <Text>
+                <Text style={{ fontWeight: '600' }}>
+                  Delivery to: {' '}
+                </Text>
+                <Text>
+                  {details.location}
+                </Text>
+              </Text>
+              <Text style={{ fontSize: 10, color: Color.darkGray, fontStyle: 'italic' }}>
+                (Location based from merchant)
+              </Text>
+            </View>
+            <View style={Style.detailRow}>
+              <Text>
+                <Text style={{ fontWeight: '600' }}>
+                  Recipient: {' '}
+                </Text>
+                <Text>
+                  {details.name}
+                </Text>
+              </Text>
+            </View>
+            <View style={Style.detailRow}>
+              <Text>
+                <Text style={{ fontWeight: '600' }}>
+                  Rider: {' '}
+                </Text>
+                <Text>
+                  {details.assigned_rider}
+                </Text>
+              </Text>
+            </View>
+            <View style={
+              [Style.detailRow,
+              { 
+                borderTopWidth: 1,
+                borderBottomWidth: 1,
+                borderColor: Color.gray,
+                paddingVertical: 10
+              }]
+            }>
+              <Text style={{ marginBottom: 10 }}>
+                <Text style={{ fontWeight: '600' }}>
+                  Payment Status: {' '}
+                </Text>
+                <Text>
+                  {details.payment_status}
+                </Text>
+              </Text>
+              <Text>
+                <Text style={{ fontWeight: '600' }}>
+                  Coupon: {' '}
+                </Text>
+                <Text>
+                  {details.coupon || 'None'}
+                </Text>
+              </Text>
+              <Text>
+                <Text style={{ fontWeight: '600' }}>
+                  Sub total: {' '}
+                </Text>
+                <Text>
+                  {Currency.display(+details.sub_total, 'PHP')}
+                </Text>
+              </Text>
+              <Text>
+                <Text style={{ fontWeight: '600' }}>
+                  Tax: {' '}
+                </Text>
+                <Text>
+                  {Currency.display(+details.tax, 'PHP')}
+                </Text>
+              </Text>
+              <Text>
+                <Text style={{ fontWeight: '600' }}>
+                  Shipping fee: {' '}
+                </Text>
+                <Text>
+                  {Currency.display(+details.shipping_fee, 'PHP')}
+                </Text>
+              </Text>
+              <Text>
+                <Text style={{ fontWeight: '600' }}>
+                  Total: {' '}
+                </Text>
+                <Text>
+                  {Currency.display(+details.total, 'PHP')}
+                </Text>
+              </Text>
+              <Text>
+                <Text style={{ fontWeight: '600' }}>
+                  Tendered amount: {' '}
+                </Text>
+                <Text>
+                  {Currency.display(+details.tendered_amount, 'PHP')}
+                </Text>
+              </Text>
+              <Text style={{ marginTop: 10 }}>
+                <Text style={{ fontWeight: '600' }}>
+                  Change: {' '}
+                </Text>
+                <Text>
+                  {Currency.display(+details.change, 'PHP')}
+                </Text>
+              </Text>
+            </View>
+            <View style={Style.detailRow}>
+              <TouchableOpacity onPress={() => Alert.alert('View items')}>
+                <View style={[
+                  Style.detailsButton,
+                  { backgroundColor: theme ? theme.primary : Color. primary }
+                ]}>
+                  <Text style={{
+                    textAlign: 'center',
+                    color: Color.white,
+                  }}>
+                    View Items
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => Alert.alert('View history')}>
+                <View style={[
+                  Style.detailsButton,
+                  { backgroundColor: theme ? theme.primary : Color. primary }
+                ]}>
+                  <Text style={{
+                    textAlign: 'center',
+                    color: Color.white,
+                  }}>
+                    View History
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+    )
+  }
+}
+
+const mapStateToProps = state => ({state: state});
+
+const mapDispatchToProps = dispatch => {
+  const {actions} = require('@redux');
+  return {};
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(MyOrderDetails);
