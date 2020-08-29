@@ -4,18 +4,72 @@ import {NavigationActions} from 'react-navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faShoppingCart, faMapMarker } from '@fortawesome/free-solid-svg-icons';
 import { faCopy } from '@fortawesome/free-regular-svg-icons';
-import { Color, BasicStyles } from 'common';
-
+import { Color, BasicStyles,Routes } from 'common';
+import Api from 'services/api/index.js'
 const width = Math.round(Dimensions.get('window').width);
 import { connect } from 'react-redux';
 class NavigationDrawerStructureRight extends Component {
   constructor(props){
     super(props);
     this.state = {
-      selected: null
+      selected: null,
+      address:[],
     }
   }
+
+  componentDidMount(){
+    const { user } = this.props.state;
+    console.log("currentprops",this.props.state)
+      this.retrieve()
+      console.log("mount")
+      this.willFocusSubscription = this.props.navigationProps.addListener(
+        'willFocus',
+        () => {
+          this.retrieve()
+          console.log("remount")
+        }
+      );
+  }
+
+  componentWillUnmount(){
+    this.willFocusSubscription.remove()
+  }
+
+  retrieve=()=>
+  {
+    const { user } = this.props.state;
+    if(user != null){
+     const parameter = {
+       condition : [{
+         column: 'account_id',
+         clause: '=',
+         value: this.props.state.user.id
+     }]
+   }
+   this.setState({
+     isLoading: true
+   })
+   console.log(this.props.state.user)
+     Api.request(Routes.locationRetrieve, parameter, response => {
+       this.setState({isLoading: false})
+       console.log('test',response)
+       if(response.data.length > 0){
+         this.setState({address: response.data.find(def=>{return def.id==parseInt(this.props.state.user.account_information.address)})})
+
+       }
+     },error => {
+       console.log(error)
+     });
+   }
+  }
   goTo = (screen) => {
+    if (this.props.state.user == null) {
+      const proceedToLogin = NavigationActions.navigate({
+        routeName: 'loginStack'
+      });
+      this.props.navigationProps.dispatch(proceedToLogin)
+      return
+    }
     this.props.navigationProps.navigate(screen)
   }
 
@@ -34,34 +88,42 @@ class NavigationDrawerStructureRight extends Component {
     return (
       <View style={{
         flexDirection: 'row',
-        width: width - (width * .10)
+        width: width - (width * .10),
+       
       }}>
-
+{/* ********************************************************Address Area Edit Here*************************************************************************************** */}
       <TouchableOpacity
-        onPress={() => this.goTo('selectLocation')}
+        onPress={() => this.goTo('ChangeAddress')}
         style={{
           width: '85%'
         }}>
           <View style={{
             width: '100%',
-            flexDirection: 'row'
+            flexDirection: 'row',
+          
+        
           }}>
             <FontAwesomeIcon icon={ faMapMarker } size={15} style={[BasicStyles.iconStyle, {
                   color: Color.primary
                 }]}/>
             <Text style={{
-              fontSize: 12
-            }}>
-              {this.props.state.user ? console.log(this.props.state):"Lacion"}
+              fontSize: 12,
+              marginRight:30
+            }}
+            numberOfLines={1}>
+              {this.props.state.location ? this.props.state.location.route :this.state.address.route}
             </Text>
           </View>
         </TouchableOpacity>
 
+
+{/* *********************************************************************************************************************************************** */}
+
         <View style={{
-          width: '15%'
+          width: '15%', 
         }}>
           <TouchableOpacity onPress={() => this.goTo('Cart')}>
-            <View style={{ flexDirection: 'row', position: 'relative' }}>
+            <View style={{ flexDirection: 'row' }}>
               <FontAwesomeIcon
                 icon={ faShoppingCart }
                 size={15}
