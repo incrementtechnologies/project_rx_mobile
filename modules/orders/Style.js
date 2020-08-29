@@ -6,7 +6,7 @@ export default {
     flex: 1,
   },
   MainContainer: {
-    flex: 1
+    flex: 1,
   },
   header: {
     width: '100%',
@@ -36,5 +36,39 @@ export default {
     borderColor: Color.gray,
     borderRadius: 10,
     marginBottom: 20
+  },
+  myOrderDetailsContainer: {
+    flex: 1,
+    alignItems: 'center'
+  },
+  orderDetails: {
+    flex: 1,
+    padding: 20,
+    minHeight: 150,
+    width: '90%',
+    marginVertical: 10,
+ 
+    // box-shadow
+    backgroundColor: Color.white,
+    borderRadius: 5,
+    borderColor: '#ddd',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 2,
+  },
+  detailRow: {
+    marginVertical: 5
+  },
+  detailsButton: {
+    padding: 10,
+    marginVertical: 10,
+    minWidth: 100,
+    backgroundColor: Color.primary,
+    borderRadius: 10
   }
 }

@@ -37,9 +37,9 @@ export default {
   dashboardRetrieveFeaturedProducts: apiUrl + 'dashboard/featured',
   dashboardRetrieveCategoryProducts: apiUrl + 'dashboard/category',
   dashboardRetrieveShops: apiUrl + 'dashboard/shops',
-  // checkout
+  // checkout || orders
   checkoutCreate: apiUrl + 'checkouts/create',
-  checkoutRetrieve: apiUrl + 'checkouts/retrieve',
+  ordersRetrieve: apiUrl + 'checkouts/retrieve_orders',
   // notification settings
-  notificationSettingsRetrieve: apiUrl + 'notification_settings/retrieve'
+  notificationSettingsRetrieve: apiUrl + 'notification_settings/retrieve',
 }

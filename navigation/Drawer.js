@@ -19,6 +19,7 @@ import MyAddress from 'modules/myAddresses';
 import Settings from 'modules/settings';
 import Referral from 'modules/referral';
 import MyOrders from 'modules/orders';
+import MyOrderDetails from 'modules/orders/MyOrderDetails';
 import { connect } from 'react-redux';
 
 class MenuDrawerContentStructure extends Component {
@@ -143,6 +144,19 @@ const Homepage_StackNavigator = createStackNavigator({
         backgroundColor: Color.white,
       },
       headerTintColor: '#fff',
+    }),
+  },
+  MyOrderDetails: {
+    screen: MyOrderDetails,
+    navigationOptions: ({ navigation }) => ({
+      headerTintColor: Color.primary,
+      headerBackTitleStyle: {
+        color: '#fff',
+      },
+      headerRight: <OptionRight navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: Color.white,
+      },
     }),
   },
   Profile: {
