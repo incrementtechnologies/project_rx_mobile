@@ -248,7 +248,7 @@ class productCheckout extends Component{
       } 
         :
         {
-          account_id:this.props.state.user.id,
+        account_id:this.props.state.user.id,
         merchant_id:this.state.data[0].merchant_id,
         type:this.state.paymentType,
         payload:"null",
@@ -263,18 +263,11 @@ class productCheckout extends Component{
         shipping_fee:"5",
       }
 
-
-
-
-
-
-
-
       this.setState({ isLoading: true })
       console.log(parameter)
       Api.request(Routes.checkoutCreate,parameter , response => {
         console.log(response)
-        this.setState({ isLoading: false })
+        this.setState({ isLoading: false});
         this.props.navigation.pop()
       }, error => {
         console.log({ error })
