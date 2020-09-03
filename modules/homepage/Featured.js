@@ -41,6 +41,17 @@ class Featured extends Component {
 
   componentDidMount() {
     this.retrieve({ offset: this.state.offset })
+    if(user==null)
+    {
+      Geolocation.getCurrentPosition(info => {
+        console.log(info)
+        this.setState({region:{
+          latitude:info.coords.latitude,
+          longitude:info.coords.longitude
+        }});
+       }) 
+       this.props.setLocation(this.state.region)
+    }
   }
 
   retrieve = ({ offset, fetchMore = false }) => {
@@ -249,7 +260,10 @@ const mapStateToProps = state => ({state: state});
 
 const mapDispatchToProps = dispatch => {
   const {actions} = require('@redux');
-  return {};
+  return {
+    setLocation: (location) => dispatch(actions.setLocation(location)),
+
+  };
 };
 
 export default connect(
