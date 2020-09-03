@@ -21,6 +21,8 @@ const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
 import {faUserCircle,faMapMarker, faUniversity,faKaaba,faFilter,faSearch} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import Geolocation from '@react-native-community/geolocation';
+
 
 // TEST DATA USER LOC. & PROMO
 import { promo, UserLocation } from './data-test';
@@ -41,7 +43,7 @@ class Featured extends Component {
 
   componentDidMount() {
     this.retrieve({ offset: this.state.offset })
-    if(user==null)
+    if(this.props.state.user==null)
     {
       Geolocation.getCurrentPosition(info => {
         console.log(info)
@@ -51,6 +53,7 @@ class Featured extends Component {
         }});
        }) 
        this.props.setLocation(this.state.region)
+       console.log(this.props.state.location)
     }
   }
 
