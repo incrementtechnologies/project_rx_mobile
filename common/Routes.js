@@ -30,6 +30,8 @@ export default {
   cartsRetrieve: apiUrl + 'carts/retrieve',
   cartsDelete: apiUrl + 'carts/delete',
   cartsUpdate: apiUrl + 'carts/update',
+  // coupons
+  couponsRetrieve: apiUrl + 'coupons/retrieve',
   // products
   productsRetrieve: apiUrl + 'products/retrieve_basic',
   // dashboard

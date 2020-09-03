@@ -34,6 +34,8 @@ class Featured extends Component {
       isLoading: false,
       isError: false,
       data: null,
+      coupons: [],
+      region: null,
       searchString:'',
       featured: [],
       limit: 5,
@@ -42,26 +44,31 @@ class Featured extends Component {
   }
 
   componentDidMount() {
-    this.retrieve({ offset: this.state.offset })
     if(this.props.state.user==null)
     {
       Geolocation.getCurrentPosition(info => {
         console.log(info)
-        this.setState({region:{
+        this.setState({ region: {
           latitude:info.coords.latitude,
           longitude:info.coords.longitude
         }});
+        this.retrieve({ offset: this.state.offset })
+       }, error => {
+         console.log({ CurrentPositionError: error })
+         this.retrieve({ offset: this.state.offset })
        }) 
        this.props.setLocation(this.state.region)
        console.log(this.props.state.location)
+    } else {
+      this.retrieve({ offset: this.state.offset })
     }
   }
 
-  retrieve = ({ offset, fetchMore = false }) => {
-    const { limit } = this.state
+  retrieve = ({ offset, fetchMore = false, location = null }) => {
+    const { limit, region } = this.state
     const featured_products_parameter = {
-      latitude: UserLocation.latitude,
-      longitude: UserLocation.longitude,
+      latitude: region ? region.latitude : UserLocation.latitude,
+      longitude: region ? region.longitude : UserLocation.longitude,
       limit,
       offset,
     }
@@ -85,6 +92,14 @@ class Featured extends Component {
         isLoading: false,
         isError: true
       })
+    })
+
+    Api.request(Routes.couponsRetrieve, {}, (response) => {
+      if (response.data.length) {
+        this.setState({ coupons: response.data })
+      }
+    }, (error) => {
+      console.log({ couponsErr: error })
     })
   }
 
@@ -135,7 +150,7 @@ class Featured extends Component {
   }
 
   render() {
-    const { isLoading, data, featured, isError } = this.state;
+    const { isLoading, coupons, featured, isError } = this.state;
     const { theme } = this.props.state
     const { navigate } = this.props.navigation
 
@@ -190,9 +205,19 @@ class Featured extends Component {
             /> */}
 
             {/* Promo Card */}
-            <View style={{ marginVertical: 10 }}>
-              <PromoCard details={promo} theme={theme} />
-            </View>
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+              {
+                coupons.length > 0 ? coupons.map((coupon) => (
+                  <View key={coupon.id} style={{ marginRight: 10, marginVertical: 10 }}>
+                    <PromoCard details={coupon} theme={theme} />
+                  </View>
+                )) : [1, 2, 3, 4, 5].map((id) => (
+                  <View key={id} style={{ marginRight: 10, marginVertical: 10 }}>
+                    <PromoCard theme={theme} skeleton={true} />
+                  </View>
+                ))
+              }
+            </ScrollView>
 
             {/* Filter */}
             <View style={{ alignItems: 'center' }}>
