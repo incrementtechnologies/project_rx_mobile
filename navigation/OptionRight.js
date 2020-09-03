@@ -17,51 +17,51 @@ class NavigationDrawerStructureRight extends Component {
     }
   }
 
-  componentDidMount(){
-    const { user } = this.props.state;
-    console.log("currentprops",this.props.state)
-      this.retrieve()
-      console.log("mount")
-      this.willFocusSubscription = this.props.navigationProps.addListener(
-        'willFocus',
-        () => {
-          this.retrieve()
-          console.log("remount")
-        }
-      );
-  }
+  // componentDidMount(){
+  //   const { user } = this.props.state;
+  //   console.log("currentprops",this.props.state)
+  //     this.retrieve()
+  //     console.log("mount")
+  //     this.willFocusSubscription = this.props.navigationProps.addListener(
+  //       'willFocus',
+  //       () => {
+  //         this.retrieve()
+  //         console.log("remount")
+  //       }
+  //     );
+  // }
 
-  componentWillUnmount(){
-    this.willFocusSubscription.remove()
-  }
+  // componentWillUnmount(){
+  //   this.willFocusSubscription.remove()
+  // }
 
-  retrieve=()=>
-  {
-    const { user } = this.props.state;
-    if(user != null){
-     const parameter = {
-       condition : [{
-         column: 'account_id',
-         clause: '=',
-         value: this.props.state.user.id
-     }]
-   }
-   this.setState({
-     isLoading: true
-   })
-   console.log(this.props.state.user)
-     Api.request(Routes.locationRetrieve, parameter, response => {
-       this.setState({isLoading: false})
-       console.log('test',response)
-       if(response.data.length > 0){
-         this.setState({address: response.data.find(def=>{return def.id==parseInt(this.props.state.user.account_information.address)})})
+  // retrieve=()=>
+  // {
+  //   const { user } = this.props.state;
+  //   if(user != null){
+  //    const parameter = {
+  //      condition : [{
+  //        column: 'account_id',
+  //        clause: '=',
+  //        value: this.props.state.user.id
+  //    }]
+  //  }
+  //  this.setState({
+  //    isLoading: true
+  //  })
+  //  console.log(this.props.state.user)
+  //    Api.request(Routes.locationRetrieve, parameter, response => {
+  //      this.setState({isLoading: false})
+  //      console.log('test',response)
+  //      if(response.data.length > 0){
+  //        this.setState({address: response.data.find(def=>{return def.id==parseInt(this.props.state.user.account_information.address)})})
 
-       }
-     },error => {
-       console.log(error)
-     });
-   }
-  }
+  //      }
+  //    },error => {
+  //      console.log(error)
+  //    });
+  //  }
+  // }
   goTo = (screen) => {
     if (this.props.state.user == null) {
       const proceedToLogin = NavigationActions.navigate({
@@ -111,7 +111,7 @@ class NavigationDrawerStructureRight extends Component {
               marginRight:30
             }}
             numberOfLines={1}>
-              {this.props.state.location ? this.props.state.location.route :this.state.address.route}
+              {this.props.state.location ? this.props.state.location.route : "Current Location"}
             </Text>
           </View>
         </TouchableOpacity>
@@ -119,7 +119,7 @@ class NavigationDrawerStructureRight extends Component {
 
 {/* *********************************************************************************************************************************************** */}
 
-        <View style={{
+      {this.props.state.user ?  <View style={{
           width: '15%', 
         }}>
           <TouchableOpacity onPress={() => this.goTo('Cart')}>
@@ -151,7 +151,7 @@ class NavigationDrawerStructureRight extends Component {
               }
             </View>
           </TouchableOpacity>   
-        </View>
+        </View> : null}
         
       </View>
     );

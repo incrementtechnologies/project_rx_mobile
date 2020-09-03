@@ -115,6 +115,8 @@ class MyAddresses extends Component {
         Api.request(Routes.accountRetrieve, reloadProfile, response => {
           this.setState({isLoading: false})
           const { updateUser } = this.props;
+          console.log(response.data)
+          this.retrieveLocation(index)
           updateUser(response.data[0])
         });
         
@@ -123,6 +125,36 @@ class MyAddresses extends Component {
     }, (error) => {
       console.log(error)
     });
+  }
+
+  retrieveLocation=(index)=>
+  {
+    const { user } = this.props.state;
+    if(user != null){
+     const parameter = {
+       condition : [{
+         column: 'account_id',
+         clause: '=',
+         value: user.id
+     }]
+   }
+   this.setState({
+     isLoading: true
+   })
+   console.log(this.props.state.user)
+   this.setState({isLoading:false})
+     Api.request(Routes.locationRetrieve, parameter, response => {
+       this.setState({isLoading: false})
+       console.log('test',response)
+       if(response.data.length > 0){
+        //  this.setState({address: response.data.find(def=>{return def.id==parseInt(userInfo.account_information.address)})})
+        this.props.setLocation(response.data.find(def=>{return def.id==parseInt(index)}))
+        this.setState({isLoading:true})
+       }
+     },error => {
+       console.log(error)
+     });
+   }
   }
 
   showAddresses=()=>{
@@ -167,6 +199,7 @@ const mapDispatchToProps = dispatch => {
   const {actions} = require('@redux');
   return {
     updateUser: (user) => dispatch(actions.updateUser(user)),
+    setLocation: (location) => dispatch(actions.setLocation(location)),
 
   };
 };
