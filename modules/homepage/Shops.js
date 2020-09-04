@@ -14,11 +14,9 @@ import { Spinner } from 'components';
 import { ShopThumbnail } from 'components';
 import { Routes, Color } from 'common';
 import Api from 'services/api/index.js';
+import GetDeviceLocation from './getDeviceLocation';
 const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
-
-// TEST DATA USER LOC.
-import { UserLocation } from './data-test';
 
 class Shops extends Component {
   constructor(props) {
@@ -39,8 +37,20 @@ class Shops extends Component {
     this.retrieve({ offset: this.state.offset })
   }
 
-  retrieve = ({ offset, fetchMore = false }) => {
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const currentLoc = this.props.state.location
+    const nextLoc = nextProps.state.location
+    const isEqual = _.isEqual(currentLoc, nextLoc)
+    if (!isEqual) {
+      this.setState({ data: [] })
+      this.retrieve({ offset: this.state.offset, changedAddress: nextLoc })
+    }
+  }
+
+  retrieve = async ({ offset, fetchMore = false, changedAddress = null }) => {
     const { limit } = this.state
+    const { user, location } = this.props.state
+
     if (!fetchMore) {
       this.setState({
         isLoading: true,
@@ -50,12 +60,34 @@ class Shops extends Component {
       this.setState({ isFetchingMore: true })
     }
 
+    let latitude = null
+    let longitude = null
+    if (user == null) {
+      const deviceCoords = await GetDeviceLocation()
+      latitude = deviceCoords.latitude
+      longitude = deviceCoords.longitude 
+    } else {
+      if (changedAddress) {
+        latitude = changedAddress.latitude
+        longitude = changedAddress.longitude 
+      } else {
+        if (location) {
+          latitude = location.latitude
+          longitude = location.longitude 
+        } else {
+          const deviceCoords = await GetDeviceLocation()
+          latitude = deviceCoords.latitude
+          longitude = deviceCoords.longitude 
+        }
+      }
+    }
+
     const parameter = {
       limit: limit,
       offset: offset,
       sort: this.state.sort,
-      latitude: UserLocation.latitude,
-      longitude: UserLocation.longitude
+      latitude,
+      longitude
     }
 
     Api.request(Routes.dashboardRetrieveShops, parameter, response => {

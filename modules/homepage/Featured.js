@@ -21,12 +21,8 @@ const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
 import {faUserCircle,faMapMarker, faUniversity,faKaaba,faFilter,faSearch} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import Geolocation from '@react-native-community/geolocation';
+import GetDeviceLocation from './getDeviceLocation';
 
-
-// TEST DATA USER LOC. & PROMO
-import { promo, UserLocation } from './data-test';
-let collectedFilters=['Filipino','City Choices'];
 class Featured extends Component {
   constructor(props) {
     super(props);
@@ -35,7 +31,6 @@ class Featured extends Component {
       isError: false,
       data: null,
       coupons: [],
-      region: null,
       searchString:'',
       featured: [],
       limit: 5,
@@ -44,31 +39,49 @@ class Featured extends Component {
   }
 
   componentDidMount() {
-    if(this.props.state.user==null)
-    {
-      Geolocation.getCurrentPosition(info => {
-        console.log(info)
-        this.setState({ region: {
-          latitude:info.coords.latitude,
-          longitude:info.coords.longitude
-        }});
-        this.retrieve({ offset: this.state.offset })
-       }, error => {
-         console.log({ CurrentPositionError: error })
-         this.retrieve({ offset: this.state.offset })
-       }) 
-       this.props.setLocation(this.state.region)
-       console.log(this.props.state.location)
-    } else {
-      this.retrieve({ offset: this.state.offset })
+    this.retrieve({ offset: this.state.offset })
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const currentLoc = this.props.state.location
+    const nextLoc = nextProps.state.location
+    const isEqual = _.isEqual(currentLoc, nextLoc)
+    if (!isEqual) {
+      this.setState({ featured: [] })
+      this.retrieve({ offset: this.state.offset, changedAddress: nextLoc })
     }
   }
 
-  retrieve = ({ offset, fetchMore = false, location = null }) => {
-    const { limit, region } = this.state
+  retrieve = async ({ offset, fetchMore = false, changedAddress = null }) => {
+    const { limit } = this.state
+    const { user, location } = this.props.state
+
+    let latitude = null
+    let longitude = null
+
+    if (user == null) {
+      const deviceCoords = await GetDeviceLocation()
+      latitude = deviceCoords.latitude
+      longitude = deviceCoords.longitude
+    } else {
+      if (changedAddress) {
+        latitude = changedAddress.latitude
+        longitude = changedAddress.longitude 
+      } else {
+        if (location) {
+          latitude = location.latitude
+          longitude = location.longitude 
+        } else {
+          const deviceCoords = await GetDeviceLocation()
+          latitude = deviceCoords.latitude
+          longitude = deviceCoords.longitude 
+        }
+      }
+    }
+
     const featured_products_parameter = {
-      latitude: region ? region.latitude : UserLocation.latitude,
-      longitude: region ? region.longitude : UserLocation.longitude,
+      latitude,
+      longitude,
       limit,
       offset,
     }
