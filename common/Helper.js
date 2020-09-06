@@ -42,14 +42,16 @@ export default {
     iconStyle: {
       color: Color.primary
     }
-  }, {
-    title: 'Help Center',
-    route: 'HelpCenter',
-    icon: faQuestionCircle,
-    iconStyle: {
-      color: Color.primary
-    }
-  }, {
+  },
+  //  {
+  //   title: 'Help Center',
+  //   route: 'HelpCenter',
+  //   icon: faQuestionCircle,
+  //   iconStyle: {
+  //     color: Color.primary
+  //   }
+  // }, 
+  {
     title: 'Invite Friends',
     route: 'InviteFriends',
     icon: faUsers,
@@ -65,21 +67,23 @@ export default {
       color: Color.primary
     }
   },
-  {
-    title: 'My Orders',
-    route: 'MyOrders',
-    icon: faFile,
-    iconStyle: {
-      color: Color.primary
-    }
-  }, {
-    title: 'Help Center',
-    route: 'HelpCenter',
-    icon: faQuestionCircle,
-    iconStyle: {
-      color: Color.primary
-    }
-  }, {
+  // {
+  //   title: 'My Orders',
+  //   route: 'MyOrders',
+  //   icon: faFile,
+  //   iconStyle: {
+  //     color: Color.primary
+  //   }
+  // }, 
+  // {
+  //   title: 'Help Center',
+  //   route: 'HelpCenter',
+  //   icon: faQuestionCircle,
+  //   iconStyle: {
+  //     color: Color.primary
+  //   }
+  // },
+   {
     title: 'Invite Friends',
     route: 'InviteFriends',
     icon: faUsers,

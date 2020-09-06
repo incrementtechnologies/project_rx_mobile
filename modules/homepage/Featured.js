@@ -21,10 +21,8 @@ const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
 import {faUserCircle,faMapMarker, faUniversity,faKaaba,faFilter,faSearch} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import GetDeviceLocation from './getDeviceLocation';
 
-// TEST DATA USER LOC. & PROMO
-import { promo, UserLocation } from './data-test';
-let collectedFilters=['Filipino','City Choices'];
 class Featured extends Component {
   constructor(props) {
     super(props);
@@ -32,6 +30,7 @@ class Featured extends Component {
       isLoading: false,
       isError: false,
       data: null,
+      coupons: [],
       searchString:'',
       featured: [],
       limit: 5,
@@ -43,11 +42,46 @@ class Featured extends Component {
     this.retrieve({ offset: this.state.offset })
   }
 
-  retrieve = ({ offset, fetchMore = false }) => {
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const currentLoc = this.props.state.location
+    const nextLoc = nextProps.state.location
+    const isEqual = _.isEqual(currentLoc, nextLoc)
+    if (!isEqual) {
+      this.setState({ featured: [] })
+      this.retrieve({ offset: this.state.offset, changedAddress: nextLoc })
+    }
+  }
+
+  retrieve = async ({ offset, fetchMore = false, changedAddress = null }) => {
     const { limit } = this.state
+    const { user, location } = this.props.state
+
+    let latitude = null
+    let longitude = null
+
+    if (user == null) {
+      const deviceCoords = await GetDeviceLocation()
+      latitude = deviceCoords.latitude
+      longitude = deviceCoords.longitude
+    } else {
+      if (changedAddress) {
+        latitude = changedAddress.latitude
+        longitude = changedAddress.longitude 
+      } else {
+        if (location) {
+          latitude = location.latitude
+          longitude = location.longitude 
+        } else {
+          const deviceCoords = await GetDeviceLocation()
+          latitude = deviceCoords.latitude
+          longitude = deviceCoords.longitude 
+        }
+      }
+    }
+
     const featured_products_parameter = {
-      latitude: UserLocation.latitude,
-      longitude: UserLocation.longitude,
+      latitude,
+      longitude,
       limit,
       offset,
     }
@@ -71,6 +105,14 @@ class Featured extends Component {
         isLoading: false,
         isError: true
       })
+    })
+
+    Api.request(Routes.couponsRetrieve, {}, (response) => {
+      if (response.data.length) {
+        this.setState({ coupons: response.data })
+      }
+    }, (error) => {
+      console.log({ couponsErr: error })
     })
   }
 
@@ -121,7 +163,7 @@ class Featured extends Component {
   }
 
   render() {
-    const { isLoading, data, featured, isError } = this.state;
+    const { isLoading, coupons, featured, isError } = this.state;
     const { theme } = this.props.state
     const { navigate } = this.props.navigation
 
@@ -176,9 +218,19 @@ class Featured extends Component {
             /> */}
 
             {/* Promo Card */}
-            <View style={{ marginVertical: 10 }}>
-              <PromoCard details={promo} theme={theme} />
-            </View>
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+              {
+                coupons.length > 0 ? coupons.map((coupon) => (
+                  <View key={coupon.id} style={{ marginRight: 10, marginVertical: 10 }}>
+                    <PromoCard details={coupon} theme={theme} />
+                  </View>
+                )) : [1, 2, 3, 4, 5].map((id) => (
+                  <View key={id} style={{ marginRight: 10, marginVertical: 10 }}>
+                    <PromoCard theme={theme} skeleton={true} />
+                  </View>
+                ))
+              }
+            </ScrollView>
 
             {/* Filter */}
             <View style={{ alignItems: 'center' }}>
@@ -249,7 +301,10 @@ const mapStateToProps = state => ({state: state});
 
 const mapDispatchToProps = dispatch => {
   const {actions} = require('@redux');
-  return {};
+  return {
+    setLocation: (location) => dispatch(actions.setLocation(location)),
+
+  };
 };
 
 export default connect(
