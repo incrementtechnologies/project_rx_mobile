@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   TextInput,
   ColorPropType,
+  Button,
   Text
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -22,6 +23,8 @@ const height = Math.round(Dimensions.get('window').height);
 import {faUserCircle,faMapMarker, faUniversity,faKaaba,faFilter,faSearch} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import Geolocation from '@react-native-community/geolocation';
+import DeviceInfo from 'react-native-device-info';
+
 
 
 // TEST DATA USER LOC. & PROMO
@@ -38,6 +41,8 @@ class Featured extends Component {
       featured: [],
       limit: 5,
       offset: 0,
+      number:1,
+      monitor:null,
     };
   }
 
@@ -55,8 +60,24 @@ class Featured extends Component {
        this.props.setLocation(this.state.region)
        console.log(this.props.state.location)
     }
+  
   }
 
+  getBatteryInfo=()=>
+  {
+    DeviceInfo.getBatteryLevel().then(batteryLevel => {
+      console.log(batteryLevel)
+    });
+  }
+
+  setTimer=()=>
+  {
+    this.setState({monitor:setInterval(()=>{this.getBatteryInfo()},1000)})
+  }
+  clearTimer=()=>
+  {
+    clearInterval(this.state.monitor)
+  }
   retrieve = ({ offset, fetchMore = false }) => {
     const { limit } = this.state
     const featured_products_parameter = {
@@ -158,6 +179,8 @@ class Featured extends Component {
                 paddingBottom: 150
               },
             ]}>
+          <Button title="x" onPress={()=>this.clearTimer()}></Button>
+          <Button title="y" onPress={()=>this.setTimer()}></Button>
 
             {/* Main Feature Product */}
             {/* <TouchableOpacity onPress={() => navigate('Merchant', mainFeaturedProduct)}>
