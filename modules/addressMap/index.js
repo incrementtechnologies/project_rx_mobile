@@ -15,9 +15,11 @@ import MapView, { PROVIDER_GOOGLE, Marker,Callout } from 'react-native-maps';
 const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
 import Geolocation from '@react-native-community/geolocation';
+import Geocoder from 'react-native-geocoding';
 import Drawer from 'react-native-draggable-view'
 import iconClaw from "../../assets/icon_claw.png"
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+
 class SelectLocation extends Component{
   constructor(props){
     super(props);
@@ -42,7 +44,7 @@ class SelectLocation extends Component{
 
   componentDidMount(){
     const { user } = this.props.state;
-   
+    Geocoder.init("AIzaSyAxT8ShiwiI7AUlmRdmDp5Wg_QtaGMpTjg")
     Geolocation.getCurrentPosition(info => {
       console.log(info)
       this.setState({region:{
@@ -87,7 +89,16 @@ class SelectLocation extends Component{
       return;
     }
     console.log("test",regionUpdate)
-    this.setState({ region:regionUpdate, address:'Pinned Location',pinnedLocation:true });
+    this.setState({ region:regionUpdate,pinnedLocation:true})
+    Geocoder.from(regionUpdate.latitude,regionUpdate.longitude)
+		.then(json => {
+        		var addressComponent = json.results[0].formatted_address.split(", ")
+            this.setState({address:addressComponent[0]!="Unnamed Road" ? addressComponent[0] : "Pinned Location",locality:addressComponent[1],area:addressComponent[2],country:addressComponent[3]});
+
+		})
+    .catch(error => console.warn(error));
+    
+    
   }
 
   manageLocation = (location) => {

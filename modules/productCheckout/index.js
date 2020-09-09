@@ -104,12 +104,12 @@ class productCheckout extends Component{
         <View style={Style.locationContainer}>
           <View style={{marginLeft:-10,width:'60%'}}>
             <View style={{flexDirection:'row'}}>
-           <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}>{this.props.state.location ? this.props.state.location.route :this.state.address.route}</Text>
+           <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}>{this.props.state.location ? this.props.state.location.route :this.state.address.route ? this.state.address.route : "Current Location"}</Text>
            <TouchableOpacity onPress={() => this.goTo()}><FontAwesomeIcon style={{paddingRight:10}} icon={faEdit} color={'orange'}/></TouchableOpacity>
            </View>
-           <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}>Block 7 Lot 42</Text>
-           <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}>+63 9143058173</Text>
-           <Text numberOfLines={1}>"Description Here"</Text>
+           <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}></Text>
+           <Text numberOfLines={1} style={{fontSize:14,fontWeight:'bold'}}></Text>
+           <Text numberOfLines={1}></Text>
           </View> 
           
           <MapView
@@ -184,11 +184,12 @@ class productCheckout extends Component{
     var products=[...this.state.data]
     if(products[index].quantity>1)
     {
+      console.log(this.props)
       products[index].quantity-=1 
     }
     else if (products[index].quantity==1)
     {
-      removeProductToCart(products[index])
+    removeProductToCart(products[index])
      products.splice(index,1)
      
     }
@@ -461,6 +462,7 @@ const mapStateToProps = state => ({ state: state });
 const mapDispatchToProps = dispatch => {
   const { actions } = require('@redux');
   return {
+    removeProductToCart: (products) => dispatch(actions.removeProductToCart(products)),
 
   };
 };

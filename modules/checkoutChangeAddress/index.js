@@ -63,9 +63,6 @@ class ChangeAddress extends Component {
       if(response.data.length > 0){
         this.setState({data: response.data})
         console.log(response.data)
-      }else{
-      
-        this.setState({data: null})
       }
     },error => {
       console.log(error)
@@ -80,7 +77,7 @@ class ChangeAddress extends Component {
 
   changeAddress=(index)=>
   {
-    const addresses=this.state.data;
+    let addresses=this.state.data;
     const pickedLocation=addresses.find(address => {
       return address.id===index
     })
@@ -90,7 +87,7 @@ class ChangeAddress extends Component {
     this.props.navigation.pop()
   }
   showAddresses=()=>{
-    const addresses=this.state.data
+    let addresses=this.state.data
     return(
       <View style={{flex:1}}>
       {addresses.map((address,index)=>(<AddressCard index={index} current={this.state.value} keys={address.id} details={address} pickAddress={()=>{this.changeAddress(address.id)}} />))}

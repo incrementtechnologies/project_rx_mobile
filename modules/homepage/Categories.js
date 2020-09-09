@@ -181,9 +181,9 @@ class Categories extends Component {
     const _category = this.state.products.find(product => product.category === category)
     if (_category.data.length) {
       return (
-        _category.data.map(details => (
+        _category.data.map((details, idx) => (
           <TouchableOpacity
-            key={details.id}
+            key={idx}
             onPress={() => navigate('Merchant', { merchant_id: details.merchant_id })}
           >
           <MainCard details={details} theme={theme} />
@@ -320,10 +320,10 @@ class Categories extends Component {
                             <View style={{ height: 180 }}>
                               <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                                 { 
-                                  product.data.map(details => {
+                                  product.data.map((details, idx) => {
                                     return (
                                       <TouchableOpacity
-                                        key={details.id}
+                                        key={idx}
                                         onPress={() => navigate('Merchant', { merchant_id: details.merchant_id })}
                                       >
                                         <Card details={details} theme={theme}/>

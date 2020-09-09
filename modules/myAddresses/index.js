@@ -187,9 +187,9 @@ class MyAddresses extends Component {
     const {isLoading, data} = this.state;
     const {user} = this.props.state;
     return (
-     <View style={{flex:1}}>
+     <ScrollView style={{flex:1}}>
        {this.showAddresses()}
-     </View>
+     </ScrollView>
     );
   }
 }
