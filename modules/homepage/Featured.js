@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   TextInput,
   ColorPropType,
+  Button,
   Text
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -35,6 +36,8 @@ class Featured extends Component {
       featured: [],
       limit: 5,
       offset: 0,
+      number:1,
+      monitor:null,
     };
   }
 
@@ -50,6 +53,7 @@ class Featured extends Component {
       this.setState({ featured: [] })
       this.retrieve({ offset: this.state.offset, changedAddress: nextLoc })
     }
+  
   }
 
   retrieve = async ({ offset, fetchMore = false, changedAddress = null }) => {
@@ -186,7 +190,6 @@ class Featured extends Component {
                 paddingBottom: 150
               },
             ]}>
-
             {/* Main Feature Product */}
             {/* <TouchableOpacity onPress={() => navigate('Merchant', mainFeaturedProduct)}>
               <MainFeature details={mainFeaturedProduct} />
