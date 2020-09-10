@@ -34,7 +34,7 @@ class Featured extends Component {
       coupons: [],
       searchString:'',
       featured: [],
-      limit: 5,
+      limit: 10,
       offset: 0,
       number:1,
       monitor:null,
@@ -50,10 +50,9 @@ class Featured extends Component {
     const nextLoc = nextProps.state.location
     const isEqual = _.isEqual(currentLoc, nextLoc)
     if (!isEqual) {
-      this.setState({ featured: [] })
-      this.retrieve({ offset: this.state.offset, changedAddress: nextLoc })
+      this.setState({ featured: [], offset: 0 })
+      this.retrieve({ offset: 0, changedAddress: nextLoc })
     }
-  
   }
 
   retrieve = async ({ offset, fetchMore = false, changedAddress = null }) => {
@@ -104,7 +103,7 @@ class Featured extends Component {
         this.setState({ isLoading: false })        
       }   
     }, (error) => {
-      console.log({ errorFeaturedProducts: error })
+      console.error({ errorFeaturedProducts: error })
       this.setState({
         isLoading: false,
         isError: true
@@ -116,7 +115,7 @@ class Featured extends Component {
         this.setState({ coupons: response.data })
       }
     }, (error) => {
-      console.log({ couponsErr: error })
+      console.error({ couponsErr: error })
     })
   }
 
@@ -221,7 +220,7 @@ class Featured extends Component {
             /> */}
 
             {/* Promo Card */}
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ maxHeight: 90 }}>
               {
                 coupons.length > 0 ? coupons.map((coupon) => (
                   <View key={coupon.id} style={{ marginRight: 10, marginVertical: 10 }}>
@@ -235,58 +234,68 @@ class Featured extends Component {
               }
             </ScrollView>
 
-            {/* Filter */}
-            <View style={{ alignItems: 'center' }}>
-              <View 
-                style={{
-                  width: '98%',
-                  flexDirection:'row',
-                  justifyContent:'space-between',
-                  // box-shadow
-                  backgroundColor: Color.white,
-                  borderRadius: 5,
-                  borderColor: '#ddd',
-                  shadowColor: "#000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.23,
-                  shadowRadius: 2.62,
-                  elevation: 2,
-                }}
-              >
-                <View style={{padding:14,width:'15%'}}>
-                  <FontAwesomeIcon style={Style.searchIcon} size={23} icon={faSearch} color={Color.primary}/>
-                </View>
-                <TextInput
-                  style={{width:'70%'}}
-                  placeholder="Search for Shops"
-                  onChangeText={(searchString) => {this.setState({searchString})}}
-                />
-                <TouchableOpacity style={{padding:14,width:'15%'}} onPress={()=>this.filterRedirect()}>
-                  <FontAwesomeIcon style={Style.searchIcon} size={23} icon={faFilter} color={Color.primary}/>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View style={{ alignItems: 'center' }}>
-              {/* width: 98% !important */}
-              <View style={{ width: '98%' }}>
-                {
-                  featured.length > 0 && this.searchedString(featured).map((product) => {
-                    return (
-                      <TouchableOpacity
-                        key={product.id}
-                        onPress={() => navigate('Merchant', product)}
-                      >
-                        <MainCard key={product.id} details={product} theme={theme} />
+            {
+              featured.length > 0 ? (
+                <>
+                  <View style={{ alignItems: 'center' }}>
+                    <View 
+                      style={{
+                        width: '98%',
+                        flexDirection:'row',
+                        justifyContent:'space-between',
+                        // box-shadow
+                        backgroundColor: Color.white,
+                        borderRadius: 5,
+                        borderColor: '#ddd',
+                        shadowColor: "#000",
+                        shadowOffset: {
+                          width: 0,
+                          height: 2,
+                        },
+                        shadowOpacity: 0.23,
+                        shadowRadius: 2.62,
+                        elevation: 2,
+                      }}
+                    >
+                      <View style={{padding:14,width:'15%'}}>
+                        <FontAwesomeIcon style={Style.searchIcon} size={23} icon={faSearch} color={Color.primary}/>
+                      </View>
+                      <TextInput
+                        style={{width:'70%'}}
+                        placeholder="Search for Shops"
+                        onChangeText={(searchString) => {this.setState({searchString})}}
+                      />
+                      <TouchableOpacity style={{padding:14,width:'15%'}} onPress={()=>this.filterRedirect()}>
+                        <FontAwesomeIcon style={Style.searchIcon} size={23} icon={faFilter} color={Color.primary}/>
                       </TouchableOpacity>
-                    )
-                  })
-                }
-              </View>
-            </View>
+                    </View>
+                  </View>
+
+                  <View style={{ alignItems: 'center' }}>
+                    {/* width: 98% !important */}
+                    <View style={{ width: '98%' }}>
+                      {
+                        featured.length > 0 && this.searchedString(featured).map((product) => {
+                          return (
+                            <TouchableOpacity
+                              key={product.id}
+                              onPress={() => navigate('Merchant', product)}
+                            >
+                              <MainCard key={product.id} details={product} theme={theme} />
+                            </TouchableOpacity>
+                          )
+                        })
+                      }
+                    </View>
+                  </View>
+                </>
+              ) : isLoading === false ? (
+                <View style={{ alignItems: 'center', marginTop: '40%' }}>
+                  <Text>Looks like there are no featured products available in your area.</Text>
+                </View>
+              ) : null
+            }
+
             {
               isError && 
               <Text style={{ textAlign: 'center', marginTop: 80, fontSize: 12, color: Color.darkGray }}>

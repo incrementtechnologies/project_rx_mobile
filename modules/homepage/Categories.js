@@ -33,7 +33,7 @@ class Categories extends Component {
       categories: [],
       products: [],
       selected_category: null,
-      limit: 5,
+      limit: 10,
       offset: 0,
       productsLimit: 5,
       productsOffset: 0
@@ -80,7 +80,7 @@ class Categories extends Component {
             this.setState({ isLoading: false, products: joinedData })
           }   
         }, (error) => {
-          console.log({ errorCategoryProducts: error })
+          console.error({ errorCategoryProducts: error })
           this.setState({
             isLoading: false,
             isError: true
@@ -91,7 +91,7 @@ class Categories extends Component {
       }
     },
     (error) => {
-      console.log({ errorCategoryList: error })
+      console.error({ errorCategoryList: error })
       this.setState({
         categories: [],
         isLoading: false,
@@ -152,7 +152,7 @@ class Categories extends Component {
         this.setState({ isLoading: false, isFetchingMoreProduct: false })
       }
     }, (error) => {
-      console.log({ errorViewMoreProducts: error })
+      console.error({ errorViewMoreProducts: error })
       this.setState({
         isLoading: false,
         isError: true,
