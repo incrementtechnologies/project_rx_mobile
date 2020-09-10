@@ -139,6 +139,10 @@ class SelectLocation extends Component{
     console.log(parameter)
 
     Api.request(Routes.locationCreate, parameter, response => {
+      // if(user.account_information.address==null)
+      // {
+      //   this.validate(response.data)
+      // }
       console.log(response)
     }, error => {
       console.log(error)
@@ -147,6 +151,43 @@ class SelectLocation extends Component{
     this.props.navigation.pop()
 
   }
+
+  // validate = (index) => {
+  //   const { user } = this.props.state;
+  //   if(user === null){
+  //     return
+  //   }
+  //   let parameter = {
+  //     id: user.account_information.account_id,
+  //     account_id: user.id,
+  //     address: index,
+  //   }
+  //   let reloadProfile={
+  //     condition: [{
+  //       value: user.id,
+  //       clause: '=',
+  //       column: 'id'
+  //     }]
+  //   }
+  //   this.setState({isLoading: true})
+  //   Api.request(Routes.accountInformationUpdate, parameter, response => {
+  //     this.setState({isLoading: false})
+  //     if(response.data!=null)
+  //     {
+  //       Api.request(Routes.accountRetrieve, reloadProfile, response => {
+  //         this.setState({isLoading: false})
+  //         const { updateUser } = this.props;
+  //         console.log(response.data)
+  //         updateUser(response.data[0])
+  //       });
+        
+  //     }
+ 
+  //   }, (error) => {
+  //     console.log(error)
+  //   });
+  // }
+
   onFinish = () => {
     if(this.state.address==null)
     {
@@ -346,6 +387,10 @@ const mapStateToProps = state => ({ state: state });
 const mapDispatchToProps = dispatch => {
   const { actions } = require('@redux');
   return {
+    // updateUser: (user) => dispatch(actions.updateUser(user)),
+    // setLocation: (location) => dispatch(actions.setLocation(location)),
+
+
   };
 };
 

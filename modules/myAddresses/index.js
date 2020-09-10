@@ -60,6 +60,10 @@ class MyAddresses extends Component {
       this.setState({isLoading: false})
       console.log('test',response)
       if(response.data.length > 0){
+        if(user.account_information.address==null)
+        {
+          this.validate(response.data[0].id)
+        }
         this.setState({data: response.data})
         console.log(response.data)
       }
