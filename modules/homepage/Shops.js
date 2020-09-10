@@ -27,7 +27,7 @@ class Shops extends Component {
       isEnd: false,
       isFetchingMore: false,
       data: [],
-      limit: 5,
+      limit: 10,
       offset: 0,
       sort: 'name'
     };
@@ -42,8 +42,8 @@ class Shops extends Component {
     const nextLoc = nextProps.state.location
     const isEqual = _.isEqual(currentLoc, nextLoc)
     if (!isEqual) {
-      this.setState({ data: [] })
-      this.retrieve({ offset: this.state.offset, changedAddress: nextLoc })
+      this.setState({ data: [], offset: 0 })
+      this.retrieve({ offset: 0, changedAddress: nextLoc })
     }
   }
 
@@ -107,7 +107,7 @@ class Shops extends Component {
         })
       }
     }, (error) => {
-      console.log({ errorShops: error })
+      console.error({ errorShops: error })
       this.setState({
         isLoading: false,
         isError: true,
