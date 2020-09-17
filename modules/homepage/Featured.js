@@ -29,6 +29,7 @@ class Featured extends Component {
     super(props);
     this.state = {
       isLoading: false,
+      isLoadingCoupons: false,
       isError: false,
       data: null,
       coupons: [],
@@ -89,7 +90,7 @@ class Featured extends Component {
       offset,
     }
     if (!fetchMore) {
-      this.setState({ isLoading: true, isError: false })
+      this.setState({ isLoading: true, isLoadingCoupons: true, isError: false })
     }
     Api.request(Routes.dashboardRetrieveFeaturedProducts, featured_products_parameter, response => {
       if (response.data.length > 0 && response.data[0].length > 0) {
@@ -103,7 +104,7 @@ class Featured extends Component {
         this.setState({ isLoading: false })        
       }   
     }, (error) => {
-      console.error({ errorFeaturedProducts: error })
+      console.log({ errorFeaturedProducts: error })
       this.setState({
         isLoading: false,
         isError: true
@@ -112,10 +113,13 @@ class Featured extends Component {
 
     Api.request(Routes.couponsRetrieve, {}, (response) => {
       if (response.data.length) {
-        this.setState({ coupons: response.data })
+        this.setState({ coupons: response.data, isLoadingCoupons: false })
+      } else {
+        this.setState({ isLoadingCoupons: false })
       }
     }, (error) => {
-      console.error({ couponsErr: error })
+      console.log({ couponsErr: error })
+      this.setState({ isLoadingCoupons: false })
     })
   }
 
@@ -178,10 +182,15 @@ class Featured extends Component {
   }
 
   render() {
-    const { isLoading, coupons, featured, isError } = this.state;
+    const {
+      isLoading,
+      isLoadingCoupons,
+      coupons,
+      featured,
+      isError,
+    } = this.state;
     const { theme } = this.props.state
     const { navigate } = this.props.navigation
-
     return (
       <SafeAreaView style={{ flex: 1 }}>
         {isLoading ? <Spinner mode="full" /> : null}
@@ -234,15 +243,19 @@ class Featured extends Component {
             {/* Promo Card */}
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ maxHeight: 90 }}>
               {
-                coupons.length > 0 ? coupons.map((coupon) => (
-                  <View key={coupon.id} style={{ marginRight: 10, marginVertical: 10 }}>
-                    <PromoCard details={coupon} theme={theme} />
-                  </View>
-                )) : [1, 2, 3, 4, 5].map((id) => (
-                  <View key={id} style={{ marginRight: 10, marginVertical: 10 }}>
-                    <PromoCard theme={theme} skeleton={true} />
-                  </View>
-                ))
+                isLoadingCoupons ? (
+                  [1, 2, 3, 4, 5].map((id) => (
+                    <View key={id} style={{ marginRight: 10, marginVertical: 10 }}>
+                      <PromoCard theme={theme} skeleton={true} />
+                    </View>
+                  ))
+                ) : (
+                  coupons.length > 0 && coupons.map((coupon) => (
+                    <View key={coupon.id} style={{ marginRight: 10, marginVertical: 10 }}>
+                      <PromoCard details={coupon} theme={theme} />
+                    </View>
+                  ))
+                )
               }
             </ScrollView>
 
