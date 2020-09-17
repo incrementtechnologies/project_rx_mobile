@@ -94,6 +94,7 @@ class Featured extends Component {
     Api.request(Routes.dashboardRetrieveFeaturedProducts, featured_products_parameter, response => {
       if (response.data.length > 0 && response.data[0].length > 0) {
         const joined = _.uniqBy([...this.state.featured, ...response.data[0]], 'id')
+        console.log(response.data)
         this.setState({
           isLoading: false,
           featured: joined,
@@ -158,7 +159,7 @@ class Featured extends Component {
         return true
       }
       return filters.some(tag => {
-        return product.tags.includes(tag)})
+        return product.category.includes(tag)})
       }
     )
 
