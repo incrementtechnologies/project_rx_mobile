@@ -80,7 +80,7 @@ class Categories extends Component {
             this.setState({ isLoading: false, products: joinedData })
           }   
         }, (error) => {
-          console.error({ errorCategoryProducts: error })
+          console.log({ errorCategoryProducts: error })
           this.setState({
             isLoading: false,
             isError: true
@@ -91,9 +91,10 @@ class Categories extends Component {
       }
     },
     (error) => {
-      console.error({ errorCategoryList: error })
+      console.log({ errorCategoryList: error })
       this.setState({
         categories: [],
+        products: [],
         isLoading: false,
         isError: true
       })
@@ -207,6 +208,12 @@ class Categories extends Component {
       <SafeAreaView style={{ flex: 1 }}>
         {isLoading ? <Spinner mode="full" /> : null}
         {
+          isError && 
+          <Text style={{ textAlign: 'center', marginTop: 80, fontSize: 12, color: Color.darkGray }}>
+            There is a problem in fetching data. Please try again
+          </Text>
+        }
+        {
           selected_category
           ? (
               <ScrollView
@@ -275,7 +282,7 @@ class Categories extends Component {
                   ]}
                 >
                 {
-                  products.map((product, idx) => (
+                  products.length > 0 && products.map((product, idx) => (
                     <View key={idx}>
                       <View style={{ 
                           flexDirection: 'row',
@@ -346,12 +353,6 @@ class Categories extends Component {
                 </View>
               </ScrollView>
             )
-        }
-        {
-          isError && 
-          <Text style={{ textAlign: 'center', marginTop: 80, fontSize: 12, color: Color.darkGray }}>
-            There is a problem in fetching data. Please try again
-          </Text>
         }
       </SafeAreaView>
     );

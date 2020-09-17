@@ -107,7 +107,7 @@ class Shops extends Component {
         })
       }
     }, (error) => {
-      console.error({ errorShops: error })
+      console.log({ errorShops: error })
       this.setState({
         isLoading: false,
         isError: true,
