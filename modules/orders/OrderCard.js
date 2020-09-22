@@ -65,11 +65,6 @@ class OrderCard extends Component {
                 { icon }
               </Text>
             </View>
-            <View>
-              <Text>
-                {data.status}
-              </Text>
-            </View>
           </View>
         </View>
       </TouchableOpacity>

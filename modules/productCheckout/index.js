@@ -246,6 +246,10 @@ class productCheckout extends Component{
         currency:"PHP",
         location_id:this.props.state.location?this.props.state.location.id : this.state.address.id,
         shipping_fee:"5",
+        latFrom:this.props.state.location.latitude,
+        longFrom:this.props.state.location.longitude,
+        latTo:this.props.state.location.latitude,
+        longTo:this.props.state.location.longitude,
       } 
         :
         {
@@ -262,6 +266,11 @@ class productCheckout extends Component{
         currency:"PHP",
         location_id:this.props.state.location?this.props.state.location.id : this.state.address.id,
         shipping_fee:"5",
+        latFrom:this.props.state.location.latitude,
+        longFrom:this.props.state.location.longitude,
+        latTo:this.props.state.location.latitude,
+        longTo:this.props.state.location.longitude,
+        tendered_amount:this.state.amount_tendered,
       }
 
       this.setState({ isLoading: true })

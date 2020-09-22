@@ -2,18 +2,16 @@ import React, { Component } from 'react';
 import {
   ScrollView,
   View,
-  Text,
-  Button
+  Text
 } from 'react-native';
 import { NavigationActions } from 'react-navigation'
 import { connect } from 'react-redux';
-import { Table, Row, Rows } from 'react-native-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBan } from '@fortawesome/free-solid-svg-icons';
 import { Spinner } from 'components';
 import OrderCard from './OrderCard';
 import Api from 'services/api';
-import { Routes, Helper, BasicStyles, Color } from 'common';
+import { Routes, Color } from 'common';
 import Style from './Style';
 
 class MyOrders extends Component {
@@ -59,17 +57,19 @@ class MyOrders extends Component {
       if (response.data.length) {
         this.setState({ isLoading: false, data: response.data })
       } else {
-        this.setState({ isLoading: true })
+        this.setState({ isLoading: false })
       }
     }, error => {
-      console.log({ RetrievingOrdersError: error })
-      this.setState({ isLoading: true })
+      console.error({ RetrievingOrdersError: error })
+      this.setState({ isLoading: false })
     })
   }
 
   render() {
     const { user, theme } = this.props.state
     const { isLoading, data } = this.state
+    const { navigate } = this.props.navigation
+
     return (
       <ScrollView style={Style.ScrollView} showsVerticalScrollIndicator={false}>
         <View style={Style.MainContainer}>
@@ -98,9 +98,21 @@ class MyOrders extends Component {
             :
             <View style={Style.orderHistory}>
               {
-                data.length > 0 && data.map((delivery, idx) => (
+                data.length > 0 ? data.map((delivery, idx) => (
                   <OrderCard key={idx} data={delivery} {...this.props} />
-                ))
+                )) : isLoading === false && (
+                  <View style={{ marginTop: '20%', alignItems: 'center' }}>
+                    <Text>Looks like you don't have any orders yet</Text>
+                    <Text>What are you waiting for? {''}
+                      <Text
+                        onPress={() => navigate('Homepage')}
+                        style={{ color: Color.primary, fontWeight: 'bold' }}
+                      >
+                        Order now!
+                      </Text>
+                    </Text>
+                  </View>
+                )
               }
             </View>
           }

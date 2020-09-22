@@ -166,6 +166,18 @@ class Featured extends Component {
     return(filtered)
   }
 
+  changeAddress = () => {
+    const { user } = this.props.state
+    const { navigate } = this.props.navigation
+
+    if (!user) {
+      navigate('loginStack')
+      return
+    }
+
+    navigate('ChangeAddress')
+  }
+
   render() {
     const { isLoading, coupons, featured, isError } = this.state;
     const { theme } = this.props.state
@@ -292,7 +304,15 @@ class Featured extends Component {
                 </>
               ) : isLoading === false ? (
                 <View style={{ alignItems: 'center', marginTop: '40%' }}>
-                  <Text>Looks like there are no featured products available in your area.</Text>
+                  <Text>
+                    Looks like there are no featured products available in your area. {''}
+                    <Text
+                      onPress={() => this.changeAddress()}
+                      style={{ color: Color.primary, fontWeight: 'bold' }}
+                    >
+                      You can set your location here!
+                    </Text>
+                  </Text>
                 </View>
               ) : null
             }

@@ -45,10 +45,10 @@ class Privacy extends Component {
        <Text>We take your privacy very seriously. Any personal information you submit to us when setting up an account shall be subject to our Privacy and Cookie Policies which are incorporated into these Terms. You understand that through your use of the Services, you consent to the collection and use (to the extent stated in the Privacy and Cookie Policies) of this information. You further understand, acknowledge and agree that any personal information you provide on your Profile is in the public domain and is provided at your sole liability. We accept no responsibility whatsoever for the use of any personal information you share on your Profile by you or any other individual.</Text>
       </View>
     <Collapse style={{backgroundColor:Color.white}}>
-      <CollapseHeader>
-      <Separator bordered style={{height:50,flexDirection:'row',justifyContent:'space-between',marginRight:15}}>
+      <CollapseHeader ds>
+      <Separator bordered style={{height:70,flexDirection:'row',justifyContent:'space-between',marginRight:15,width:"100%"}}>
        <Text style={{fontWeight:'bold'}}>WHAT INFORMATION DO WE COLLECT ABOUT YOU?</Text>
-       <FontAwesomeIcon icon={faChevronDown}/>
+       <FontAwesomeIcon style={{position:'absolute',right:15,top:15}} icon={faChevronDown}/>
         </Separator>
       </CollapseHeader>
       <CollapseBody>
@@ -60,9 +60,9 @@ class Privacy extends Component {
 
     <Collapse>
       <CollapseHeader>
-      <Separator bordered style={{height:70,flexDirection:'row',justifyContent:'space-between'}}>
+      <Separator bordered style={{height:70,flexDirection:'row',justifyContent:'space-between',width:"100%"}}>
         <Text style={{fontWeight:'bold'}}>{`PERSONAL INFORMATION YOU\nPROVIDE DIRECTLY TO US:`}</Text>
-        <FontAwesomeIcon style={{marginLeft:50,paddingLeft:50}} icon={faChevronDown}/>
+        <FontAwesomeIcon style={{position:'absolute',right:15,top:15}} icon={faChevronDown}/>
         </Separator>
       </CollapseHeader>
       <CollapseBody>
@@ -78,9 +78,9 @@ class Privacy extends Component {
     
     <Collapse>
       <CollapseHeader>
-      <Separator bordered style={{height:70,flexDirection:'row',justifyContent:'space-between',marginRight:15}}>
+      <Separator bordered style={{height:70,flexDirection:'row',justifyContent:'space-between',marginRight:15,width:"100%"}}>
         <Text style={{fontWeight:'bold'}}>{`NON-PERSONAL INFORMATION COLLECTED\nUSING TECHNOLOGY:`}</Text>
-        <FontAwesomeIcon icon={faChevronDown}/>
+        <FontAwesomeIcon style={{position:'absolute',right:15,top:15}} icon={faChevronDown}/>
         </Separator>
       </CollapseHeader>
       <CollapseBody>
@@ -110,9 +110,9 @@ A “cookie” is a small text file stored on your computer or other device when
     
     <Collapse>
       <CollapseHeader>
-      <Separator bordered style={{height:50,flexDirection:'row',justifyContent:'space-between',marginRight:15}}>
+      <Separator bordered style={{height:70,flexDirection:'row',justifyContent:'space-between',marginRight:15,width:"100%"}}>
         <Text style={{fontWeight:'bold',fontSize:13}}>SHARING YOUR PERSONAL DATA WITH THIRD PARTIES</Text>
-        <FontAwesomeIcon icon={faChevronDown}/>
+        <FontAwesomeIcon style={{position:'absolute',right:15,top:15}} icon={faChevronDown}/>
         </Separator>
       </CollapseHeader>
       <CollapseBody>
@@ -151,9 +151,9 @@ Please note that some of these rights are not absolute. In some cases, we may re
 
     <Collapse>
       <CollapseHeader>
-      <Separator bordered style={{height:50,flexDirection:'row',justifyContent:'space-between',marginRight:15}}>
+      <Separator bordered style={{height:50,flexDirection:'row',justifyContent:'space-between',marginRight:15,width:"100%"}}>
         <Text style={{fontWeight:'bold'}}>THIRD PARTY WEBSITES AND LINKS</Text>
-        <FontAwesomeIcon icon={faChevronDown}/>
+        <FontAwesomeIcon style={{position:'absolute',right:15,top:15}} icon={faChevronDown}/>
         </Separator>
       </CollapseHeader>
       <CollapseBody>
@@ -165,9 +165,9 @@ Please note that some of these rights are not absolute. In some cases, we may re
 
     <Collapse>
       <CollapseHeader>
-      <Separator bordered style={{height:50,flexDirection:'row',justifyContent:'space-between',marginRight:15}}>
+      <Separator bordered style={{height:50,flexDirection:'row',justifyContent:'space-between',marginRight:15,width:"100%"}}>
         <Text style={{fontWeight:'bold'}}>LINKS</Text>
-        <FontAwesomeIcon icon={faChevronDown}/>
+        <FontAwesomeIcon style={{position:'absolute',right:15,top:15}} icon={faChevronDown}/>
         </Separator>
       </CollapseHeader>
       <CollapseBody>
@@ -179,9 +179,9 @@ Please note that some of these rights are not absolute. In some cases, we may re
 
     <Collapse>
       <CollapseHeader>
-      <Separator bordered style={{height:50,flexDirection:'row',justifyContent:'space-between',marginRight:15}}>
+      <Separator bordered style={{height:50,flexDirection:'row',justifyContent:'space-between',marginRight:15,width:"100%"}}>
         <Text style={{fontWeight:'bold'}}>INFORMATION SECURITY</Text>
-        <FontAwesomeIcon icon={faChevronDown}/>
+        <FontAwesomeIcon style={{position:'absolute',right:15,top:15}} icon={faChevronDown}/>
         </Separator>
       </CollapseHeader>
       <CollapseBody>
@@ -193,9 +193,9 @@ Please note that some of these rights are not absolute. In some cases, we may re
 
     <Collapse>
       <CollapseHeader>
-      <Separator bordered style={{height:50,flexDirection:'row',justifyContent:'space-between',marginRight:15}}>
+      <Separator bordered style={{height:50,flexDirection:'row',justifyContent:'space-between',marginRight:15,width:"100%"}}>
         <Text style={{fontWeight:'bold'}}>DO NOT TRACK</Text>
-        <FontAwesomeIcon icon={faChevronDown}/>
+        <FontAwesomeIcon style={{position:'absolute',right:15,top:15}} icon={faChevronDown}/>
         </Separator>
       </CollapseHeader>
       <CollapseBody>
@@ -207,9 +207,9 @@ Please note that some of these rights are not absolute. In some cases, we may re
 
     <Collapse>
       <CollapseHeader>
-      <Separator bordered style={{height:50,flexDirection:'row',justifyContent:'space-between',marginRight:15}}>
+      <Separator bordered style={{height:50,flexDirection:'row',justifyContent:'space-between',marginRight:15,width:"100%"}}>
         <Text style={{fontWeight:'bold'}}>CONTACT US</Text> 
-        <FontAwesomeIcon icon={faChevronDown}/>      
+        <FontAwesomeIcon style={{position:'absolute',right:15,top:15}} icon={faChevronDown}/>      
          </Separator>
       </CollapseHeader>
       <CollapseBody>
