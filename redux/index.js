@@ -61,7 +61,7 @@ export const actions = {
     return { type: types.ADD_PRODUCT_FILTER, productFilter };
   },
   removeProductFilter(productFilter){
-    return { type: types.ADD_PRODUCT_FILTER, productFilter };
+    return { type: types.REMOVE_PRODUCT_FILTER, productFilter };
   },
   setLocation(location){
     return { type: types.SET_LOCATION, location };
