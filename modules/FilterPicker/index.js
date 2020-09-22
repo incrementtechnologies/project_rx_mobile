@@ -26,6 +26,7 @@ class filterPicker extends Component{
       selected: null,
       data: null,
       checked:false,
+      currentFilters:[],
       filters:[],
     }
   }
@@ -44,6 +45,15 @@ class filterPicker extends Component{
     const { user } = this.props.state;
      if(user != null){
     }
+    let parameters={}
+    this.setState({isLoading:true})
+    Api.request(Routes.filters,parameters, response => {
+      console.log(response)
+        this.setState({currentFilters:response}) 
+        this.setState({isLoading:false})
+    }, error => {
+      console.log('error', error)
+    });
     this.setState({ 
       
       filters: [...this.props.state.productFilter]
@@ -76,11 +86,11 @@ class filterPicker extends Component{
    const {productFilter}=this.props.state
    return(
     <View style={styles.checkboxContainer}>
-    <Text style={styles.label}>{filter.type}</Text>
+    <Text style={styles.label}>{filter.category}</Text>
    
    <CheckBox
-     value={productFilter.indexOf(filter.type)>-1 ? true:false}
-     onValueChange={value=>this.addFilter(value,filter.type)}
+     value={productFilter.indexOf(filter.category)>-1 ? true:false}
+     onValueChange={value=>this.addFilter(value,filter.category)}
    />
      </View> 
    )
@@ -95,7 +105,7 @@ class filterPicker extends Component{
     <React.Fragment>
           <Card title='Cuisines'>
      
-   
+          {this.state.isLoading ? <Spinner mode="overlay"/> : null }
        {/* <View style={styles.checkboxContainer}>
        <Text style={styles.label}>Asian</Text>
       
@@ -115,7 +125,7 @@ class filterPicker extends Component{
       />
         </View>  */}
 
-      {Helper.categories.map(products=>(this.checkBox(products)))}
+      {this.state.currentFilters.map(products=>(this.checkBox(products)))}
       
 
 
@@ -139,14 +149,14 @@ class filterPicker extends Component{
     return (
       <View style={Style.MainContainer}>
       {this.filterCuisine()}
-      <TouchableOpacity
+      {/* <TouchableOpacity
               onPress={()=>this.checkFilters()}
               style={{
             
                 justifyContent: 'center',
                 height: 50,
-               width:'100%',
-              
+               width:'92%',
+                marginLeft:15,
                 backgroundColor: Color.white
               }}
               >
@@ -154,7 +164,18 @@ class filterPicker extends Component{
                 color: Color.primary,
                 textAlign: 'center'
               }}>Apply Filters</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+
+<TouchableHighlight
+              style={[BasicStyles.btn, {
+                backgroundColor: this.props.state.theme ? this.props.state.theme.primary : Color.primary, alignSelf:'center'
+              }]}
+              onPress={() => this.stackRedirect()}
+              underlayColor={Color.gray}>
+              <Text style={BasicStyles.textWhite}>
+                Apply Filters
+              </Text>
+            </TouchableHighlight>
       </View>
     );
   }

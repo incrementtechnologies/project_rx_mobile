@@ -44,4 +44,5 @@ export default {
   ordersRetrieve: apiUrl + 'checkouts/retrieve_orders',
   // notification settings
   notificationSettingsRetrieve: apiUrl + 'notification_settings/retrieve',
+  filters:apiUrl + 'dashboard/categories',
 }
