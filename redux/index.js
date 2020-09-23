@@ -16,6 +16,13 @@ const types = {
   ADD_PRODUCT_FILTER: 'ADD_PRODUCT_FILTER',
   REMOVE_PRODUCT_FILTER: 'REMOVE_PRODUCT_FILTER',
   SET_LOCATION: 'SET_LOCATION',
+  SET_MESSAGES: 'SET_MESSAGES',
+  SET_MESSENGER_GROUP: 'SET_MESSENGER_GROUP',
+  UPDATE_MESSENGER_GROUP: 'UPDATE_MESSENGER_GROUP',
+  SET_MESSAGES_ON_GROUP: 'SET_MESSAGES_ON_GROUP',
+  UPDATE_MESSAGES_ON_GROUP: 'UPDATE_MESSAGES_ON_GROUP',
+  UPDATE_MESSAGE_BY_CODE: 'UPDATE_MESSAGE_BY_CODE',
+  UPDATE_MESSAGES_ON_GROUP_BY_PAYLOAD: 'UPDATE_MESSAGES_ON_GROUP_BY_PAYLOAD',
   nav: null,
 }
 
@@ -34,7 +41,7 @@ export const actions = {
   }, 
   updateNotifications(unread, notification){
     return { type: types.UPDATE_NOTIFICATIONS, unread, notification };
-  }, 
+  },
   addProductToCart(product){
     return { type: types.ADD_PRODUCT_TO_CART, product };
   },
@@ -58,13 +65,44 @@ export const actions = {
   },
   setLocation(location){
     return { type: types.SET_LOCATION, location };
-  }
+  },
+  setMessenger(unread, messages){
+    return { type: types.SET_MESSAGES, unread, messages};
+  },
+  setMessengerGroup(messengerGroup){
+    return { type: types.SET_MESSENGER_GROUP, messengerGroup};
+  },
+  updateMessengerGroup(messengerGroup){
+    return { type: types.UPDATE_MESSENGER_GROUP, messengerGroup}
+  },
+  updateMessagesOnGroupByPayload(messages){
+    return { type: types.UPDATE_MESSAGES_ON_GROUP_BY_PAYLOAD, messages}
+  },
+  setMessagesOnGroup(messagesOnGroup){
+    console.log({ settingMessagesOnGroup: messagesOnGroup })
+    return { type: types.SET_MESSAGES_ON_GROUP, messagesOnGroup};
+  },
+  updateMessagesOnGroup(message){
+    return { type: types.UPDATE_MESSAGES_ON_GROUP, message};
+  },
+  updateMessageByCode(message){
+    return { type: types.UPDATE_MESSAGE_BY_CODE, message}
+  },
 };
 
 const initialState = {
   token: null,
   user: null,
   notifications: null,
+  messenger: {
+    unread: null,
+    messages: null
+  },
+  messengerGroup: null,
+  messagesOnGroup: {
+    groupId: null,
+    messages: null
+  },
   cart: [],
   theme: null,
   location: null,
@@ -87,6 +125,8 @@ const reducer = (state = initialState, action) => {
   const { theme } = action;
   const { productFilter } = action;
   const { cartItems, location } = action;
+  const { messages, message } = action;
+  const { messengerGroup, messagesOnGroup } = action;
 
   switch (type) {
     case types.LOGOUT:
@@ -228,6 +268,101 @@ const reducer = (state = initialState, action) => {
       return{
         ...state,
         location
+      }
+    case types.SET_MESSAGES:
+      let messenger = {
+        unread,
+        messages
+      }
+      return {
+        ...state,
+        messenger
+      }
+    case types.SET_MESSENGER_GROUP:
+      return {
+        ...state,
+        messengerGroup
+      }
+    case types.UPDATE_MESSENGER_GROUP:
+      return {
+        ...state,
+        messengerGroup: {
+          ...state.messengerGroup,
+          created_at_human: messengerGroup.created_at_human,
+          rating: messengerGroup.rating,
+          status: parseInt(messengerGroup.status),
+          validations: messengerGroup.validations
+        }
+      }
+    case types.SET_MESSAGES_ON_GROUP:
+      return {
+        ...state,
+        messagesOnGroup
+      }
+    case types.UPDATE_MESSAGES_ON_GROUP:
+      let updatedMessagesOnGroup = null
+      if(state.messagesOnGroup != null){
+        let oldMessages = state.messagesOnGroup.messages;
+        if(oldMessages == null){
+          let temp = []
+          temp.push(message)
+          updatedMessagesOnGroup = {
+            ...state.messagesOnGroup,
+            messages: temp
+          } 
+        }else{
+          if(parseInt(message.id) != parseInt(oldMessages[oldMessages.length - 1].id)){
+            updatedMessagesOnGroup = {
+              ...state.messagesOnGroup,
+              messages: oldMessages.push(message)
+            }
+          }else{
+            updatedMessagesOnGroup = {
+              ...state.messagesOnGroup
+            }
+          }
+        }        
+      }else{
+        let temp = []
+        temp.push(message);
+        updatedMessagesOnGroup = {
+          groupId: parseInt(message.messenger_group_id),
+          messages: temp
+        }
+      }
+      return {
+        ...state,
+        updatedMessagesOnGroup
+      }
+    case types.UPDATE_MESSAGE_BY_CODE:
+      let newMessagesOnGroup = state.messagesOnGroup.messages.map((item, index) => {
+        if(typeof item.code != undefined || typeof item.code != 'undefined'){
+          if(parseInt(item.code) == parseInt(message.code)){
+            return message;
+          }
+        }
+        return item;
+      })
+      return {
+        ...state,
+        messagesOnGroup: {
+          ...state.messagesOnGroup,
+          messages: newMessagesOnGroup
+        }
+      }
+    case types.UPDATE_MESSAGES_ON_GROUP_BY_PAYLOAD:
+      let tempMessages = state.messagesOnGroup.messages.map((item, index) => {
+        if(parseInt(item.id) == parseInt(action.messages[index].id) && item.payload_value != null){
+          return action.messages[index];
+        }
+        return item;
+      })
+      return {
+        ...state,
+        messagesOnGroup: {
+          ...state.messagesOnGroup,
+          messages: tempMessages
+        }
       }
     default:
       return {...state, nav: state.nav};

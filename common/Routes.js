@@ -19,6 +19,13 @@ export default {
   locationCreate:apiUrl + 'locations/create',
   locationRetrieve:apiUrl + 'locations/retrieve',
   locationDelete:apiUrl+'locations/delete',
+  // messenger
+  customMessengerGroupCreate: apiUrl + 'custom_messenger_groups/create',
+  messengerGroupRetrieve: apiUrl + 'messenger_groups/retrieve',
+  messengerGroupRetrieveByParams: apiUrl + 'messenger_groups/retrieve_by_params',
+  messengerMessagesCreate: apiUrl + 'messenger_messages/create',
+  messengerMessagesRetrieve: apiUrl + 'messenger_messages/retrieve',
+  messengerMessagesUpdate: apiUrl + 'messenger_messages/update_by_status',
   // referral
   invitationCreate: apiUrl + 'invitations/create',
   invitationRetrieve: apiUrl + 'invitations/retrieve',

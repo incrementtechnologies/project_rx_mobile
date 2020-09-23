@@ -30,10 +30,15 @@ class MyOrderDetails extends Component {
     }
   }
 
-  componentDidMount() {
-  }
-
-  retrieve = () => {
+  goToMessenger(details) {
+    this.props.navigation.navigate('MessengerMessages', { 
+      checkoutData: {
+        id: details.id,
+        code: details.code,
+        merchantId: details.merchant_id
+      },
+      messengerHeaderTitle: `***${details.code.slice(-8)}`
+    });
   }
 
   render() {
@@ -62,12 +67,6 @@ class MyOrderDetails extends Component {
           <View style={[Style.header, { backgroundColor: theme ? theme.primary : Color.primary }]}>
             <Text style={Style.textWhite}>Order Details</Text>
           </View>
-          { isLoading
-            ? (<View style={{ marginTop: 50 }}>
-                <Spinner mode="overlay"/> 
-              </View>)
-            : null 
-          }
           <View style={Style.orderDetails}>
             <View style={Style.detailRow}>
               <View style={{ alignSelf: 'flex-end', marginBottom: 20 }}>
@@ -140,9 +139,17 @@ class MyOrderDetails extends Component {
                 <Text style={{ fontWeight: '600' }}>
                   Rider: {' '}
                 </Text>
-                <Text>
-                  {details.assigned_rider}
-                </Text>
+                  {
+                    details.assigned_rider ? (
+                      <Text style={{ color: Color.success }}>
+                        {details.assigned_rider}
+                      </Text>
+                    ) : (
+                      <Text style={{ color: Color.warning }}>
+                        No rider yet
+                      </Text>
+                    )
+                  }
               </Text>
             </View>
             <View style={
@@ -246,6 +253,25 @@ class MyOrderDetails extends Component {
                   </Text>
                 </View>
               </TouchableOpacity>
+              { isLoading
+                ? (<View style={{ marginVertical: 20 }}>
+                    <Spinner mode="overlay"/> 
+                  </View>)
+                : null 
+              }
+              <TouchableOpacity onPress={() => this.goToMessenger(details)}>
+                <View style={[
+                  Style.detailsButton,
+                  { backgroundColor: theme ? theme.primary : Color. primary }
+                ]}>
+                  <Text style={{
+                    textAlign: 'center',
+                    color: Color.white,
+                  }}>
+                    Messenger
+                  </Text>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -258,7 +284,9 @@ const mapStateToProps = state => ({state: state});
 
 const mapDispatchToProps = dispatch => {
   const {actions} = require('@redux');
-  return {};
+  return {
+    setMessengerGroup: (messengerGroup) => dispatch(actions.setMessengerGroup(messengerGroup)),
+  };
 };
 
 export default connect(

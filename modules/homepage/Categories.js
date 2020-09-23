@@ -87,7 +87,7 @@ class Categories extends Component {
           })
         })
       } else {
-        this.setState({ isLoading: false, isError: true })
+        this.setState({ isLoading: false })
       }
     },
     (error) => {
@@ -209,7 +209,7 @@ class Categories extends Component {
         {isLoading ? <Spinner mode="full" /> : null}
         {
           isError && 
-          <Text style={{ textAlign: 'center', marginTop: 80, fontSize: 12, color: Color.darkGray }}>
+          <Text style={{ textAlign: 'center', marginTop: 80, marginBottom: 40, fontSize: 12, color: Color.darkGray }}>
             There is a problem in fetching data. Please try again
           </Text>
         }

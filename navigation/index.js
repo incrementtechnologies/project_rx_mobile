@@ -55,7 +55,6 @@ const PrimaryNav = createStackNavigator({
   addressMap:{screen:addressMapStack},
   paymentOptions:{screen:paymentOptionStack},
   ChangeAddress:{screen:ChangeAddressStack}
-
 }, {
   // Default config for all screens
   headerMode: 'none',

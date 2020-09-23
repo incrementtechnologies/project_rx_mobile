@@ -1,5 +1,17 @@
 import Color from './Color.js';
-import { faEdit, faComments, faCheck, faPaperPlane, faUser, faMapMarker, faCreditCard, faQuestionCircle, faUsers, faFile } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEdit,
+  faComments,
+  faCheck,
+  faPaperPlane,
+  faUser,
+  faMapMarker,
+  faCreditCard,
+  faQuestionCircle,
+  faUsers,
+  faFile,
+  faHome
+} from '@fortawesome/free-solid-svg-icons';
 export default {
   company: 'Increment Technologies',
   APP_NAME: '@RunwayExpress_',
@@ -10,14 +22,14 @@ export default {
   DrawerMenu: [{
     title: 'Homepage',
     route: 'Homepage',
-    icon: faUser,
+    icon: faHome,
     iconStyle: {
       color: Color.primary
     }
   }, {
     title: 'My Order History',
     route: 'MyOrders',
-    icon: faUser,
+    icon: faFile,
     iconStyle: {
       color: Color.primary
     }
@@ -62,31 +74,7 @@ export default {
   DrawerMenuLogout: [{
     title: 'Homepage',
     route: 'Homepage',
-    icon: faUser,
-    iconStyle: {
-      color: Color.primary
-    }
-  },
-  // {
-  //   title: 'My Orders',
-  //   route: 'MyOrders',
-  //   icon: faFile,
-  //   iconStyle: {
-  //     color: Color.primary
-  //   }
-  // }, 
-  // {
-  //   title: 'Help Center',
-  //   route: 'HelpCenter',
-  //   icon: faQuestionCircle,
-  //   iconStyle: {
-  //     color: Color.primary
-  //   }
-  // },
-   {
-    title: 'Invite Friends',
-    route: 'InviteFriends',
-    icon: faUsers,
+    icon: faHome,
     iconStyle: {
       color: Color.primary
     }
@@ -116,10 +104,12 @@ export default {
   }],
   pusher: {
     broadcast_type: 'pusher',
-    channel: 'runwayexpress',
+    channel: 'runway',
     notifications: 'App\\Events\\Notifications',
     orders: 'App\\Events\\Orders',
-    typing: 'typing'
+    typing: 'typing',
+    messages: 'App\\Events\\Message',
+    messageGroup: 'App\\Events\\MessageGroup',
   },
   tutorials: [
     {
