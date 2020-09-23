@@ -113,6 +113,7 @@ class Featured extends Component {
     })
 
     Api.request(Routes.couponsRetrieve, {}, (response) => {
+      console.log({ response })
       if (response.data.length) {
         this.setState({ coupons: response.data, isLoadingCoupons: false })
       } else {

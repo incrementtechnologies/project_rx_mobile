@@ -5,6 +5,9 @@ export default {
   pusher: null,
   channel: null,
   listen (callback) {
+    // return if pusher is already initialized
+    if (this.pusher) return
+
     this.pusher = new Pusher(Config.PUSHER.key, Config.PUSHER);
     this.channel = this.pusher.subscribe(Helper.pusher.channel);
     this.channel.bind(Helper.pusher.notifications, response => {

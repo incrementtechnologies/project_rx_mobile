@@ -20,6 +20,7 @@ import Settings from 'modules/settings';
 import Referral from 'modules/referral';
 import MyOrders from 'modules/orders';
 import MyOrderDetails from 'modules/orders/MyOrderDetails';
+import MessengerMessages from 'modules/messenger/Messages';
 import { connect } from 'react-redux';
 
 class MenuDrawerContentStructure extends Component {
@@ -214,6 +215,20 @@ const Homepage_StackNavigator = createStackNavigator({
       headerTintColor: '#fff',
     }),
   },
+  MessengerMessages: {
+    screen: MessengerMessages,
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.getParam('messengerHeaderTitle'),
+      headerTintColor: Color.primary,
+      headerBackTitleStyle: {
+        color: '#fff',
+      },
+      headerStyle: {
+        backgroundColor: Color.white,
+        color: Color.black
+      },
+    }),
+  },
 });
 
 const Drawer = createDrawerNavigator({
@@ -288,7 +303,13 @@ const Drawer = createDrawerNavigator({
     navigationOptions: {
       drawerLabel: '',
     }
-  }
+  },
+  MessengerMessages: {
+    screen: Homepage_StackNavigator,
+    navigationOptions: {
+      drawerLabel: '',
+    }
+  },
 }, {
   contentComponent: Slider
 });

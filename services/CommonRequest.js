@@ -2,7 +2,7 @@ import Api from 'services/api/index.js';
 import Config from 'src/config.js';
 import { Routes } from 'common';
 export default {
-  retrieveMessages (messengerGroup, callback){
+  retrieveMessages (messengerGroup, callback, errorCb = null){
     if(messengerGroup == null){
       return
     }
@@ -20,6 +20,10 @@ export default {
       if(callback){
         callback(response)
       }
+    }, error => {
+      if(errorCb){
+        errorCb(error)
+      }
     });
   },
   updateMessageStatus (parameter, callback){
@@ -29,7 +33,7 @@ export default {
       }
     });
   },
-  retrieveMessengerGroup(messengerGroup, user, callback){
+  retrieveMessengerGroup(messengerGroup, user, callback, errorCb = null){
     let parameter = {
       condition: [{
         value: messengerGroup.id,
@@ -38,20 +42,28 @@ export default {
       }],
       account_id: user.id
     }
-    Api.request(Routes.customMessengerGroupRetrieveByParams, parameter, response => {
+    Api.request(Routes.messengerGroupRetrieveByParams, parameter, response => {
       if(callback){
         callback(response)
       }
+    }, error => {
+      if(errorCb){
+        errorCb(error)
+      }
     });
   },
-  retrieveMessengerGroups(user, callback){
+  retrieveMessengerGroups(user, callback, errorCb = null){
     let parameter = {
       account_id: user.id,
       code: null
     }
-    Api.request(Routes.customMessengerGroupRetrieve, parameter, response => {
+    Api.request(Routes.messengerGroupRetrieve, parameter, response => {
       if(callback){
         callback(response)
+      }
+    }, error => {
+      if(errorCb){
+        errorCb(error)
       }
     });
   }
