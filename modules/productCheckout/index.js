@@ -36,6 +36,7 @@ class productCheckout extends Component{
      totalPrice:0,
      type:'Delivery',
      paymentType:'cod',
+     productNumber:0,
     }
   }
 
@@ -175,7 +176,7 @@ class productCheckout extends Component{
     }, error => {
       console.log({ error })
     })
-    
+    this.setState({productNumber:this.state.productNumber+1})
   }
 
   onSubtract=(index)=>
@@ -185,7 +186,8 @@ class productCheckout extends Component{
     if(products[index].quantity>1)
     {
       console.log(this.props)
-      products[index].quantity-=1 
+      products[index].quantity-=1
+      this.setState({productNumber:this.state.productNumber-1}) 
     }
     else if (products[index].quantity==1)
     {
@@ -209,6 +211,8 @@ class productCheckout extends Component{
     }, error => {
       console.log({ error })
     })
+    
+
   }
 
   checkCart=()=>
@@ -352,7 +356,23 @@ class productCheckout extends Component{
     
         <View style={Style.TitleContainer}>
         <Text style={{fontSize:15}}>Your Order</Text>
-        <TouchableOpacity><Text style={{fontSize:15,color:'#FF5B04'}}>Add more Items</Text></TouchableOpacity>
+        {this.state.data[0]!=null ? 
+        (
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('Merchant',this.state.data[0])}>
+          <Text style={{fontSize:15,color:'#FF5B04'}}>
+            Add more Items
+          </Text>
+        </TouchableOpacity>
+        ) :
+        (
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('drawerStack')}>
+          <Text style={{fontSize:15,color:'#FF5B04'}}>
+            Add Items to Cart
+          </Text>
+        </TouchableOpacity>
+        )
+        }
+        
         </View>
         <Divider style={{height:3}}/>
           <View style={{ alignItems: 'center',width:'100%',backgroundColor:'white'}}>
@@ -363,8 +383,9 @@ class productCheckout extends Component{
              
                 
                 ))
-              } 
-            {this.state.showStatus ? <TouchableOpacity onPress={()=>this.renderAll()}><Text style={{marginTop:15,fontSize:15,color:'#FF5B04'}}>Show More({rest.length})</Text></TouchableOpacity> : rest.map((product,index)  => (<CheckoutCard key={product.id} details={product} onSubtract={()=>this.onSubtract(index+2)} onAdd={()=>this.onAdd(index+2)} />))}
+              }
+            {rest.length>0 && this.state.showStatus && (<TouchableOpacity onPress={()=>this.renderAll()}><Text style={{marginTop:15,fontSize:15,color:'#FF5B04'}}>Show More({rest.length})</Text></TouchableOpacity> )}
+            {this.state.showStatus ? null : rest.map((product,index)  => (<CheckoutCard key={product.id} details={product} onSubtract={()=>this.onSubtract(index+2)} onAdd={()=>this.onAdd(index+2)} />))}
             {this.state.showStatus? null : <TouchableOpacity onPress={()=>this.renderAll()}><Text style={{marginTop:15,fontSize:15,color:'#FF5B04'}}>Show Less</Text></TouchableOpacity>}
          
           </View>
@@ -445,7 +466,7 @@ class productCheckout extends Component{
               disabled={this.state.error ? true : false}
               >
                 <View style={{flexDirection:'row',justifyContent:'space-between',marginRight:5}}>
-              <View style={Style.circleContainer}><Text style={{alignSelf:'center',color:'#FF5B04'}}>{products.length}</Text></View>
+              <View style={Style.circleContainer}><Text style={{alignSelf:'center',color:'#FF5B04'}}>{this.state.data.length + this.state.productNumber}</Text></View>
               <Text style={{
                 color:'white',
                 alignSelf:'center',
