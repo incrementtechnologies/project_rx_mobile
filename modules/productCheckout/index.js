@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import Style from './Style.js';
-import { View, Image, TouchableHighlight, Text, ScrollView, FlatList,TouchableOpacity,Button,StyleSheet, ColorPropType,TextInput} from 'react-native';
+import { View, Image, TouchableHighlight, Text, ScrollView, FlatList,TouchableOpacity,Button,StyleSheet, ColorPropType,TextInput,PermissionsAndroid} from 'react-native';
 
 import { Spinner, Empty, SystemNotification,GooglePlacesAutoComplete } from 'components';
 import { connect } from 'react-redux';
@@ -37,6 +37,7 @@ class productCheckout extends Component{
      type:'Delivery',
      paymentType:'cod',
      productNumber:0,
+ 
     }
   }
 
@@ -53,6 +54,7 @@ class productCheckout extends Component{
           console.log("remount")
         }
       );
+
   }
 
   componentWillUnmount(){
@@ -75,7 +77,7 @@ class productCheckout extends Component{
      })
      console.log(this.props.state.user)
        Api.request(Routes.cartsRetrieve, parameter, response => {
-         console.log(response.data)
+         console.log("merchant Data",response.data)
         this.setState({data:JSON.parse(response.data[0].items)})
        }, error => {
          console.log({ error })
@@ -116,17 +118,16 @@ class productCheckout extends Component{
           <MapView
     style={Style.map}
     provider={PROVIDER_GOOGLE}
-    initialRegion={{ latitude: 10.327429298142116,
-      longitude: 123.87934366241097,
+    initialRegion={{ latitude: parseInt(this.props.state.location.latitude),
+      longitude: parseInt(this.props.state.location.longitude),
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421}}
     >    
      <Marker
-      coordinate={{ latitude: 10.327429298142116,
-        longitude: 123.87934366241097,      latitudeDelta: 0.0922,
+      coordinate={{ latitude: parseInt(this.props.state.location.latitude),
+        latitudeDelta: 0.0922,
+        longitude: parseInt(this.props.state.location.longitude),      
         longitudeDelta: 0.0421}}
-      title="Hello"
-      
     />
     </MapView>
 
@@ -224,7 +225,6 @@ class productCheckout extends Component{
   onCheckOut=(totalPrice)=>
   {
     const paymentType=this.state.paymentType.toLowerCase();
-    const orders=JSON.stringify(this.state.data)
 
 
     if(this.state.data.length>0 && this.props.state.user.id!=null){
@@ -233,7 +233,6 @@ class productCheckout extends Component{
         this.setState({error:1})
       }
       else{
-        alert("Successful")
       const parameter= this.state.paymentType=="cod" && this.state.amount_tendered>0 ? {
         account_id:this.props.state.user.id,
         merchant_id:this.state.data[0].merchant_id,
@@ -250,10 +249,9 @@ class productCheckout extends Component{
         currency:"PHP",
         location_id:this.props.state.location?this.props.state.location.id : this.state.address.id,
         shipping_fee:"5",
-        // latFrom:this.props.state.location.latitude,
-        // longFrom:this.props.state.location.longitude,
-        // latTo:this.props.state.location.latitude,
-        // longTo:this.props.state.location.longitude,
+        latFrom:this.props.state.location.latitude,
+        longFrom:this.props.state.location.longitude,
+ 
       } 
         :
         {
@@ -270,19 +268,17 @@ class productCheckout extends Component{
         currency:"PHP",
         location_id:this.props.state.location?this.props.state.location.id : this.state.address.id,
         shipping_fee:"5",
-        // latFrom:this.props.state.location.latitude,
-        // longFrom:this.props.state.location.longitude,
-        // latTo:this.props.state.location.latitude,
-        // longTo:this.props.state.location.longitude,
-        // tendered_amount:this.state.amount_tendered,
+        latFrom:this.props.state.location.latitude,
+        longFrom:this.props.state.location.longitude,
+     
       }
 
       this.setState({ isLoading: true })
       console.log(parameter)
       Api.request(Routes.checkoutCreate,parameter , response => {
-        console.log(response)
+        console.log('response',response)
         this.setState({ isLoading: false});
-        this.props.navigation.pop()
+        this.props.navigation.navigate('MyOrders')
       }, error => {
         console.log({ error })
         this.setState({ isLoading: false })
@@ -290,11 +286,7 @@ class productCheckout extends Component{
       })
       }
     }
-    else
-    {
-      alert("Failed")
-
-    }    
+   
   }
 
   inputErrorCheck=(tenderedAmount,totalPrices)=>
