@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import MapView, { PROVIDER_GOOGLE, Marker,Callout } from 'react-native-maps';
 const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
 import Drawer from 'react-native-draggable-view'
 import iconClaw from "../../assets/icon_claw.png"
@@ -30,8 +30,8 @@ class SelectLocation extends Component{
       address:null,
       locationChoice:null,
       region: {
-        latitude: null,
-        longitude: null,
+        latitude: 0,
+        longitude: 0,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
@@ -46,15 +46,26 @@ class SelectLocation extends Component{
     const { user } = this.props.state;
     Geocoder.init("AIzaSyAxT8ShiwiI7AUlmRdmDp5Wg_QtaGMpTjg")
     Geolocation.getCurrentPosition(info => {
-      console.log(info)
+      console.log("HELLOOO",info)
       this.setState({region:{
         ...this.state.region,
         latitude:info.coords.latitude,
         longitude:info.coords.longitude
       }});
-     }) //Transfer this to if(user!=null) when api available
-     if(user != null){
+     },
+     error => console.log(error),
+     {
+      enableHighAccuracy: true,
+      timeout: 2000,
+     },
+    ) //Transfer this to if(user!=null) when api available
+     
+    if(user != null){
     }
+  }
+
+  UNSAFE_componentWillMount(){
+    
   }
 
 
@@ -75,7 +86,8 @@ class SelectLocation extends Component{
         latitude:info.coords.latitude,
         longitude:info.coords.longitude
       },pinnedLocation:false,address:null});
-     })
+     },
+     )
   }
 
   onRegionChange=(regionUpdate)=> {

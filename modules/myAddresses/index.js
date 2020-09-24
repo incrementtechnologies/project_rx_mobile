@@ -165,21 +165,9 @@ class MyAddresses extends Component {
     const addresses=this.state.data;
     const test=[];
     return(
-      <View style={{flex:1}}>
-      {this.state.data && (addresses.map((address,index)=>(<AddressCard key={address.id} details={address} press={()=>this.checkData(index)} delete={()=>this.validate(address.id)}/>)))}
-      <View style={{flex:1,flexDirection:'row-reverse',padding:25}}>
-        <View style={{flexDirection:'column-reverse'}}>
-       <TouchableOpacity onPress={()=>this.goTo()}>
-          <View style={Style.circleButton}>
-          <View style={{alignItems:'center'}}>
-                   <FontAwesomeIcon size={25}icon={faPlus} color={'white'}/>
-              
-          </View>
-          </View>
-       </TouchableOpacity>
-        </View>
-        </View>
-        </View>
+      <View>
+         {this.state.data && (addresses.map((address,index)=>(<AddressCard key={address.id} details={address} press={()=>this.checkData(index)} delete={()=>this.validate(address.id)}/>)))}
+      </View>
     )
     
         
@@ -191,9 +179,20 @@ class MyAddresses extends Component {
     const {isLoading, data} = this.state;
     const {user} = this.props.state;
     return (
-     <ScrollView style={{flex:1}}>
+    <View style={{flex:1}}>
+     <ScrollView>
        {this.showAddresses()}
      </ScrollView>
+     <View style={{position:'absolute',bottom:35,alignSelf:'flex-end',right:20}}>
+       <TouchableOpacity onPress={()=>this.goTo()}>
+          <View style={Style.circleButton}>
+          <View style={{alignItems:'center'}}>
+                   <FontAwesomeIcon size={25}icon={faPlus} color={'white'}/>
+          </View>
+          </View>
+       </TouchableOpacity>
+    </View>
+     </View>
     );
   }
 }

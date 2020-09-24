@@ -47,14 +47,15 @@ export default {
     iconStyle: {
       color: Color.primary
     }
-  }, {
-    title: 'Payment Methods',
-    route: 'PaymentMethods',
-    icon: faCreditCard,
-    iconStyle: {
-      color: Color.primary
-    }
-  },
+  }, 
+  // {
+  //   title: 'Payment Methods',
+  //   route: 'PaymentMethods',
+  //   icon: faCreditCard,
+  //   iconStyle: {
+  //     color: Color.primary
+  //   }
+  // },
   //  {
   //   title: 'Help Center',
   //   route: 'HelpCenter',
