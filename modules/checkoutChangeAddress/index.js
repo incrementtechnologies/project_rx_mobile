@@ -23,9 +23,9 @@ class ChangeAddress extends Component {
      showInput:false,
      data:[],
      returnedAddress:{},
-    }
-     
-    }
+     selected: null
+    }   
+  }
   
 
   componentDidMount(){
@@ -52,17 +52,20 @@ class ChangeAddress extends Component {
         value: user.id,
         column: 'account_id',
         clause: '=',
-      }]
+      }],
+      sort: {
+        'created_at': 'desc'
+      }
     }
     this.setState({
       isLoading: true
     })
     Api.request(Routes.locationRetrieve, parameter, response => {
       this.setState({isLoading: false})
-      console.log('test',response)
       if(response.data.length > 0){
+        const { setLocation } = this.props;
+        setLocation(response.data[0])
         this.setState({data: response.data})
-        console.log(response.data)
       }
     },error => {
       console.log(error)
@@ -70,13 +73,17 @@ class ChangeAddress extends Component {
   }
   
 
-  goTo=()=>
-  {
+  FlatListItemSeparator = () => {
+    return (
+      <View style={BasicStyles.Separator}/>
+    );
+  };
+
+  goTo = () => {
     this.props.navigation.navigate('addressMap')
   }
 
-  changeAddress=(index)=>
-  {
+  changeAddress = (index) => {
     let addresses=this.state.data;
     const pickedLocation=addresses.find(address => {
       return address.id===index
@@ -86,28 +93,78 @@ class ChangeAddress extends Component {
     this.props.setLocation(pickedLocation)
     this.props.navigation.pop()
   }
-  showAddresses=()=>{
-    let addresses=this.state.data
+
+  setLocation = (item) => {
+    const { setLocation } = this.props;
+    setLocation(item)
+  }
+
+  showAddresses =() => {
+    let addresses = this.state.data
     return(
       <View>
       {addresses.map((address,index)=>(<AddressCard index={index} current={this.state.value} keys={address.id} details={address} pickAddress={()=>{this.changeAddress(address.id)}} />))}
         </View>
     )
-    
-        
-
-    
   }
 
   render() {
-    const {isLoading, data} = this.state;
-    const {user} = this.props.state;
+    const {isLoading, data, selected} = this.state;
+    const { user, location } = this.props.state;
     return (
       <View style={{flex:1}}>
-      <ScrollView>
-        {this.showAddresses()}
+      <ScrollView 
+        style={Style.ScrollView}>
+        <View style={[Style.MainContainer, {
+          minHeight: height
+        }]}>
+          {
+            data && (
+              <FlatList
+                data={data}
+                extraData={selected}
+                ItemSeparatorComponent={this.FlatListItemSeparator}
+                renderItem={({ item, index }) => (
+                  <View>
+                    <TouchableHighlight
+                      onPress={() => {this.setLocation(item, index)}}
+                      underlayColor={Color.gray}
+                      >
+                      <View style={[Style.TextContainer, {
+                        backgroundColor: Color.white
+                      }]}>
+                        <Text
+                          style={[BasicStyles.normalText, {
+                            color: location && location.id === item.id? Color.primary : Color.black,
+                            fontWeight: 'bold',
+                            paddingTop: 15
+                          }]}>
+                          {item.route}
+                        </Text>
+
+                        <Text
+                          style={[BasicStyles.normalText, {
+                            paddingBottom: 15,
+                            color: location && location.id === item.id? Color.primary : Color.black
+                          }]}>
+                          {item.locality + ', ' + item.country}
+                        </Text>
+                      </View>
+                    </TouchableHighlight>
+                  </View>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+              />
+            )
+          }
+        </View>
       </ScrollView>
-      <View style={{position:'absolute',bottom:35,alignSelf:'flex-end',right:20}}>
+      <View style={{
+        position: 'absolute',
+        bottom: 5,
+        alignSelf: 'flex-end',
+        right: 5
+      }}>
         <TouchableOpacity onPress={()=>this.goTo()}>
            <View style={Style.circleButton}>
            <View style={{alignItems:'center'}}>

@@ -3,11 +3,9 @@ import { Dimensions } from 'react-native';
 const width = Math.round(Dimensions.get('window').width);
 export default {
   ScrollView: {
-    padding: 20
   },
   MainContainer: {
-    width: '100%',
-    paddingBottom: 50
+    width: '100%'
   },
   TextContainer: {
     flex: 1
@@ -53,33 +51,29 @@ export default {
     paddingRight: 10
   },
   searchSection: {
-   
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    
-},
-searchIcon: {
-    paddingRight: 30,
-},
-input: {
-    flex: 1,
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
-    paddingLeft: 20,
-    backgroundColor: '#fff',
-    color: '#424242',
-    
-},
-circleButton:{
- 
-    padding: 5,
-    height: 75,
-    width: 75,  
-    borderRadius:400, 
+  },
+  searchIcon: {
+      paddingRight: 30,
+  },
+  input: {
+      flex: 1,
+      paddingTop: 10,
+      paddingRight: 10,
+      paddingBottom: 10,
+      paddingLeft: 20,
+      backgroundColor: '#fff',
+      color: '#424242',
+      
+  },
+  circleButton:{
+    height: 60,
+    width: 60,  
+    borderRadius: 30, 
     backgroundColor:'#FF5B04',
     justifyContent:'center',
-},
+  },
 }

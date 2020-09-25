@@ -343,7 +343,9 @@ class productCheckout extends Component{
             </TouchableOpacity>
         </View>
         <Divider style={{height:3}}/>
-        {this.state.type=="Delivery" ? this.deliveryDetails() : null}
+        {
+          (this.state.type=="Delivery" && this.props.state.location) ? this.deliveryDetails() : null
+        }
         
     
         <View style={Style.TitleContainer}>

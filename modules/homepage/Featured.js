@@ -92,6 +92,7 @@ class Featured extends Component {
     if (!fetchMore) {
       this.setState({ isLoading: true, isLoadingCoupons: true, isError: false })
     }
+    console.log('featured_products_parameter', featured_products_parameter)
     Api.request(Routes.dashboardRetrieveFeaturedProducts, featured_products_parameter, response => {
       if (response.data.length > 0 && response.data[0].length > 0) {
         const joined = _.uniqBy([...this.state.featured, ...response.data[0]], 'id')
