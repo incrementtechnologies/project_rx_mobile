@@ -46,10 +46,15 @@ export default {
   dashboardRetrieveFeaturedProducts: apiUrl + 'dashboard/featured',
   dashboardRetrieveCategoryProducts: apiUrl + 'dashboard/category',
   dashboardRetrieveShops: apiUrl + 'dashboard/shops',
+  merchantRetrieve: apiUrl + 'merchants/retrieve',
   // checkout || orders
   checkoutCreate: apiUrl + 'checkouts/create',
   ordersRetrieve: apiUrl + 'checkouts/retrieve_orders',
+  orderItemsRetrieve: apiUrl + 'checkout_items/retrieve_on_orders',
   // notification settings
   notificationSettingsRetrieve: apiUrl + 'notification_settings/retrieve',
   filters:apiUrl + 'dashboard/categories',
+  // ratings
+  ratingsCreate: apiUrl + 'ratings/create',
+  ratingsRetrieve: apiUrl + 'ratings/retrieve'
 }
