@@ -1,4 +1,4 @@
-import Geolocation from 'react-native-geolocation-service'
+import Geolocation from '@react-native-community/geolocation'
 /**
  * must be used in an async function
  * 
