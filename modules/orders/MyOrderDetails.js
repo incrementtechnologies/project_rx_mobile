@@ -11,6 +11,8 @@ import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCheckCircle, faTimesCircle, faMinusCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { Spinner } from 'components';
+import CreateRating from './CreateRating';
+import ViewItems from './OrderItems';
 import Api from 'services/api';
 import Currency from 'services/Currency'
 import { Routes, Helper, BasicStyles, Color } from 'common';
@@ -26,7 +28,11 @@ class MyOrderDetails extends Component {
     super(props);
     this.state = {
       isLoading: false,
-      data: []
+      createRating: {
+        state: false,
+        selected: null
+      },
+      viewItems: false
     }
   }
 
@@ -43,7 +49,7 @@ class MyOrderDetails extends Component {
 
   render() {
     const { theme } = this.props.state
-    const { isLoading, data } = this.state
+    const { isLoading, createRating, viewItems } = this.state
     const details = this.props.navigation.state?.params?.data
 
     let icon = null
@@ -63,6 +69,17 @@ class MyOrderDetails extends Component {
     }
     return (
       <ScrollView style={Style.ScrollView} showsVerticalScrollIndicator={false}>
+        <CreateRating
+          visible={createRating}
+          title="Give feedback"
+          data={details}
+          close={() => this.setState({ createRating: { ...createRating, state: false } })}
+        />
+        <ViewItems
+          visible={viewItems}
+          data={details}
+          setVisible={() => this.setState({ viewItems: false })}
+        />
         <View style={Style.myOrderDetailsContainer}>
           <View style={[Style.header, { backgroundColor: theme ? theme.primary : Color.primary }]}>
             <Text style={Style.textWhite}>Order Details</Text>
@@ -139,17 +156,17 @@ class MyOrderDetails extends Component {
                 <Text style={{ fontWeight: '600' }}>
                   Rider: {' '}
                 </Text>
-                  {
-                    details.assigned_rider ? (
-                      <Text style={{ color: Color.success }}>
-                        {details.assigned_rider}
-                      </Text>
-                    ) : (
-                      <Text style={{ color: Color.warning }}>
-                        No rider yet
-                      </Text>
-                    )
-                  }
+                {
+                  details.assigned_rider ? (
+                    <Text style={{ color: Color.success }}>
+                      {details.assigned_rider.name}
+                    </Text>
+                  ) : (
+                    <Text style={{ color: Color.warning }}>
+                      No rider yet
+                    </Text>
+                  )
+                }
               </Text>
             </View>
             <View style={
@@ -227,7 +244,7 @@ class MyOrderDetails extends Component {
               </Text>
             </View>
             <View style={Style.detailRow}>
-              <TouchableOpacity onPress={() => Alert.alert('View items')}>
+              <TouchableOpacity onPress={() => this.setState({ viewItems: true })}>
                 <View style={[
                   Style.detailsButton,
                   { backgroundColor: theme ? theme.primary : Color. primary }
@@ -259,19 +276,52 @@ class MyOrderDetails extends Component {
                   </View>)
                 : null 
               }
-              <TouchableOpacity onPress={() => this.goToMessenger(details)}>
-                <View style={[
-                  Style.detailsButton,
-                  { backgroundColor: theme ? theme.primary : Color. primary }
-                ]}>
-                  <Text style={{
-                    textAlign: 'center',
-                    color: Color.white,
-                  }}>
-                    Messenger
-                  </Text>
-                </View>
-              </TouchableOpacity>
+              {
+                details.status !== 'completed' ? (
+                  <TouchableOpacity onPress={() => this.goToMessenger(details)}>
+                    <View style={[
+                      Style.detailsButton,
+                      { backgroundColor: theme ? theme.primary : Color. primary }
+                    ]}>
+                      <Text style={{
+                        textAlign: 'center',
+                        color: Color.white,
+                      }}>
+                        Messenger
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ) : (
+                  <>
+                    <TouchableOpacity onPress={() => this.setState({ createRating: { state: true, selected: 'Merchant' } })}>
+                      <View style={[
+                        Style.detailsButton,
+                        { backgroundColor: theme ? theme.primary : Color. primary }
+                      ]}>
+                        <Text style={{
+                          textAlign: 'center',
+                          color: Color.white,
+                        }}>
+                          Rate Merchant
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.setState({ createRating: { state: true, selected: 'Rider' } })}>
+                      <View style={[
+                        Style.detailsButton,
+                        { backgroundColor: theme ? theme.primary : Color. primary }
+                      ]}>
+                        <Text style={{
+                          textAlign: 'center',
+                          color: Color.white,
+                        }}>
+                          Rate Rider
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </>
+                )
+              }
             </View>
           </View>
         </View>
