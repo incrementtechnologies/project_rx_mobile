@@ -82,77 +82,83 @@ class MyOrderDetails extends Component {
         />
         <View style={Style.myOrderDetailsContainer}>
           <View style={[Style.header, { backgroundColor: theme ? theme.primary : Color.primary }]}>
-            <Text style={Style.textWhite}>Order Details</Text>
+            <Text style={Style.textWhite}>
+              Order Details
+            </Text>
           </View>
           <View style={Style.orderDetails}>
             <View style={Style.detailRow}>
               <View style={{ alignSelf: 'flex-end', marginBottom: 20 }}>
-                <Text style={{ fontWeight: '600', fontSize: 12 }}>
-                  Date: {' '}
-                  <Text style={{ fontWeight: 'normal' }}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={{ fontWeight: '600', fontSize: 12 }}>
+                    Date: {' '}
+                  </Text>
+                  <Text style={{ fontWeight: 'normal', fontSize: 12 }}>
                     {details.date}
                   </Text>
-                </Text>
+                </View>
               </View>
             </View>
             <View style={Style.detailRow}>
               <View>
-                <Text style={{ fontWeight: '600' }}>
-                  Status: {' '}
-                  <View style={{ marginHorizontal: 2}}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={{ fontWeight: '600' }}>
+                    Status:
+                  </Text>
+                  <View style={{ marginHorizontal: 3}}>
                     {icon}
                   </View>
                   <Text style={{ fontWeight: 'normal', textTransform: 'uppercase' }}>
                     {details.status}
                   </Text>
-                </Text>
+                </View>
               </View>
             </View>
             <View style={Style.detailRow}>
-              <Text>
+              <View style={{ flexDirection: 'row' }}>
                 <Text style={{ fontWeight: '600' }}>
                   Order Number: {' '}
                 </Text>
                 <Text>
                   {details.order_number}
                 </Text>
-              </Text>
+              </View>
             </View>
             <View style={Style.detailRow}>
-              <Text>
+              <View style={{ flexDirection: 'row' }}>
                 <Text style={{ fontWeight: '600' }}>
                   Type: {' '}
                 </Text>
                 <Text style={{ textTransform: 'uppercase' }}>
                   {details.type}
                 </Text>
-              </Text>
+              </View>
             </View>
             <View style={Style.detailRow}>
-              <Text>
-                <Text style={{ fontWeight: '600' }}>
+              <View>
+                <Text style={{ fontWeight: '600', marginBottom: 2 }}>
                   Delivery to: {' '}
                 </Text>
                 <Text>
                   {details.location}
                 </Text>
-              </Text>
+              </View>
               <Text style={{ fontSize: 10, color: Color.darkGray, fontStyle: 'italic' }}>
                 (Location based from merchant)
               </Text>
             </View>
             <View style={Style.detailRow}>
-              <Text>
+              <View style={{ flexDirection: 'row' }}>
                 <Text style={{ fontWeight: '600' }}>
                   Recipient: {' '}
                 </Text>
                 <Text>
                   {details.name}
                 </Text>
-              </Text>
+              </View>
             </View>
             <View style={Style.detailRow}>
-              <Text>
+              <View style={{ flexDirection: 'row' }}>
                 <Text style={{ fontWeight: '600' }}>
                   Rider: {' '}
                 </Text>
@@ -167,7 +173,7 @@ class MyOrderDetails extends Component {
                     </Text>
                   )
                 }
-              </Text>
+              </View>
             </View>
             <View style={
               [Style.detailRow,
@@ -178,70 +184,70 @@ class MyOrderDetails extends Component {
                 paddingVertical: 10
               }]
             }>
-              <Text style={{ marginBottom: 10 }}>
+              <View style={[Style.detailRow, { flexDirection: 'row' }]}>
                 <Text style={{ fontWeight: '600' }}>
                   Payment Status: {' '}
                 </Text>
                 <Text>
                   {details.payment_status}
                 </Text>
-              </Text>
-              <Text>
+              </View>
+              <View style={[Style.detailRow, { flexDirection: 'row' }]}>
                 <Text style={{ fontWeight: '600' }}>
                   Coupon: {' '}
                 </Text>
                 <Text>
                   {details.coupon || 'None'}
                 </Text>
-              </Text>
-              <Text>
+              </View>
+              <View style={[Style.detailRow, { flexDirection: 'row' }]}>
                 <Text style={{ fontWeight: '600' }}>
                   Sub total: {' '}
                 </Text>
                 <Text>
                   {Currency.display(+details.sub_total, 'PHP')}
                 </Text>
-              </Text>
-              <Text>
+              </View>
+              <View style={[Style.detailRow, { flexDirection: 'row' }]}>
                 <Text style={{ fontWeight: '600' }}>
                   Tax: {' '}
                 </Text>
                 <Text>
                   {Currency.display(+details.tax, 'PHP')}
                 </Text>
-              </Text>
-              <Text>
+              </View>
+              <View style={[Style.detailRow, { flexDirection: 'row' }]}>
                 <Text style={{ fontWeight: '600' }}>
                   Shipping fee: {' '}
                 </Text>
                 <Text>
                   {Currency.display(+details.shipping_fee, 'PHP')}
                 </Text>
-              </Text>
-              <Text>
+              </View>
+              <View style={[Style.detailRow, { flexDirection: 'row' }]}>
                 <Text style={{ fontWeight: '600' }}>
                   Total: {' '}
                 </Text>
                 <Text>
                   {Currency.display(+details.total, 'PHP')}
                 </Text>
-              </Text>
-              <Text>
+              </View>
+              <View style={[Style.detailRow, { flexDirection: 'row' }]}>
                 <Text style={{ fontWeight: '600' }}>
                   Tendered amount: {' '}
                 </Text>
                 <Text>
                   {Currency.display(+details.tendered_amount, 'PHP')}
                 </Text>
-              </Text>
-              <Text style={{ marginTop: 10 }}>
+              </View>
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <Text style={{ fontWeight: '600' }}>
                   Change: {' '}
                 </Text>
                 <Text>
                   {Currency.display(+details.change, 'PHP')}
                 </Text>
-              </Text>
+              </View>
             </View>
             <View style={Style.detailRow}>
               <TouchableOpacity onPress={() => this.setState({ viewItems: true })}>
