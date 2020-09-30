@@ -41,8 +41,8 @@ class Privacy extends Component {
         <View style={{flexDirection:'row',justifyContent:'center',height:70,padding:20,backgroundColor:Color.primary}}>
        <Text style={{fontWeight:'bold',fontSize:25, color: Color.white}}>Privacy Policy</Text>
        </View>
-      <View style={{padding:15}}>
-       <Text>We take your privacy very seriously. Any personal information you submit to us when setting up an account shall be subject to our Privacy and Cookie Policies which are incorporated into these Terms. You understand that through your use of the Services, you consent to the collection and use (to the extent stated in the Privacy and Cookie Policies) of this information. You further understand, acknowledge and agree that any personal information you provide on your Profile is in the public domain and is provided at your sole liability. We accept no responsibility whatsoever for the use of any personal information you share on your Profile by you or any other individual.</Text>
+      <View style={{padding:20}}>
+      <Text style={{textAlign:'justify'}}>We take your privacy very seriously. Any personal information you submit to us when setting up an account shall be subject to our Privacy and Cookie Policies which are incorporated into these Terms. You understand that through your use of the Services, you consent to the collection and use (to the extent stated in the Privacy and Cookie Policies) of this information. You further understand, acknowledge and agree that any personal information you provide on your Profile is in the public domain and is provided at your sole liability. We accept no responsibility whatsoever for the use of any personal information you share on your Profile by you or any other individual.</Text>
       </View>
     <Collapse style={{backgroundColor:Color.white}}>
       <CollapseHeader ds>
@@ -53,7 +53,7 @@ class Privacy extends Component {
       </CollapseHeader>
       <CollapseBody>
         <ListItem >
-          <Text>{`The information collected when you interact with our Program falls into two categories: \n\n (1) Personal information you voluntarily provide such as your name, address, email address, birthday, address or any other delivery address you provide, business information, business address, and contact number; and  \n\n(2) non-personal information collected through technology, which includes tracking information collected by us as well as third parties.`}</Text>
+        <Text style={{textAlign:'justify'}}>{`The information collected when you interact with our Program falls into two categories: \n\n (1) Personal information you voluntarily provide such as your name, address, email address, birthday, address or any other delivery address you provide, business information, business address, and contact number; and  \n\n(2) non-personal information collected through technology, which includes tracking information collected by us as well as third parties.`}</Text>
         </ListItem>
       </CollapseBody>
     </Collapse>
@@ -67,7 +67,7 @@ class Privacy extends Component {
       </CollapseHeader>
       <CollapseBody>
         <ListItem style={{flexDirection:'column'}}>
-          <Text>{`We may ask you to provide your personal information, demographic information or information about your preferences or interests when you: \n \n•	Register for an account on the Program`}</Text>
+        <Text style={{textAlign:'justify'}}>{`We may ask you to provide your personal information, demographic information or information about your preferences or interests when you: \n \n•	Register for an account on the Program`}</Text>
          
           
         </ListItem>
@@ -85,20 +85,20 @@ class Privacy extends Component {
       </CollapseHeader>
       <CollapseBody>
         <ListItem>
-          <Text>{`In addition to any information you provide directly to us, we and our third party service providers may use a variety of technologies that automatically collect certain tracking information when you interact with the Program or emails sent to you. By using our Program, you consent to our use of tracking technologies as described below:\n`}</Text>
+        <Text style={{textAlign:'justify'}}>{`In addition to any information you provide directly to us, we and our third party service providers may use a variety of technologies that automatically collect certain tracking information when you interact with the Program or emails sent to you. By using our Program, you consent to our use of tracking technologies as described below:\n`}</Text>
           
         </ListItem>
         <ListItem style={{flexDirection:'column',justifyContent:'flex-start',alignItems:'flex-start'}}>
           <Text style={{fontWeight:'bold'}}>Device Information</Text>
-          <Text>{`We may collect certain information about your computer or other device that you use to access the Program, including IP address, type, browser language, and location`}</Text>
+          <Text style={{textAlign:'justify'}}>{`We may collect certain information about your computer or other device that you use to access the Program, including IP address, type, browser language, and location`}</Text>
         </ListItem>
         <ListItem style={{flexDirection:'column',justifyContent:'flex-start',alignItems:'flex-start'}}>
           <Text style={{fontWeight:'bold'}}>Usage Information</Text>
-          <Text>{`We may log certain information about your use of the Program (e.g., log files, clickstream data, a reading history of the pages you view, your search terms and search results) and additional “traffic data” (e.g., time of access, date of access, software crash reports, session identification number, access times, referring website addresses).`}</Text>
+          <Text style={{textAlign:'justify'}}>{`We may log certain information about your use of the Program (e.g., log files, clickstream data, a reading history of the pages you view, your search terms and search results) and additional “traffic data” (e.g., time of access, date of access, software crash reports, session identification number, access times, referring website addresses).`}</Text>
         </ListItem>
         <ListItem style={{flexDirection:'column',justifyContent:'flex-start',alignItems:'flex-start'}}>
           <Text style={{fontWeight:'bold'}}>Cookies</Text>
-          <Text>{`Runway Express may place, view, and/or use cookies, web beacons, local storage objects or similar technologies to collect information about your use of the Program and other websites. This information may include information about the web pages you view, the links you click and other actions you take on our Program and in response to our advertising or email newsletters. Runway Express uses the information collected for various reasons, including to remember you and your preferences, track your use of our Program, manage access to and use of the Program, and provide a personalized experience.
+          <Text style={{textAlign:'justify'}}>{`Runway Express may place, view, and/or use cookies, web beacons, local storage objects or similar technologies to collect information about your use of the Program and other websites. This information may include information about the web pages you view, the links you click and other actions you take on our Program and in response to our advertising or email newsletters. Runway Express uses the information collected for various reasons, including to remember you and your preferences, track your use of our Program, manage access to and use of the Program, and provide a personalized experience.
 
 A “cookie” is a small text file stored on your computer or other device when you visit certain web pages that record your preferences and actions. Most web browsers automatically accept cookies, but, if you prefer, you can usually modify your browser setting to decline cookies. However, please note that refusing a cookie may limit your access to or use of the Sites.
 `}</Text>
@@ -111,13 +111,13 @@ A “cookie” is a small text file stored on your computer or other device when
     <Collapse>
       <CollapseHeader>
       <Separator bordered style={{height:70,flexDirection:'row',justifyContent:'space-between',marginRight:15,width:"100%"}}>
-        <Text style={{fontWeight:'bold',fontSize:13}}>SHARING YOUR PERSONAL DATA WITH THIRD PARTIES</Text>
+        <Text style={{fontWeight:'bold',paddingRight:20}}numberOfLines={2}>SHARING YOUR PERSONAL DATA WITH THIRD PARTIES</Text>
         <FontAwesomeIcon style={{position:'absolute',right:15,top:15}} icon={faChevronDown}/>
         </Separator>
       </CollapseHeader>
       <CollapseBody>
         <ListItem >
-    <Text>{`Runway Express shares your personal data only when it is necessary to offer the Service, legally required, or permitted by you.
+        <Text style={{textAlign:'justify'}}>{`Runway Express shares your personal data only when it is necessary to offer the Service, legally required, or permitted by you.
 
 We will provide personal data to hosting providers such as Amazon Web Services, and search engine providers such as Google.
 
@@ -132,7 +132,7 @@ Runway Express will share aggregate or anonymous data collected through the Serv
         </ListItem>
         <ListItem style={{flexDirection:'column',justifyContent:'flex-start',alignItems:'flex-start'}}>
           <Text style={{fontWeight:'bold'}}>	DATA SUBJECT RIGHTS AND DATA RETENTION</Text>
-          <Text>{`You can manage your account settings by clicking here, to update, amend, and correct your information.
+          <Text style={{textAlign:'justify'}}>{`You can manage your account settings by clicking here, to update, amend, and correct your information.
 
 You also have the following rights in relation to the personal data we hold about you, unless provided otherwise by local law:\n
 •	To request access to, or erasure of, the personal data we hold about you\n
@@ -158,7 +158,7 @@ Please note that some of these rights are not absolute. In some cases, we may re
       </CollapseHeader>
       <CollapseBody>
         <ListItem >
-    <Text>{`Please note that you may have cookies placed on your computer by third party websites that refer you to our Service. Although we do not share your personal data with these third-party websites unless it is reasonably necessary to offer the Service, they may be able to link certain non-personally identifiable information we transfer to them with personal data they previously collected from you. Please review the privacy policies of each website you visit to better understand their privacy practices. In addition, Runway Express would like to inform you that anytime you click on links (including advertising banners), which take you to third party websites, you will be subject to the third parties’ privacy policies. Any information submitted by you directly to these third parties is subject to that third party’s privacy policy.`}</Text>
+        <Text style={{textAlign:'justify'}}>{`Please note that you may have cookies placed on your computer by third party websites that refer you to our Service. Although we do not share your personal data with these third-party websites unless it is reasonably necessary to offer the Service, they may be able to link certain non-personally identifiable information we transfer to them with personal data they previously collected from you. Please review the privacy policies of each website you visit to better understand their privacy practices. In addition, Runway Express would like to inform you that anytime you click on links (including advertising banners), which take you to third party websites, you will be subject to the third parties’ privacy policies. Any information submitted by you directly to these third parties is subject to that third party’s privacy policy.`}</Text>
         </ListItem>
       </CollapseBody>
     </Collapse>
@@ -172,7 +172,7 @@ Please note that some of these rights are not absolute. In some cases, we may re
       </CollapseHeader>
       <CollapseBody>
         <ListItem >
-          <Text>{`The Service may contain links to other websites. We are not responsible for the privacy practices of other websites. We encourage users to be aware when they leave the Service to read the privacy statements of other websites that collect personally identifiable information. This Privacy Policy applies only to information collected by Runway Express via the Service.`}</Text>
+        <Text style={{textAlign:'justify'}}>{`The Service may contain links to other websites. We are not responsible for the privacy practices of other websites. We encourage users to be aware when they leave the Service to read the privacy statements of other websites that collect personally identifiable information. This Privacy Policy applies only to information collected by Runway Express via the Service.`}</Text>
         </ListItem>
       </CollapseBody>
     </Collapse>
@@ -186,7 +186,7 @@ Please note that some of these rights are not absolute. In some cases, we may re
       </CollapseHeader>
       <CollapseBody>
         <ListItem >
-          <Text>{`Runway Express has implemented administrative and technical safeguards it believes are appropriate to protect the confidentiality, integrity and availability of your personal data, User Photo, and access credentials. However, given sufficient resources, a determined attacker could defeat those safeguards and may, as a result, gain access to the data we seek to protect.`}</Text>
+        <Text style={{textAlign:'justify'}}>{`Runway Express has implemented administrative and technical safeguards it believes are appropriate to protect the confidentiality, integrity and availability of your personal data, User Photo, and access credentials. However, given sufficient resources, a determined attacker could defeat those safeguards and may, as a result, gain access to the data we seek to protect.`}</Text>
         </ListItem>
       </CollapseBody>
     </Collapse>
@@ -200,7 +200,7 @@ Please note that some of these rights are not absolute. In some cases, we may re
       </CollapseHeader>
       <CollapseBody>
         <ListItem >
-          <Text>{`The Service is not designed to respond to “do not track” signals sent by some browsers.`}</Text>
+        <Text style={{textAlign:'justify'}}>{`The Service is not designed to respond to “do not track” signals sent by some browsers.`}</Text>
         </ListItem>
       </CollapseBody>
     </Collapse>
@@ -214,7 +214,7 @@ Please note that some of these rights are not absolute. In some cases, we may re
       </CollapseHeader>
       <CollapseBody>
         <ListItem >
-          <Text>{`For all data privacy and support inquiries and any questions or concerns you have about this Privacy Policy, please contact Runway Express here support@runwayexpress.com.`}</Text>
+        <Text style={{textAlign:'justify'}}>{`For all data privacy and support inquiries and any questions or concerns you have about this Privacy Policy, please contact Runway Express here support@runwayexpress.com.`}</Text>
         </ListItem>
       </CollapseBody>
     </Collapse>

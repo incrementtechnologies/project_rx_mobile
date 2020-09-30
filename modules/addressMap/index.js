@@ -109,8 +109,6 @@ class SelectLocation extends Component{
 
 		})
     .catch(error => console.warn(error));
-    
-    
   }
 
   manageLocation = (location) => {

@@ -9,6 +9,7 @@ import Geolocation from '@react-native-community/geolocation'
  */
 export default getDeviceLocation = async () => {
   const pos = await new Promise((resolve, reject) => {
+    
     Geolocation.getCurrentPosition(resolve, reject);
   });
 
