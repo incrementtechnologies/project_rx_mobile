@@ -23,9 +23,6 @@ import Api from 'services/api/index.js'
 import Style from './Style'
 const height = Math.round(Dimensions.get('window').height);
 
-// Test Data for user location
-import { UserLocation } from '../homepage/data-test'
-
 class Merchant extends Component {
   constructor(props) {
     super(props);
