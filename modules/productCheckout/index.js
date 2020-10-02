@@ -193,7 +193,7 @@ class productCheckout extends Component{
     else if (products[index].quantity==1)
     {
     removeProductToCart(products[index])
-     products.splice(index,1)
+    products.splice(index,1)
      
     }
    console.log(products.length)
@@ -373,14 +373,37 @@ class productCheckout extends Component{
           
              {
                 first.map((product,index) => (
-                  <CheckoutCard key={product.id} details={product} onSubtract={()=>this.onSubtract(index)} onAdd={()=>this.onAdd(index)} />
-             
-                
+                  <CheckoutCard 
+                  key={product.id} 
+                  details={product} 
+                  onSubtract={()=>this.onSubtract(index)} 
+                  onAdd={()=>this.onAdd(index)} />
                 ))
               }
-            {rest.length>0 && this.state.showStatus && (<TouchableOpacity onPress={()=>this.renderAll()}><Text style={{marginTop:15,fontSize:15,color:'#FF5B04'}}>Show More({rest.length})</Text></TouchableOpacity> )}
-            {this.state.showStatus ? null : rest.map((product,index)  => (<CheckoutCard key={product.id} details={product} onSubtract={()=>this.onSubtract(index+2)} onAdd={()=>this.onAdd(index+2)} />))}
-            {this.state.showStatus? null : <TouchableOpacity onPress={()=>this.renderAll()}><Text style={{marginTop:15,fontSize:15,color:'#FF5B04'}}>Show Less</Text></TouchableOpacity>}
+
+            {rest.length>0 && this.state.showStatus && (
+            <TouchableOpacity 
+            onPress={()=>this.renderAll()}>
+              <Text style={{marginTop:15,fontSize:15,color:'#FF5B04'}}>
+                Show More({rest.length})
+              </Text>
+            </TouchableOpacity> )}
+
+            {this.state.showStatus ? null : rest.map((product,index)  => (
+            <CheckoutCard 
+            key={product.id} 
+            details={product} 
+            onSubtract={()=>this.onSubtract(index+2)} 
+            onAdd={()=>this.onAdd(index+2)} />
+            ))
+            }
+
+            {this.state.showStatus? null : 
+            <TouchableOpacity onPress={()=>this.renderAll()}>
+              <Text style={{marginTop:15,fontSize:15,color:'#FF5B04'}}>
+                Show Less
+              </Text>
+            </TouchableOpacity>}
          
           </View>
           <View style={{ marginTop:20,backgroundColor: "#FFFFFF" }}>
