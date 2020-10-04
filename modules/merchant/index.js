@@ -23,9 +23,6 @@ import Api from 'services/api/index.js'
 import Style from './Style'
 const height = Math.round(Dimensions.get('window').height);
 
-// Test Data for user location
-import { UserLocation } from '../homepage/data-test'
-
 class Merchant extends Component {
   constructor(props) {
     super(props);
@@ -48,39 +45,19 @@ class Merchant extends Component {
   }
 
   retrieve = () => {
-    this.setState({ isLoading: true })
-    const { merchant_id } = this.props.navigation.state.params
-
-    const shop_parameter = {
-      id: merchant_id,
-      latitude: UserLocation.latitude,
-      longitude: UserLocation.longitude
-    }
-
-    Api.request(Routes.dashboardRetrieveShops, shop_parameter, response => {
-      if (response.data.length) {
-        this.setState({
-          merchant_data: response.data[0]
-        })
-      }   
-    }, (error) => {
-      console.log({ error })
-      this.setState({
-        isLoading: false,
-        isError: true,
-        errorMessage: 'Error fetching merchant'
-      })
-    });
+    const { merchant_data } = this.props.navigation.state.params
+    this.setState({ isLoading: true, merchant_data })
     
     const products_parameter = {
       inventory_type: null,
-      account_id: merchant_id,
+      account_id: merchant_data.id,
       condition : [{
           column: 'merchant_id',
           clause: '=',
-          value: merchant_id
+          value: merchant_data.id
       }]
     }
+
     Api.request(Routes.productsRetrieve, products_parameter, response => {
       const categories = _.uniqBy(response.data, 'tags').map(data => data.tags)
       if (response.data.length) {
@@ -168,6 +145,11 @@ class Merchant extends Component {
     const isDifferentMerchant = _.uniqBy([...data, product], 'merchant_id').length > 1
     if (isDifferentMerchant) {
       Alert.alert('Notice', 'Sorry, ordering to multiple merchants is not allowed yet')
+      return
+    }
+
+    if (product.price == null) {
+      Alert.alert('Notice', 'Sorry, this product does not have a price yet, please choose another product')
       return
     }
 

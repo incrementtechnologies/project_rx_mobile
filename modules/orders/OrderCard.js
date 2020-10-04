@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableHighlight } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCheckCircle, faTimesCircle, faMinusCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { Color } from 'common';
@@ -35,7 +35,7 @@ class OrderCard extends Component {
     }
 
     return (
-      <TouchableOpacity onPress={() => this.goToOrderDetails(data)}>
+      <TouchableHighlight onPress={() => this.goToOrderDetails(data)}>
         <View style={Style.orderCard}>
           <View style={{ flex: 0.8}}>
             <View>
@@ -67,7 +67,7 @@ class OrderCard extends Component {
             </View>
           </View>
         </View>
-      </TouchableOpacity>
+      </TouchableHighlight>
     )
   }
 }

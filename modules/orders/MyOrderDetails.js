@@ -115,7 +115,7 @@ class MyOrderDetails extends Component {
               </View>
             </View>
             <View style={Style.detailRow}>
-              <View style={{ flexDirection: 'row' }}>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                 <Text style={{ fontWeight: '600' }}>
                   Order Number: {' '}
                 </Text>
@@ -135,7 +135,7 @@ class MyOrderDetails extends Component {
               </View>
             </View>
             <View style={Style.detailRow}>
-              <View>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                 <Text style={{ fontWeight: '600', marginBottom: 2 }}>
                   Delivery to: {' '}
                 </Text>
