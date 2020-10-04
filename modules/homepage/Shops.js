@@ -161,7 +161,7 @@ class Shops extends Component {
                 <View style={{ paddingTop: 10 }}>
                   {
                     data.map((merchant, id) => (
-                      <TouchableOpacity key={id} onPress={() => navigate('Merchant', { merchant_id: merchant.id })}>
+                      <TouchableOpacity key={id} onPress={() => navigate('Merchant', { merchant_data: merchant })}>
                         <ShopThumbnail details={merchant} />
                       </TouchableOpacity>
                     ))

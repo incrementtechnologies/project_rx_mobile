@@ -23,19 +23,14 @@ export default {
     color: '#fff'
   },
   orderHistory: {
-    flex: 1,
-    padding: 20
+    flex: 1
   },
   orderCard: {
     width: '100%',
+    backgroundColor: Color.white,
     flexDirection: 'row',
-    height: 100,
-    padding: 10,
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: Color.gray,
-    borderRadius: 10,
-    marginBottom: 20
+    minHeight: 100,
+    padding: 20,
   },
   myOrderDetailsContainer: {
     flex: 1,
