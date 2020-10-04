@@ -2,17 +2,60 @@ import React, { Component } from 'react';
 import {
   ScrollView,
   View,
-  Text
+  Text,
+  Dimensions,
+  TouchableHighlight,
+  Alert
 } from 'react-native';
 import { NavigationActions } from 'react-navigation'
 import { connect } from 'react-redux';
+import SwipeableFlatList from 'react-native-swipeable-list';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faBan } from '@fortawesome/free-solid-svg-icons';
+import { faBan, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { Spinner } from 'components';
 import OrderCard from './OrderCard';
 import Api from 'services/api';
 import { Routes, Color } from 'common';
 import Style from './Style';
+const width = Math.round(Dimensions.get('window').width);
+
+const ItemOptions = ({ goToMessenger, status }) => {
+  return (
+    <View style={{
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+    }}>
+      <TouchableHighlight
+        style={{
+          width: (width / 5),
+          backgroundColor: status === 'completed' ? Color.gray : Color.danger,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+        onPress={() => {
+          if (status === 'completed') return
+          goToMessenger()
+        }}
+        underlayColor={Color.gray}
+      >
+        <View style={{
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <FontAwesomeIcon
+            icon={ faEnvelope }
+            style={ {color: Color.white }}
+            size={24}
+          />
+          <Text style={{ color: Color.white }}>
+            Message
+          </Text>
+        </View>
+      </TouchableHighlight>
+    </View>
+  )
+}
 
 class MyOrders extends Component {
   constructor(props){
@@ -65,6 +108,27 @@ class MyOrders extends Component {
     })
   }
 
+  goToMessenger(details) {
+    this.props.navigation.navigate('MessengerMessages', { 
+      checkoutData: {
+        id: details.id,
+        code: details.code,
+        merchantId: details.merchant_id
+      },
+      messengerHeaderTitle: `***${details.code.slice(-8)}`
+    });
+  }
+
+  FlatListItemSeparator = () => {
+    return (
+      <View style={{
+        height: 0.5,
+        width: width,
+        backgroundColor: Color.gray
+      }}/>
+    );
+  };
+
   render() {
     const { user, theme } = this.props.state
     const { isLoading, data } = this.state
@@ -98,9 +162,30 @@ class MyOrders extends Component {
             :
             <View style={Style.orderHistory}>
               {
-                data.length > 0 ? data.map((delivery, idx) => (
-                  <OrderCard key={idx} data={delivery} {...this.props} />
-                )) : isLoading === false && (
+                data.length > 0 ? (
+                  <SwipeableFlatList
+                    data={data}
+                    renderItem={(delivery) => (
+                        <OrderCard
+                          key={delivery.index}
+                          data={delivery.item}
+                          {...this.props}
+                        />
+                    )}
+                    maxSwipeDistance={width / 5}
+                    renderQuickActions={(delivery) => (
+                      <ItemOptions
+                        status={delivery.item.status}
+                        goToMessenger={() => this.goToMessenger(delivery.item)}
+                      />
+                    )}
+                    contentContainerStyle={{
+                      flexGrow: 1
+                    }}
+                    shouldBounceOnMount={true}
+                    ItemSeparatorComponent={this.FlatListItemSeparator}
+                  />
+                ) : isLoading === false && (
                   <View style={{ marginTop: '20%', alignItems: 'center' }}>
                     <Text>Looks like you don't have any orders yet</Text>
                     <Text>What are you waiting for? {''}

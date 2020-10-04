@@ -148,6 +148,11 @@ class Merchant extends Component {
       return
     }
 
+    if (product.price == null) {
+      Alert.alert('Notice', 'Sorry, this product does not have a price yet, please choose another product')
+      return
+    }
+
     // checking if item is already added in cart (REMOVING IF FOUND)
     const isRemoving = data.find(item => item.id === product.id)
   
