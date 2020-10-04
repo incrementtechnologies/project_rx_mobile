@@ -78,7 +78,12 @@ class productCheckout extends Component{
      console.log(this.props.state.user)
        Api.request(Routes.cartsRetrieve, parameter, response => {
          console.log("merchant Data",response.data)
-        this.setState({data:JSON.parse(response.data[0].items)})
+         let products=JSON.parse(response.data[0].items)
+         products.forEach(product=>
+          {
+            product.price!=null ? this.setState({data:JSON.parse(response.data[0].items)}) : this.setState({data:JSON.parse(response.data[0].items),priceMissing:true});
+          })
+      
        }, error => {
          console.log({ error })
        })
@@ -222,6 +227,8 @@ class productCheckout extends Component{
    
   }
 
+ 
+
   onCheckOut=(totalPrice)=>
   {
     const paymentType=this.state.paymentType.toLowerCase();
@@ -285,6 +292,9 @@ class productCheckout extends Component{
         console.log(this.state.data)
       })
       }
+      this.state.data.map(product=>{
+          this.props.removeProductToCart(product)      
+      })
     }
    
   }
@@ -302,17 +312,139 @@ class productCheckout extends Component{
       this.setState({error:0})
     }
   }
+
+  clearCart=()=>
+  {
+    let products=[...this.state.data];
+    products.map(product=>{
+      if(product.price==null)
+      {
+        this.props.removeProductToCart(product)
+      }
+    })
+    products=products.filter(def=>{
+      return def.prices!=null
+    })
+    
+    console.log(products)
+    // console.log(this.state.data)
+    this.setState({data:products,products})
+    const stringifyItems = JSON.stringify(products)
+    
+    const parameter = {
+      account_id: this.props.state.user.id,
+      items: stringifyItems
+    }
+
+    this.setState({ isLoading: true })
+    Api.request(Routes.cartsCreate, parameter, response => {
+      console.log(response)
+      this.setState({ isLoading: false,priceMissing:false })
+      
+    }, error => {
+      console.log({ error })
+    })
+    this.setState({ isLoading: false })
+
+  }
+
+  checkOutButton=(totalPrices)=>
+  {
+    return(
+      <View style={{justifyContent:'center',width:'100%',flexDirection:'row'}}>
+        {this.state.priceMissing==true? 
+         <TouchableOpacity 
+              style={{
+                 position:'absolute',
+                 justifyContent: 'center',
+                 height: 50,
+                 width: '80%',
+                 borderRadius:10,
+                 bottom:20,
+                 backgroundColor: this.state.error ? '#CCCCCC' : '#FF5B04',
+                 
+               }} 
+            onPress={() => {this.clearCart()}}
+          >
+          <Text style={{
+                 color:'white',
+                 alignSelf:'center',
+                 
+               }}>
+            Clear Items
+          </Text>
+        </TouchableOpacity>
+     : this.state.data[0]==null ? 
+          <React.Fragment>
+             <TouchableOpacity
+             onPress={() => this.props.navigation.navigate('drawerStack')}
+             style={{
+              position:'absolute',
+              justifyContent: 'center',
+              height: 50,
+              width: '80%',
+              borderRadius:10,
+              bottom:20,
+              backgroundColor: this.state.error ? '#CCCCCC' : '#FF5B04',
+              
+            }}>
+          <Text style={{
+                 color:'white',
+                 alignSelf:'center',
+                 
+               }}>
+            Add Items to Cart
+          </Text>
+        </TouchableOpacity>
+          </React.Fragment> :  
+      
+      <React.Fragment>
+      <TouchableOpacity
+               onPress={() => this.onCheckOut(totalPrices)} 
+               style={{
+                 position:'absolute',
+                 justifyContent: 'center',
+                 height: 50,
+                 width: '80%',
+                 borderRadius:10,
+                 bottom:20,
+                 backgroundColor: this.state.error ? '#CCCCCC' : '#FF5B04',
+                 
+               }}
+               disabled={this.state.error ? true : false}
+               >
+                 <View style={{flexDirection:'row',justifyContent:'space-between',marginRight:5}}>
+               <View style={Style.circleContainer}><Text style={{alignSelf:'center',color:'#FF5B04'}}>{this.state.data.length + this.state.productNumber}</Text></View>
+               <Text style={{
+                 color:'white',
+                 alignSelf:'center',
+                 marginLeft:40,
+               }}>Place Order</Text>
+                   <Text style={{
+                 color:'white',
+                 
+               }}>₱{this.state.type=="Delivery"?totalPrices+50:totalPrices}</Text>
+              </View>
+         </TouchableOpacity>
+         </React.Fragment>}
+    
+      </View> 
+    )
+  }
   render() {
     const {navigate} = this.props.navigation;
     const first=this.state.data.slice(0,2);
     const rest=this.state.data.slice(2);
     let totalPrices=0
     this.state.data.forEach(product=>{
-      totalPrices+=product.quantity*product.price[0].price
+      (product.price!=null) &&
+      (totalPrices+=product.quantity*product.price[0].price)
     })
     return (
       <View style={{height:'100%',backgroundColor:'white'}}>
-         {this.state.isLoading ? <Spinner mode="overlay"/> : <ScrollView
+         {this.state.isLoading ? <Spinner mode="overlay"/> : 
+          this.state.data[0]!=null ? 
+         <ScrollView
       style={Style.ScrollView}
       onScroll={event => {
         if (event.nativeEvent.contentOffset.y <= 0) {
@@ -350,22 +482,12 @@ class productCheckout extends Component{
     
         <View style={Style.TitleContainer}>
         <Text style={{fontSize:15}}>Your Order</Text>
-        {this.state.data[0]!=null ? 
-        (
-        <TouchableOpacity onPress={() => this.props.navigation.navigate('Merchant',this.state.data[0])}>
+         
+        <TouchableOpacity onPress={() => {this.props.navigation.navigate('Merchant',this.state.data[0])}}>
           <Text style={{fontSize:15,color:'#FF5B04'}}>
             Add more Items
           </Text>
         </TouchableOpacity>
-        ) :
-        (
-        <TouchableOpacity onPress={() => this.props.navigation.navigate('drawerStack')}>
-          <Text style={{fontSize:15,color:'#FF5B04'}}>
-            Add Items to Cart
-          </Text>
-        </TouchableOpacity>
-        )
-        }
         
         </View>
         <Divider style={{height:3}}/>
@@ -412,6 +534,7 @@ class productCheckout extends Component{
     color="#CCCCCC"
     backgroundColor="#FFFFF"
     tearSize={5}/>
+     
   <View
     style={{ backgroundColor: "#CCCCC",padding:15 }}
     onLayout={e => {
@@ -421,7 +544,7 @@ class productCheckout extends Component{
    <View style={{ flexDirection:'row', justifyContent:'space-between'}}>
       <Text style={{fontSize:15,fontWeight:'bold'}}>Subtotal</Text>
       <Text style={{fontSize:15,fontWeight:'bold'}}>{totalPrices}</Text>
-      </View>
+    </View>
      {this.state.type=="Delivery" ?  <View style={{ flexDirection:'row', justifyContent:'space-between',marginTop:15}}>
       <Text style={{fontSize:15,fontWeight:'bold'}}>Delivery</Text>
       <Text style={{fontSize:15,fontWeight:'bold'}}>₱50</Text>
@@ -438,23 +561,31 @@ class productCheckout extends Component{
     tearSize={5}
     style={{marginTop:15}}
     backgroundColor="#FFFFFF"/>
-      </View>
+  </View>
 
 </View> 
-{this.state.error ? <Text style={{height: 25,
-    
-    alignSelf: 'center',
-    justifyContent: 'center',
-    color: Color.danger}}>Money on Hand is not enough for the Order!</Text> : null}
-           {this.state.paymentType=="cod" && ( <TextInput
-              keyboardType={"numeric"}
-              style={{padding:10,borderWidth:1,borderColor: this.state.error? Color.danger : '#CCCCCC',borderRadius:15,marginRight:50,marginLeft:50,marginBottom:10}}
-              onChangeText={(amount_tendered) => this.inputErrorCheck(amount_tendered,totalPrices)}
-              value={this.state.amount_tendered}
-              placeholder={'Money on Hand'}
-            />)}
+{this.state.error ? 
+<Text style={{height: 25,
+ alignSelf: 'center',
+justifyContent: 'center',
+ color: Color.danger}}
+ >Money on Hand is not enough for the Order!
+ </Text> : 
+ null}
+
+{ this.state.paymentType=="cod" && 
+(
+<TextInput
+keyboardType={"numeric"}
+style={{padding:10,borderWidth:1,borderColor: this.state.error? Color.danger : '#CCCCCC',borderRadius:15,marginRight:50,marginLeft:50,marginBottom:10}}
+onChangeText={(amount_tendered) => this.inputErrorCheck(amount_tendered,totalPrices)}
+value={this.state.amount_tendered}
+placeholder={'Money on Hand'}
+/>
+)
+}
 <TouchableOpacity onPress={()=>this.props.navigation.navigate('paymentOptions',{paymentType:this.state.paymentType})}>
-<View style={{padding:15,borderWidth:1,borderColor:'#CCCCCC',borderRadius:15,marginRight:50,marginLeft:50}}>
+<View style={{padding:15,borderWidth:1,borderColor:'#CCCCCC',borderRadius:15,marginRight:50,marginLeft:50,marginBottom:90}}>
   <View style={{flexDirection:'row', justifyContent:'space-between',marginTop:-10}}>
   <Text>Payment Options</Text>
   <Text style={{color:Color.primary}}>Change</Text>
@@ -465,37 +596,21 @@ class productCheckout extends Component{
   </View>
 </View>
 </TouchableOpacity>
-     </ScrollView>}
+
+     </ScrollView>: 
+      <View style={{ marginTop: '20%', alignItems: 'center',marginBottom:100 }}>
+      <Text>Looks like you don't have any orders yet</Text>
+      <Text>What are you waiting for? {''}
+        <Text
+          onPress={() => navigate('Homepage')}
+          style={{ color: Color.primary, fontWeight: 'bold' }}
+        >
+          Order now!
+        </Text>
+      </Text>
+    </View>}
      {this.state.isLoading ? null :   
-     <View style={{justifyContent:'center',width:'100%',flexDirection:'row',backgroundColor:'white',height:90}}>
-     <TouchableOpacity
-              onPress={() => this.onCheckOut(totalPrices)} 
-              style={{
-                position:'absolute',
-                justifyContent: 'center',
-                height: 50,
-                width: '80%',
-                borderRadius:10,
-                bottom:20,
-                backgroundColor: this.state.error ? '#CCCCCC' : '#FF5B04',
-                
-              }}
-              disabled={this.state.error ? true : false}
-              >
-                <View style={{flexDirection:'row',justifyContent:'space-between',marginRight:5}}>
-              <View style={Style.circleContainer}><Text style={{alignSelf:'center',color:'#FF5B04'}}>{this.state.data.length + this.state.productNumber}</Text></View>
-              <Text style={{
-                color:'white',
-                alignSelf:'center',
-                marginLeft:40,
-              }}>Place Order</Text>
-                  <Text style={{
-                color:'white',
-                
-              }}>₱{this.state.type=="Delivery"?totalPrices+50:totalPrices}</Text>
-             </View>
-        </TouchableOpacity>
-            </View> }
+      this.checkOutButton(totalPrices) }
    
       
        

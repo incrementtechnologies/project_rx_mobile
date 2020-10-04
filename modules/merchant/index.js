@@ -56,12 +56,13 @@ class Merchant extends Component {
       latitude: UserLocation.latitude,
       longitude: UserLocation.longitude
     }
+
     Api.request(Routes.dashboardRetrieveShops, shop_parameter, response => {
       console.log("hello")
       if (response.data.length) {
         console.log(response.data)
         this.setState({
-          merchant_data: response.data[0][0]
+          merchant_data: response.data[0]
         })
       }   
     }, (error) => {

@@ -91,8 +91,8 @@ class Shops extends Component {
     }
 
     Api.request(Routes.dashboardRetrieveShops, parameter, response => {
-      if (response.data.length > 0 && response.data[0].length > 0 ) {
-        const joined = _.uniqBy([...this.state.data, ...response.data[0]], 'id');
+      if (response.data.length) {
+        const joined = _.uniqBy([...this.state.data, ...response.data], 'id');
         this.setState({
           isLoading: false,
           data: joined,
