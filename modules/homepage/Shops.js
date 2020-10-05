@@ -34,7 +34,11 @@ class Shops extends Component {
   }
 
   componentDidMount() {
-    this.retrieve({ offset: this.state.offset })
+    const { location } = this.props.state
+    
+    if (location) {
+      this.retrieve({ offset: this.state.offset, changedAddress: location })
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -60,27 +64,8 @@ class Shops extends Component {
       this.setState({ isFetchingMore: true })
     }
 
-    let latitude = null
-    let longitude = null
-    if (user == null) {
-      const deviceCoords = await GetDeviceLocation()
-      latitude = deviceCoords.latitude
-      longitude = deviceCoords.longitude 
-    } else {
-      if (changedAddress) {
-        latitude = changedAddress.latitude
-        longitude = changedAddress.longitude 
-      } else {
-        if (location) {
-          latitude = location.latitude
-          longitude = location.longitude 
-        } else {
-          const deviceCoords = await GetDeviceLocation()
-          latitude = deviceCoords.latitude
-          longitude = deviceCoords.longitude 
-        }
-      }
-    }
+    const latitude = changedAddress.latitude
+    const longitude = changedAddress.longitude
 
     const parameter = {
       limit: limit,

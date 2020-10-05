@@ -1,23 +1,13 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Dimensions,
-  Text
-} from 'react-native';
-import { NavigationActions } from 'react-navigation';
+import { View } from 'react-native';
 import { connect } from 'react-redux';
 import Style from './Style.js';
-import { Routes, Color, Helper, BasicStyles } from 'common';
-import Api from 'services/api/index.js';
 import Pagination from 'components/Pagination';
-import Currency from 'services/Currency.js';
 import { Pager, PagerProvider } from '@crowdlinker/react-native-pager';
 import Featured from './Featured'
 import Categories from './Categories'
 import Shops from './Shops'
-
-const width = Math.round(Dimensions.get('window').width);
-const height = Math.round(Dimensions.get('window').height);
+import GetDeviceLocation from './getDeviceLocation';
 
 class Homepage extends Component {
   constructor(props) {
@@ -27,9 +17,13 @@ class Homepage extends Component {
     };
   }
 
-  componentDidMount() {
-  }
+  
+  async componentDidMount() {
+    const { setLocation } = this.props
 
+    const deviceCoords = await GetDeviceLocation()
+    setLocation({ ...deviceCoords, route: "Current Location" })
+  }
 
   render() {
     const { activeIndex } = this.state;
@@ -63,7 +57,9 @@ const mapStateToProps = state => ({state: state});
 
 const mapDispatchToProps = dispatch => {
   const {actions} = require('@redux');
-  return {};
+  return {
+    setLocation: (location) => dispatch(actions.setLocation(location)),
+  };
 };
 
 export default connect(
