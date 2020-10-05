@@ -232,6 +232,7 @@ const reducer = (state = initialState, action) => {
         cart: removeCart
       }
     case types.SET_THEME:
+      console.log('tertiary', theme.tertiary)
       storeData('primary', theme.primary);
       storeData('secondary', theme.secondary);
       storeData('tertiary', theme.tertiary);
