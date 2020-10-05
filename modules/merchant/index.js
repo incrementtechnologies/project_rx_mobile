@@ -49,6 +49,7 @@ class Merchant extends Component {
     const { merchant_data, merchant_id } = this.props.navigation.state.params
     
     this.setState({ isLoading: true })
+<<<<<<< HEAD
     if (merchant_id) {
       const shop_parameter = {
         id: merchant_id,
@@ -63,6 +64,22 @@ class Merchant extends Component {
         }   
       }, (error) => {
         console.log({ error })
+=======
+    const { merchant_id } = this.props.navigation.state.params
+
+    const shop_parameter = {
+      id: merchant_id,
+      latitude: UserLocation.latitude,
+      longitude: UserLocation.longitude
+    }
+
+    console.log('shop_parameter', shop_parameter);
+
+    Api.request(Routes.dashboardRetrieveShops, shop_parameter, response => {
+      console.log("hello")
+      if (response.data.length) {
+        console.log(response.data)
+>>>>>>> update
         this.setState({
           isLoading: false,
           isError: true,
