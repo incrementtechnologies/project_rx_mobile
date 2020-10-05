@@ -64,8 +64,11 @@ class ChangeAddress extends Component {
       this.setState({isLoading: false})
       if(response.data.length > 0){
         const { setLocation } = this.props;
-        setLocation(response.data[0])
+        const { location } = this.props.state;
         this.setState({data: response.data})
+        if(location == null){
+          setLocation(response.data[0])
+        }
       }
     },error => {
       console.log(error)
