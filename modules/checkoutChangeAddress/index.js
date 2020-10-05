@@ -113,7 +113,7 @@ class ChangeAddress extends Component {
 
   render() {
     const {isLoading, data, selected} = this.state;
-    const { user, location } = this.props.state;
+    const { user, location, theme } = this.props.state;
     return (
       <View style={{flex:1}}>
       <ScrollView 
@@ -134,11 +134,11 @@ class ChangeAddress extends Component {
                       underlayColor={Color.gray}
                       >
                       <View style={[Style.TextContainer, {
-                        backgroundColor: Color.white
+                        backgroundColor: location && location.id === item.id? Color.primary : Color.white
                       }]}>
                         <Text
                           style={[BasicStyles.normalText, {
-                            color: location && location.id === item.id? Color.primary : Color.black,
+                            color: location && location.id === item.id? Color.white : Color.black,
                             fontWeight: 'bold',
                             paddingTop: 15
                           }]}>
@@ -148,7 +148,7 @@ class ChangeAddress extends Component {
                         <Text
                           style={[BasicStyles.normalText, {
                             paddingBottom: 15,
-                            color: location && location.id === item.id? Color.primary : Color.black
+                            color: location && location.id === item.id? Color.white : Color.black
                           }]}>
                           {item.locality + ', ' + item.country}
                         </Text>
@@ -169,7 +169,9 @@ class ChangeAddress extends Component {
         right: 5
       }}>
         <TouchableOpacity onPress={()=>this.goTo()}>
-           <View style={Style.circleButton}>
+           <View style={[Style.circleButton, {
+            backgroundColor: theme ? theme.primary : Color.primary
+           }]}>
            <View style={{alignItems:'center'}}>
                     <FontAwesomeIcon size={25}icon={faPlus} color={'white'}/>
            </View>
