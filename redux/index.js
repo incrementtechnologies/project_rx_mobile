@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import Data from 'services/Data';
-import { Helper } from 'common';
+import { Helper, Color } from 'common';
 
 const types = {
   LOGOUT: 'LOGOUT',
@@ -232,9 +232,13 @@ const reducer = (state = initialState, action) => {
         cart: removeCart
       }
     case types.SET_THEME:
+      console.log('tertiary', theme.tertiary)
       storeData('primary', theme.primary);
       storeData('secondary', theme.secondary);
       storeData('tertiary', theme.tertiary);
+      Color.setPrimary(theme.primary);
+      Color.setSecondary(theme.secondary);
+      Color.setTertiary(theme.tertiary);
       return{
         ...state,
         theme

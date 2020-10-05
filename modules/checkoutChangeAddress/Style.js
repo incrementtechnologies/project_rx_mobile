@@ -67,13 +67,12 @@ export default {
       paddingLeft: 20,
       backgroundColor: '#fff',
       color: '#424242',
-      
   },
   circleButton:{
     height: 60,
     width: 60,  
     borderRadius: 30, 
-    backgroundColor:'#FF5B04',
+    backgroundColor: Color.primary,
     justifyContent:'center',
   },
 }

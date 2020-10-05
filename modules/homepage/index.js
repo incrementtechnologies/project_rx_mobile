@@ -11,6 +11,8 @@ import Categories from './Categories'
 import Shops from './Shops'
 import { Helper } from 'common';
 import GetDeviceLocation from './getDeviceLocation';
+import { Helper } from 'common';
+import AsyncStorage from '@react-native-community/async-storage';
 
 class Homepage extends Component {
   constructor(props) {
@@ -39,8 +41,35 @@ class Homepage extends Component {
     const { setLocation } = this.props
     const deviceCoords = await GetDeviceLocation()
     setLocation({ ...deviceCoords, route: "Current Location" })
-
     this.getToken()
+    this.getTheme()
+  }
+
+  getTheme = async () => {
+    try {
+      const primary = await AsyncStorage.getItem(Helper.APP_NAME + 'primary');
+      const secondary = await AsyncStorage.getItem(Helper.APP_NAME + 'secondary');
+      const tertiary = await AsyncStorage.getItem(Helper.APP_NAME + 'tertiary');
+      console.log('primary', primary)
+      if(primary != null && secondary != null && tertiary != null) {
+        const { setTheme } = this.props;
+        setTheme({
+          primary: primary,
+          secondary: secondary,
+          tertiary: tertiary
+        })
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  storeData = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(`${Helper.APP_NAME}primary`, value)
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   render() {
@@ -77,6 +106,7 @@ const mapDispatchToProps = dispatch => {
   const {actions} = require('@redux');
   return {
     setLocation: (location) => dispatch(actions.setLocation(location)),
+    setTheme: (theme) => dispatch(actions.setTheme(theme))
   };
 };
 
