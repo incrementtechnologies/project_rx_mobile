@@ -17,6 +17,8 @@ import { Card, MainCard } from 'components/ProductThumbnail'
 import { Color, Routes } from 'common'
 import Api from 'services/api/index.js'
 import Style from './Style.js';
+import GetDeviceLocation from './getDeviceLocation';
+
 const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
 
@@ -41,33 +43,51 @@ class Categories extends Component {
   }
 
   componentDidMount() {
-    this.retrieve({ newOffset: this.state.offset })
+    const { location } = this.props.state
+
+    if (location) {
+      this.retrieve({ newOffset: this.state.offset, changedAddress: location })
+    }
   }
 
-  retrieve = ({ newOffset }) => {
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const currentLoc = this.props.state.location
+    const nextLoc = nextProps.state.location
+    const isEqual = _.isEqual(currentLoc, nextLoc)
+
+    if (!isEqual) {
+      this.setState({ categories: [], products: [], offset: 0 })
+      this.retrieve({ newOffset: 0, changedAddress: nextLoc })
+    }
+  }
+
+  retrieve = async ({ newOffset, changedAddress = { latitude: null, longitude: null } }) => {
     const { limit, productsLimit } = this.state
+
+    const latitude = changedAddress.latitude
+    const longitude = changedAddress.longitude
+
     this.setState({ isLoading: true, isError: false })
-    Api.request(Routes.dashboardRetrieveCategoryList, { limit, offset: newOffset },
-    (response) => {
+    Api.request(Routes.dashboardRetrieveCategoryList, { limit, offset: newOffset }, (response) => {
       const AllCategories = _.uniqBy([...this.state.categories, ...response ], 'category')
       const newCategories = [...response]
 
       if (newCategories.length > 0) {
         this.setState({ categories: AllCategories, offset: newOffset })
         const parameter = {
-          condition: newCategories.map(category => {
+          condition: newCategories.map(data => {
             return { 
               column: 'category',
               clause: '=',
-              value: category
+              value: data.category
             }
           }),
-          latitude: UserLocation.latitude,
-          longitude: UserLocation.longitude,
+          latitude,
+          longitude,
           limit: productsLimit,
           offset: 0,
         }
-    
+
         Api.request(Routes.dashboardRetrieveCategoryProducts, parameter, response => {
           if (response.data.length) {
             const data = response.data.map((products, idx) => {
@@ -118,6 +138,7 @@ class Categories extends Component {
   };
 
   retrieveMoreProducts({ newOffset, category }) {
+    const { location } = this.props.state
     const { productsLimit, products } = this.state;
     const ExistingData = products.find(product => product.category === category)
 
@@ -127,8 +148,8 @@ class Categories extends Component {
         clause: '=',
         value: category
       }],
-      latitude: UserLocation.latitude,
-      longitude: UserLocation.longitude,
+      latitude: location.latitude,
+      longitude: location.longitude,
       limit: productsLimit,
       offset: newOffset,
     }
@@ -153,7 +174,7 @@ class Categories extends Component {
         this.setState({ isLoading: false, isFetchingMoreProduct: false })
       }
     }, (error) => {
-      console.error({ errorViewMoreProducts: error })
+      console.log({ errorViewMoreProducts: error })
       this.setState({
         isLoading: false,
         isError: true,
@@ -343,7 +364,7 @@ class Categories extends Component {
                           )
                         : (
                             <View style={{ justifyContent: 'center', alignItems: 'center', height: 100}}>
-                              <Text>Coming Soon!</Text>
+                              <Text>No products available in your area</Text>
                             </View>
                           )
                       }

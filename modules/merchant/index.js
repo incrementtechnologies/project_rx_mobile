@@ -13,7 +13,7 @@ import { NavigationActions } from 'react-navigation'
 import { connect } from 'react-redux';
 import _, { isError } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faStar, faStopwatch, faCircle, faShoppingCart, faImage, faBan } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faStopwatch, faCircle, faShoppingCart, faImage } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { Spinner} from 'components'
 import InView from './InViewPort'
@@ -45,34 +45,37 @@ class Merchant extends Component {
   }
 
   retrieve = () => {
-    this.setState({ isLoading: true })
-    const { merchant_id } = this.props.navigation.state.params
-
-    const shop_parameter = {
-      id: merchant_id,
-      latitude: UserLocation.latitude,
-      longitude: UserLocation.longitude
-    }
-
-    Api.request(Routes.dashboardRetrieveShops, shop_parameter, response => {
-      console.log("hello")
-      if (response.data.length) {
-        console.log(response.data)
-        this.setState({
-          merchant_data: response.data[0]
-        })
-      }   
-    }, (error) => {
-      console.log({ error })
-      this.setState({
-        isLoading: false,
-        isError: true,
-        errorMessage: 'Error fetching merchant'
-      })
-    });
-    const { merchant_data } = this.props.navigation.state.params
-    this.setState({ isLoading: true, merchant_data })
+    const { location } = this.props.state
+    const { merchant_data, merchant_id } = this.props.navigation.state.params
     
+    this.setState({ isLoading: true })
+    if (merchant_id) {
+      const shop_parameter = {
+        id: merchant_id,
+        latitude: location.latitude,
+        longitude: location.longitude
+      }
+      
+      Api.request(Routes.dashboardRetrieveShops, shop_parameter, response => {
+        if (response.data.length) {
+          this.setState({ merchant_data: response.data[0] })
+          this.retrieveProducts(response.data[0])
+        }   
+      }, (error) => {
+        console.log({ error })
+        this.setState({
+          isLoading: false,
+          isError: true,
+          errorMessage: 'Error fetching merchant'
+        })
+      });
+    } else {
+      this.setState({ merchant_data })
+      this.retrieveProducts(merchant_data)
+    }
+  }
+
+  retrieveProducts = (merchant_data) => {
     const products_parameter = {
       inventory_type: null,
       account_id: merchant_data.id,
@@ -369,6 +372,19 @@ class Merchant extends Component {
                                         >
                                           { product.title }
                                         </Text>
+                                        {
+                                          product.preparation_time && (
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
+                                              <Text style={{ fontSize: 11, color: Color.darkGray }}>
+                                                {`Preparation time: `}
+                                              </Text>
+                                              <FontAwesomeIcon icon={faStopwatch} size={11} color={Color.darkGray} />
+                                              <Text style={{ fontSize: 11, color: Color.darkGray }}>
+                                                {` ${product.preparation_time}min`}
+                                              </Text>
+                                            </View>
+                                          )
+                                        }
                                         {
                                           product.price && product.price.length && (
                                             <Text style={Style.productPrice} numberOfLines={1}>

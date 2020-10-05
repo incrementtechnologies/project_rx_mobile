@@ -6,8 +6,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   TextInput,
-  ColorPropType,
-  Button,
   Text
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -20,8 +18,8 @@ import Api from 'services/api/index.js'
 import { MainCard, Feature, MainFeature, PromoCard } from 'components/ProductThumbnail'
 const width = Math.round(Dimensions.get('window').width);
 const height = Math.round(Dimensions.get('window').height);
-import {faUserCircle,faMapMarker, faUniversity,faKaaba,faFilter,faSearch} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import { faFilter, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import GetDeviceLocation from './getDeviceLocation';
 
 class Featured extends Component {
@@ -43,13 +41,18 @@ class Featured extends Component {
   }
 
   componentDidMount() {
-    this.retrieve({ offset: this.state.offset })
+    const { location } = this.props.state
+    
+    if (location) {
+      this.retrieve({ offset: this.state.offset, changedAddress: location })
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     const currentLoc = this.props.state.location
     const nextLoc = nextProps.state.location
     const isEqual = _.isEqual(currentLoc, nextLoc)
+
     if (!isEqual) {
       this.setState({ featured: [], offset: 0 })
       this.retrieve({ offset: 0, changedAddress: nextLoc })
@@ -58,30 +61,9 @@ class Featured extends Component {
 
   retrieve = async ({ offset, fetchMore = false, changedAddress = null }) => {
     const { limit } = this.state
-    const { user, location } = this.props.state
 
-    let latitude = null
-    let longitude = null
-
-    if (user == null) {
-      const deviceCoords = await GetDeviceLocation()
-      latitude = deviceCoords.latitude
-      longitude = deviceCoords.longitude
-    } else {
-      if (changedAddress) {
-        latitude = changedAddress.latitude
-        longitude = changedAddress.longitude 
-      } else {
-        if (location) {
-          latitude = location.latitude
-          longitude = location.longitude 
-        } else {
-          const deviceCoords = await GetDeviceLocation()
-          latitude = deviceCoords.latitude
-          longitude = deviceCoords.longitude 
-        }
-      }
-    }
+    const latitude = changedAddress.latitude
+    const longitude = changedAddress.longitude
 
     const featured_products_parameter = {
       latitude,
@@ -89,14 +71,13 @@ class Featured extends Component {
       limit,
       offset,
     }
+
     if (!fetchMore) {
       this.setState({ isLoading: true, isLoadingCoupons: true, isError: false })
     }
-    console.log('featured_products_parameter', featured_products_parameter)
     Api.request(Routes.dashboardRetrieveFeaturedProducts, featured_products_parameter, response => {
       if (response.data.length > 0 && response.data[0].length > 0) {
         const joined = _.uniqBy([...this.state.featured, ...response.data[0]], 'id')
-        console.log(response.data)
         this.setState({
           isLoading: false,
           featured: joined,
@@ -114,7 +95,6 @@ class Featured extends Component {
     })
 
     Api.request(Routes.couponsRetrieve, {}, (response) => {
-      console.log({ response })
       if (response.data.length) {
         this.setState({ coupons: response.data, isLoadingCoupons: false })
       } else {
