@@ -11,8 +11,6 @@ import Categories from './Categories'
 import Shops from './Shops'
 import { Helper } from 'common';
 import GetDeviceLocation from './getDeviceLocation';
-import { Helper } from 'common';
-import AsyncStorage from '@react-native-community/async-storage';
 
 class Homepage extends Component {
   constructor(props) {
