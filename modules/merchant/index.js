@@ -223,7 +223,7 @@ class Merchant extends Component {
       name,
       logo,
       ratings,
-      delivery_time,
+      avg_preparation_time,
       distance,
       categories,
       products
@@ -231,7 +231,7 @@ class Merchant extends Component {
       /* name */           this.state.merchant_data ? this.state.merchant_data.name : null,
       /* logo */           this.state.merchant_data ? this.state.merchant_data.logo : null,
       /* ratings */        this.state.merchant_data ? this.state.merchant_data.rating : null,
-      /* delivery_time */  25,
+      /* avg_preparation_time */  this.state.merchant_data ? this.state.merchant_data.preparation_time : null,
       /* distance */       this.state.merchant_data ? this.state.merchant_data.distance : null,
       /* categories */     this.state.categories,
       /* products */       this.state.products
@@ -321,13 +321,21 @@ class Merchant extends Component {
                   </Text>
                 </View>
                 <View style={Style.timeAndDistance}>
-                  <FontAwesomeIcon icon={faStopwatch} size={14} style={{ color: Color.white }} />
-                  <Text style={Style.deliveryTime}>
-                    { delivery_time != null ? `${delivery_time} min` : null }
-                  </Text>
-                  <FontAwesomeIcon icon={faCircle} size={5} style={Style.circleDivider} />
+                  { 
+                    avg_preparation_time != null && avg_preparation_time !== 0
+                    ? (
+                        <>
+                          <FontAwesomeIcon icon={faStopwatch} size={14} style={{ color: Color.white }} />
+                          <Text style={Style.deliveryTime}>
+                            {`${avg_preparation_time} min`}
+                          </Text>
+                          <FontAwesomeIcon icon={faCircle} size={5} style={Style.circleDivider} />
+                        </>
+                      )
+                    : null
+                  }
                   <Text style={Style.distance}>
-                    { distance != null ? `${distance.toFixed(2)}km` : null }
+                    { distance != null ? `${distance.toFixed(2)} km` : null }
                   </Text>
                 </View>
               </View>
