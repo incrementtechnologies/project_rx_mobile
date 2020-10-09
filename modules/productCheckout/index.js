@@ -256,8 +256,8 @@ class productCheckout extends Component{
         currency:"PHP",
         location_id:this.props.state.location?this.props.state.location.id : this.state.address.id,
         shipping_fee:"5",
-        latFrom:this.props.state.location.latitude,
-        longFrom:this.props.state.location.longitude,
+        latitude:this.props.state.location.latitude,
+        longitude:this.props.state.location.longitude,
  
       } 
         :
@@ -275,14 +275,14 @@ class productCheckout extends Component{
         currency:"PHP",
         location_id:this.props.state.location?this.props.state.location.id : this.state.address.id,
         shipping_fee:"5",
-        latFrom:this.props.state.location.latitude,
-        longFrom:this.props.state.location.longitude,
+        latitude:this.props.state.location.latitude,
+        longitude:this.props.state.location.longitude,
      
       }
 
       this.setState({ isLoading: true })
       console.log(parameter)
-      Api.request(Routes.checkoutCreate,parameter , response => {
+      Api.request(Routes.checkoutCreate,parameter, response => {
         console.log('response',response)
         this.setState({ isLoading: false});
         this.props.navigation.navigate('MyOrders')
@@ -292,9 +292,9 @@ class productCheckout extends Component{
         console.log(this.state.data)
       })
       }
-      this.state.data.map(product=>{
-          this.props.removeProductToCart(product)      
-      })
+      // this.state.data.map(product=>{
+      //     this.props.removeProductToCart(product)      
+      // })
     }
    
   }
