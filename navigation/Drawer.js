@@ -15,7 +15,7 @@ import OptionRight from './OptionRight';
 import TermsAndConditions from 'modules/terms';
 import PrivacyPolicy from 'modules/privacy';
 import Merchant from 'modules/merchant';
-import MyAddress from 'modules/myAddresses';
+import MyAddress from 'modules/checkoutChangeAddress';
 import Settings from 'modules/settings';
 import Referral from 'modules/referral';
 import MyOrders from 'modules/orders';
