@@ -20,7 +20,7 @@ import Settings from 'modules/settings';
 import Referral from 'modules/referral';
 import MyOrders from 'modules/orders';
 import MyOrderDetails from 'modules/orders/MyOrderDetails';
-import MessengerMessages from 'modules/messenger/Messages';
+import MessengerMessages from 'components/Messenger/MessagesV2';
 import { connect } from 'react-redux';
 
 class MenuDrawerContentStructure extends Component {
