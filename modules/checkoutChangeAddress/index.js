@@ -122,7 +122,7 @@ class ChangeAddress extends Component {
           minHeight: height
         }]}>
           {
-            data && (
+            data.length > 0 && (
               <FlatList
                 data={data}
                 extraData={selected}
@@ -158,6 +158,11 @@ class ChangeAddress extends Component {
                 )}
                 keyExtractor={(item, index) => index.toString()}
               />
+            )
+          }
+          {
+            data.length == 0 && (
+              <Empty onRefresh={() => this.retrieve()}/>
             )
           }
         </View>

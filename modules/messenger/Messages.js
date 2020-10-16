@@ -414,6 +414,7 @@ class Messages extends Component{
   }
 
   _rightTemplate = (item) => {
+    const { theme } = this.props.state;
     return (
       <View>
         {this._headerRight(item)}
@@ -422,12 +423,16 @@ class Messages extends Component{
         }]}>{item.created_at_human}</Text>
         {
           item.message != null && Platform.OS == 'android' && (
-            <Text style={Style.messageTextRight}>{item.message}</Text>
+            <Text style={[Style.messageTextRight, {
+              backgroundColor: theme ? theme.primary : Color.primary
+            }]}>{item.message}</Text>
           )
         }
         {
           item.message != null && Platform.OS == 'ios' && (
-            <View style={Style.messageTextRight}>
+            <View style={[Style.messageTextRight, {
+              backgroundColor: theme ? theme.primary : Color.primary
+            }]}>
                 <Text style={Style.messageTextRightIOS}>{item.message}</Text>
             </View>
           )
@@ -440,6 +445,7 @@ class Messages extends Component{
   }
 
   _leftTemplate = (item) => {
+    const { theme } = this.props.state;
     return (
       <View>
         {this._headerLeft(item)}
@@ -448,12 +454,16 @@ class Messages extends Component{
         }]}>{item.created_at_human}</Text>
         {
           item.message != null && Platform.OS == 'android' && (
-            <Text style={Style.messageTextLeft}>{item.message}</Text>
+            <Text style={[Style.messageTextLeft, {
+              backgroundColor: theme ? theme.primary : Color.primary
+            }]}>{item.message}</Text>
           )
         }
         {
           item.message != null && Platform.OS == 'ios' && (
-            <View style={Style.messageTextLeft}>
+            <View style={[Style.messageTextLeft, {
+              backgroundColor: theme ? theme.primary : Color.primary
+            }]}>
                 <Text style={Style.messageTextLeftIOS}>{item.message}</Text>
             </View>
           )
