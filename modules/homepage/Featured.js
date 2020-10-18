@@ -42,6 +42,7 @@ class Featured extends Component {
 
   componentDidMount() {
     const { location } = this.props.state
+    console.log(location)
     
     if (location) {
       this.retrieve({ offset: this.state.offset, changedAddress: location })

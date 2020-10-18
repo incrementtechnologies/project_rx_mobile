@@ -37,11 +37,27 @@ class Homepage extends Component {
   
   async componentDidMount() {
     const { setLocation } = this.props
+    if(this.props.state.location==null){
     const deviceCoords = await GetDeviceLocation()
     setLocation({ ...deviceCoords, route: "Current Location" })
+    }
     this.getToken()
     this.getTheme()
+    this.willFocusSubscription = this.props.navigation.addListener(
+      'willFocus',
+     async () => {
+      if(this.props.state.location==null){
+      const deviceCoords = await GetDeviceLocation()
+      setLocation({ ...deviceCoords, route: "Current Location" })
+        console.log("remount")
+      }}
+    );
   }
+
+  componentWillUnmount(){
+    this.willFocusSubscription.remove()
+  }
+
 
   getTheme = async () => {
     try {

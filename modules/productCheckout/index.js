@@ -61,6 +61,25 @@ class productCheckout extends Component{
     this.willFocusSubscription.remove()
   }
 
+  retrieveFees=()=>
+  {
+    console.log('abot ko diri hehe');
+    const parameter = {
+    merchant_id:this.state.data[0].merchant_id,
+    latitude:this.props.state.location.latitude,
+    longitude:this.props.state.location.longitude,
+  }
+  console.log(parameter)
+    Api.request(Routes.shippingFee, parameter, response => {
+      if(response!=null)
+      {
+        console.log(response)
+        this.setState({shippingFee:response.data})
+    }}, error => {
+      console.log({ error })
+    })
+  }
+
     retrieve=()=>
     {
       const { user } = this.props.state;
@@ -77,14 +96,18 @@ class productCheckout extends Component{
      })
      console.log(this.props.state.user)
        Api.request(Routes.cartsRetrieve, parameter, response => {
+         if(response.data[0]!=null)
+         {
          console.log("merchant Data",response.data)
          let products=JSON.parse(response.data[0].items)
          products.forEach(product=>
           {
             product.price!=null ? this.setState({data:JSON.parse(response.data[0].items)}) : this.setState({data:JSON.parse(response.data[0].items),priceMissing:true});
           })
+
+          this.retrieveFees();
       
-       }, error => {
+       }}, error => {
          console.log({ error })
        })
  

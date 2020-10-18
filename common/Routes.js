@@ -51,6 +51,7 @@ export default {
   checkoutCreate: apiUrl + 'checkouts/create',
   ordersRetrieve: apiUrl + 'checkouts/retrieve_orders',
   orderItemsRetrieve: apiUrl + 'checkout_items/retrieve_on_orders',
+  shippingFee: apiUrl + 'checkouts/get_shipping_fee',
   // notification settings
   notificationSettingsRetrieve: apiUrl + 'notification_settings/retrieve',
   filters:apiUrl + 'dashboard/categories',
