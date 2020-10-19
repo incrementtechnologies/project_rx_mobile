@@ -111,6 +111,7 @@ class ChangeAddress extends Component {
     )
   }
 
+
   render() {
     const {isLoading, data, selected} = this.state;
     const { user, location, theme } = this.props.state;
@@ -130,7 +131,7 @@ class ChangeAddress extends Component {
                 renderItem={({ item, index }) => (
                   <View>
                     <TouchableHighlight
-                      onPress={() => {this.setLocation(item, index)}}
+                      onPress={() => {this.setLocation(item,index)}}
                       underlayColor={Color.gray}
                       >
                       <View style={[Style.TextContainer, {

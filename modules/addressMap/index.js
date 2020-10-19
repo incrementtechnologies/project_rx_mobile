@@ -387,6 +387,7 @@ class SelectLocation extends Component{
     return (
   <View style={{flex:1}}>
      {this.state.locationPicked?this.onPickedLocation():this.renderMap()}
+     <Text>HEHEHEHE</Text>
 </View>  
 
     );
