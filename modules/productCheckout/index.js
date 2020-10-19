@@ -37,6 +37,7 @@ class productCheckout extends Component{
      type:'Delivery',
      paymentType:'cod',
      productNumber:0,
+   
  
     }
   }
@@ -63,21 +64,21 @@ class productCheckout extends Component{
 
   retrieveFees=()=>
   {
-    console.log('abot ko diri hehe');
     const parameter = {
-    merchant_id:this.state.data[0].merchant_id,
-    latitude:this.props.state.location.latitude,
-    longitude:this.props.state.location.longitude,
+    merchant_id:parseInt(this.state.data[0].merchant_id),
+    latitude:parseFloat(this.props.state.location.longitude),
+    longitude:parseFloat(this.props.state.location.latitude),
   }
   console.log(parameter)
     Api.request(Routes.shippingFee, parameter, response => {
       if(response!=null)
       {
         console.log(response)
-        this.setState({shippingFee:response.data})
+        this.setState({shippingFee:response})
     }}, error => {
       console.log({ error })
-    })
+      this.setState({shippingFee:null})
+    })      
   }
 
     retrieve=()=>
@@ -375,6 +376,7 @@ class productCheckout extends Component{
   {
     return(
       <View style={{justifyContent:'center',width:'100%',flexDirection:'row'}}>
+        
         {this.state.priceMissing==true? 
          <TouchableOpacity 
               style={{
@@ -431,10 +433,10 @@ class productCheckout extends Component{
                  width: '80%',
                  borderRadius:10,
                  bottom:20,
-                 backgroundColor: this.state.error ? '#CCCCCC' : '#FF5B04',
+                 backgroundColor: this.state.error || this.state.shippingFee==null ? '#CCCCCC' : '#FF5B04',
                  
                }}
-               disabled={this.state.error ? true : false}
+               disabled={this.state.error||this.state.shippingFee==null ? true : false}
                >
                  <View style={{flexDirection:'row',justifyContent:'space-between',marginRight:5}}>
                <View style={Style.circleContainer}><Text style={{alignSelf:'center',color:'#FF5B04'}}>{this.state.data.length + this.state.productNumber}</Text></View>
@@ -446,7 +448,7 @@ class productCheckout extends Component{
                    <Text style={{
                  color:'white',
                  
-               }}>₱{this.state.type=="Delivery"?totalPrices+50:totalPrices}</Text>
+               }}>₱{this.state.shippingFee!=null? (this.state.type=="Delivery"?totalPrices+this.state.shippingFee:totalPrices):null}</Text>
               </View>
          </TouchableOpacity>
          </React.Fragment>}
@@ -569,13 +571,24 @@ class productCheckout extends Component{
       <Text style={{fontSize:15,fontWeight:'bold'}}>{totalPrices}</Text>
     </View>
      {this.state.type=="Delivery" ?  <View style={{ flexDirection:'row', justifyContent:'space-between',marginTop:15}}>
-      <Text style={{fontSize:15,fontWeight:'bold'}}>Delivery</Text>
-      <Text style={{fontSize:15,fontWeight:'bold'}}>₱50</Text>
+
+      {this.state.shippingFee!=null ? (
+        <React.Fragment>
+           <Text style={{fontSize:15,fontWeight:'bold'}}>Delivery</Text>
+           <Text style={{fontSize:15,fontWeight:'bold'}}>₱{this.state.shippingFee}</Text>
+        </React.Fragment>
+      ):
+      <Text style={{marginBottom:5,
+        alignSelf: 'center',
+       justifyContent: 'center',
+        color: Color.danger}}
+        >Merchant does not have a location. Transaction cannot proceed, please try another merchant.
+        </Text>}
      </View>: null}
      <Divider style={{height:3}}/>
      <View style={{ flexDirection:'row', justifyContent:'space-between',marginTop:15}}>
       <Text style={{fontSize:15,fontWeight:'bold'}}>Total</Text>
-      <Text style={{fontSize:15,fontWeight:'bold'}}>₱{this.state.type=="Delivery"?totalPrices+50:totalPrices}</Text>
+      {this.state.shippingFee!=null?<Text style={{fontSize:15,fontWeight:'bold'}}>₱{this.state.type=="Delivery"?totalPrices+this.state.shippingFee:totalPrices}</Text>:null}
      </View>
      <TearLines
     isUnder
@@ -615,7 +628,7 @@ placeholder={'Money on Hand'}
   </View>
   <View style={{marginTop:15,flexDirection:'row',justifyContent:'space-between'}}>
   <Text>{this.state.paymentType==="cod"? "Cash on Delivery" : "Cash on Pickup"}</Text>
-  <Text>₱{this.state.type=="Delivery"?totalPrices+50:totalPrices}</Text>
+  <Text>₱{this.state.type=="Delivery"?totalPrices+this.state.shippingFee:totalPrices}</Text>
   </View>
 </View>
 </TouchableOpacity>
@@ -632,8 +645,9 @@ placeholder={'Money on Hand'}
         </Text>
       </Text>
     </View>}
+  
      {this.state.isLoading ? null :   
-      this.checkOutButton(totalPrices) }
+    this.checkOutButton(totalPrices) }
    
       
        

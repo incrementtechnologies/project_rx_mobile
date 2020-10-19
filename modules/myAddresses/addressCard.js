@@ -24,14 +24,14 @@ class addressCard extends Component {
               <FontAwesomeIcon size={24} icon={faHome} color={this.props.state.theme ? this.props.state.theme.primary : Color.primary}/>
               {/* <Text style={Style.AddressType}>{details.address_type}</Text> */}
           </View>     
-          {/* <View style={Style.editDeleteIcons}>
+          <View style={Style.editDeleteIcons}>
             <TouchableOpacity onPress={()=>this.props.press()}>
               <FontAwesomeIcon style={{marginRight:25}}size={24} icon={faEdit} color={this.props.state.theme ? this.props.state.theme.primary : Color.primary}/>
               </TouchableOpacity>
               <TouchableOpacity onPress={()=>this.props.delete()}>
               <FontAwesomeIcon size={23} icon={faTrash} color={this.props.state.theme ? this.props.state.theme.primary : Color.primary}/>
               </TouchableOpacity>
-          </View> */}
+          </View>
         </View>
         <Divider style={{marginTop:-15,height:1}}/>
       <View style={Style.locationInformation}>
