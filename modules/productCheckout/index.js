@@ -221,7 +221,7 @@ class productCheckout extends Component{
     }
     else if (products[index].quantity==1)
     {
-    console.log(removeProductToCart(products[index]))
+    removeProductToCart(products[index])
     products.splice(index,1)
      
     }
