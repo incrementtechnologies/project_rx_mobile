@@ -66,8 +66,8 @@ class productCheckout extends Component{
   {
     const parameter = {
     merchant_id:parseInt(this.state.data[0].merchant_id),
-    latitude:parseFloat(this.props.state.location.longitude),
-    longitude:parseFloat(this.props.state.location.latitude),
+    latitude:parseFloat(this.props.state.location.latitude),
+    longitude:parseFloat(this.props.state.location.longitude),
   }
   console.log(parameter)
     Api.request(Routes.shippingFee, parameter, response => {
@@ -221,7 +221,7 @@ class productCheckout extends Component{
     }
     else if (products[index].quantity==1)
     {
-    removeProductToCart(products[index])
+    console.log(removeProductToCart(products[index]))
     products.splice(index,1)
      
     }
@@ -279,7 +279,7 @@ class productCheckout extends Component{
         change:this.state.amount_tendered!=null ? parseInt(this.state.amount_tendered)-totalPrice : totalPrice,
         currency:"PHP",
         location_id:this.props.state.location?this.props.state.location.id : this.state.address.id,
-        shipping_fee:"5",
+        shipping_fee:this.state.shippingFee,
         latitude:this.props.state.location.latitude,
         longitude:this.props.state.location.longitude,
  
@@ -298,7 +298,7 @@ class productCheckout extends Component{
         status:"pending",
         currency:"PHP",
         location_id:this.props.state.location?this.props.state.location.id : this.state.address.id,
-        shipping_fee:"5",
+        shipping_fee:this.state.shippingFee,
         latitude:this.props.state.location.latitude,
         longitude:this.props.state.location.longitude,
      
@@ -316,9 +316,9 @@ class productCheckout extends Component{
         console.log(this.state.data)
       })
       }
-      // this.state.data.map(product=>{
-      //     this.props.removeProductToCart(product)      
-      // })
+      this.state.data.map(product=>{
+          this.props.removeProductToCart(product)      
+      })
     }
    
   }
