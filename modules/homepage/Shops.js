@@ -61,7 +61,11 @@ class Shops extends Component {
         isError: false
       })
     } else {
-      this.setState({ isFetchingMore: true })
+      this.setState({ 
+        isLoading: true,
+        isError: false,
+        isFetchingMore: true
+      })
     }
 
     const latitude = changedAddress ? changedAddress.latitude : location.latitude
