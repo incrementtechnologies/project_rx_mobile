@@ -53,7 +53,7 @@ class Shops extends Component {
 
   retrieve = async ({ offset, fetchMore = false, changedAddress = null }) => {
     const { limit } = this.state
-    const { user, location } = this.props.state
+    const { location } = this.props.state
 
     if (!fetchMore) {
       this.setState({
@@ -64,8 +64,8 @@ class Shops extends Component {
       this.setState({ isFetchingMore: true })
     }
 
-    const latitude = changedAddress.latitude
-    const longitude = changedAddress.longitude
+    const latitude = changedAddress ? changedAddress.latitude : location.latitude
+    const longitude = changedAddress ? changedAddress.longitude : location.longitude
 
     const parameter = {
       limit: limit,
