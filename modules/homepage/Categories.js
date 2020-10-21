@@ -130,8 +130,7 @@ class Categories extends Component {
 
   isOnBottomCategories = ({layoutMeasurement, contentOffset, contentSize}) => {
     const { offset, limit, isLoading } = this.state
-    const paddingToBottom = 0;
-    const shouldFetchData = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+    const shouldFetchData = layoutMeasurement.height + contentOffset.y >= contentSize.height;
     if (shouldFetchData && !isLoading) {
       this.retrieve({ newOffset: offset + limit })
     }
@@ -191,8 +190,7 @@ class Categories extends Component {
 
   isOnBottomProducts = ({layoutMeasurement, contentOffset, contentSize}) => {
     const { productsOffset, productsLimit, selected_category, isLoading, isFetchingMoreProduct } = this.state
-    const paddingToBottom = -10;
-    const shouldFetchData = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+    const shouldFetchData = layoutMeasurement.height + contentOffset.y >= contentSize.height;
     if (shouldFetchData && !isLoading && !isFetchingMoreProduct) {
       this.retrieveMoreProducts({ newOffset: productsOffset + productsLimit, category: selected_category })
     }

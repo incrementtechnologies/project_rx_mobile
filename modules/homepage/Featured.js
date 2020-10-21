@@ -116,8 +116,7 @@ class Featured extends Component {
 
   isOnBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
     const { offset, limit, isLoading } = this.state
-    const paddingToBottom = 0;
-    const shouldFetchData = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+    const shouldFetchData = layoutMeasurement.height + contentOffset.y >= contentSize.height;
     if (shouldFetchData && !isLoading) {
       this.retrieve({ offset: offset + limit, fetchMore: true })
     }

@@ -114,8 +114,7 @@ class Shops extends Component {
 
   isOnBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
     const { offset, limit, isLoading, isFetchingMore, isEnd } = this.state
-    const paddingToBottom = -10;
-    const shouldFetchData = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+    const shouldFetchData = layoutMeasurement.height + contentOffset.y >= contentSize.height;
     if (shouldFetchData && !isLoading && !isFetchingMore && !isEnd) {
       this.retrieve({ offset: offset + limit, fetchMore: true })
     }
