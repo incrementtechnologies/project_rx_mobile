@@ -11,11 +11,12 @@ import {
 } from 'react-native';
 import { NavigationActions } from 'react-navigation'
 import { connect } from 'react-redux';
-import _, { isError } from 'lodash'
+import _ from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faStar, faStopwatch, faCircle, faShoppingCart, faImage } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { Spinner} from 'components'
+import Variations from './VariationsModal'
 import InView from './InViewPort'
 import { Color, Routes } from 'common'
 import Config from 'src/config.js'
@@ -36,7 +37,9 @@ class Merchant extends Component {
       merchant_data: null,
       categories: null,
       products: null,
-      active_category: null
+      active_category: null,
+      variationState: false,
+      selectedProduct: null
     }
   }
 
@@ -52,6 +55,7 @@ class Merchant extends Component {
     if (merchant_id) {
       const shop_parameter = {
         id: merchant_id,
+        code: merchant_id,
         latitude: location.latitude,
         longitude: location.longitude
       }
@@ -117,7 +121,7 @@ class Merchant extends Component {
   // }
 
   componentDidUpdate(_, prevState) {
-    if (prevState.active_category !== this.state.active_category && isError === false) {
+    if (prevState.active_category !== this.state.active_category && this.state.isError === false) {
       this.products_navigator_scrollview_ref.scrollTo({
         x: this.products_navigator_layout[this.state.active_category],
         y: 0,
@@ -150,7 +154,7 @@ class Merchant extends Component {
     Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(2)) + 'k+' : Math.sign(num)*Math.abs(num)
   )
 
-  addToCart = (item) => {
+  addToCart = (item, variation = null) => {
     const { addProductToCart, removeProductToCart } = this.props
     const { user, cart } = this.props.state
     const data = [...cart]
@@ -167,6 +171,7 @@ class Merchant extends Component {
 
     // initialize quantitiy
     product.quantity = 1
+    product.selectedVariation = variation
 
     // checking if unique merchant (RETURN IF UNIQUE)
     const isDifferentMerchant = _.uniqBy([...data, product], 'merchant_id').length > 1
@@ -216,7 +221,7 @@ class Merchant extends Component {
   }
 
   render() {
-    const { isLoading, isError } = this.state
+    const { isLoading, isError, variationState, selectedProduct } = this.state
     const { theme, cart } = this.props.state
     const [ 
       name,
@@ -270,14 +275,49 @@ class Merchant extends Component {
       )      
     }
 
+    const getProductPrice = (product) => {
+      if (product.variation && product.variation.length) {
+        const min = _.minBy(product.variation, 'price')
+        const max = _.maxBy(product.variation, 'price')
+        return (
+          <Text style={Style.productPrice} numberOfLines={1}>
+            { `₱${min.price} - ₱${max.price}` }
+          </Text>
+        )
+      }
+
+      return product.price && product.price.length && (
+        <Text style={Style.productPrice} numberOfLines={1}>
+          { '₱' + product.price[0].price }
+        </Text>
+      )
+    }
 
     return (
       <View style={Style.MainContainer}>
         {isLoading ? <Spinner mode="overlay" /> : null}
+        <Variations
+          state={variationState}
+          cart={cart}
+          selectedProduct={selectedProduct}
+          onClose={() => {
+            this.setState({
+              variationState: false,
+              selectedProduct: null
+            })
+          }}
+          onAdd={(product, variation) => {
+            this.addToCart(product, variation)
+            this.setState({
+              variationState: false,
+              selectedProduct: null
+            })
+          }}
+        />
         <View style={[Style.cartIconContainer, { backgroundColor: theme ? theme.primary : Color.primary }]}>
           <TouchableOpacity onPress={() => this.goToCart()}>
             <FontAwesomeIcon icon={ faShoppingCart } size={30} 
-              style={{ color: theme ? theme.description === 'Darker' ? Color.white : Color.black : Color.black }}
+              style={{ color: theme ? theme.primary === '#003049' ? Color.white : Color.black : Color.black }}
             />
             {
               cart.length > 0 &&
@@ -365,7 +405,16 @@ class Merchant extends Component {
                                 return (
                                   <TouchableOpacity
                                     key={idx}
-                                    onPress={() => this.addToCart(product)}
+                                    onPress={() => {
+                                      if (product.variation && product.variation.length) {
+                                        this.setState({
+                                          variationState: true,
+                                          selectedProduct: product
+                                        })
+                                      } else {
+                                        this.addToCart(product)
+                                      }
+                                    }}
                                   >
                                     <View style={Style.product}>
                                       <View style={Style.productDetails}>
@@ -393,11 +442,7 @@ class Merchant extends Component {
                                           )
                                         }
                                         {
-                                          product.price && product.price.length && (
-                                            <Text style={Style.productPrice} numberOfLines={1}>
-                                              { '₱' + product.price[0].price }
-                                            </Text>
-                                          )
+                                          getProductPrice(product)
                                         }
                                       </View>
                                       {
