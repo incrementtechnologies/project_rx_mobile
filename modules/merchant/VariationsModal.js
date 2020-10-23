@@ -35,10 +35,24 @@ const Variations = ({ state, cart, selectedProduct, onClose, onAdd }) => {
   let variationsList = <Text>No variation available</Text>
   if (selectedProduct != null && selectedProduct.variation && selectedProduct.variation.length) {
     variationsList = selectedProduct.variation.map(item => {
+      let colorVariant = {}
       const fontStyle = {
         fontSize: 12,
         color: selectedVariation && selectedVariation.id === item.id ? Color.white : Color.black
       }
+
+      let payloadValue = item.payload_value 
+      if ((item.payload + '').toLowerCase() === 'color') {
+        payloadValue = ''
+        colorVariant = {
+          width: '40%',
+          backgroundColor: item.payload_value + '',
+          height: 20,
+          borderRadius: 10,
+          overflow: 'hidden'
+        }
+      }
+
       return (
         <TouchableOpacity onPress={() => {
           if (isOnCart) return
@@ -66,8 +80,8 @@ const Variations = ({ state, cart, selectedProduct, onClose, onAdd }) => {
               </Text>
             </View>
             <View style={{ paddingHorizontal: 10, width: '70%' }}>
-              <Text style={fontStyle}>
-                { item.payload_value }
+              <Text style={{...fontStyle, ...colorVariant}}>
+                { payloadValue }
               </Text>
             </View>
             <View style={{ width: '15%' }}>
