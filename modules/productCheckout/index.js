@@ -99,7 +99,8 @@ class productCheckout extends Component{
        Api.request(Routes.cartsRetrieve, parameter, response => {
          if(response.data[0]!=null)
          {
-         console.log("merchant Data",response.data)
+         console.log("merchant Data",JSON.parse(response.data[0].items))
+         console.log("current location",this.props.state.location)
          let products=JSON.parse(response.data[0].items)
          products.forEach(product=>
           {
@@ -463,7 +464,7 @@ class productCheckout extends Component{
     let totalPrices=0
     this.state.data.forEach(product=>{
       (product.price!=null) &&
-      (totalPrices+=product.quantity*product.price[0].price)
+      (product.selectedVariation != null ? totalPrices+=product.quantity*product.selectedVariation.price : totalPrices+=product.quantity*product.price[0].price )
     })
     return (
       <View style={{height:'100%',backgroundColor:'white'}}>
