@@ -435,7 +435,7 @@ class Declaration extends Component{
               this.setState({isImageUpload: false, isLoading: false})
               this.updateProfile(url)
             }}
-            onCLose={() => {
+            onClose={() => {
               this.setState({isImageUpload: false, isLoading: false})
             }}/> : null}
       </ScrollView>
