@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, Linking, Platform } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { NavigationActions } from 'react-navigation'
 import { connect } from 'react-redux';
@@ -36,6 +36,12 @@ class Homepage extends Component {
   }
   
   async componentDidMount() {
+    Linking.getInitialURL().then(url => {
+      console.log(`from initial url ${url}, call navigate`)
+      this.navigate(url);
+    });
+    Linking.addEventListener('url', this.handleOpenURL);
+
     const { setLocation } = this.props
     const deviceCoords = await GetDeviceLocation()
     setLocation({ ...deviceCoords, route: "Current Location" })
@@ -43,6 +49,11 @@ class Homepage extends Component {
     this.getTheme()
 
   }
+
+  componentWillUnmount() {
+    Linking.removeEventListener('url', this.handleOpenURL);
+  }
+
   getTheme = async () => {
     try {
       const primary = await AsyncStorage.getItem(Helper.APP_NAME + 'primary');
@@ -67,6 +78,43 @@ class Homepage extends Component {
       await AsyncStorage.setItem(`${Helper.APP_NAME}primary`, value)
     } catch (e) {
       console.log(e)
+    }
+  }
+
+  handleOpenURL = (event) => {
+    console.log({ handleOpenURL: event })
+    this.navigate(event.url);
+  }
+
+  navigate = (url) => {
+    /**
+     * @param { URL }
+     * (identifier)://(url)/(merchant code)
+     * example: runwayexpress://runwayexpress.co/merchant/1K9RE8AFOSJ34IXVU6TG0LWH27QPNBC5
+     * -> navigates to Merchant screen showing merchant with id = 1
+     */
+    const { navigate } = this.props.navigation;
+    const route = url.replace(/.*?:\/\//g, '');
+    const route_name = route.split('/')[0];
+    const payload = route.split('/')[1];
+    const payload_value = route.split('/')[2];
+
+    console.log({ route_name, payload, payload_value })
+
+    if (route_name === 'runwayexpress.co') {
+      if (payload && payload.toLowerCase() === 'merchant') {
+        if (payload_value != null) {
+          navigate('Merchant', { merchant_id: payload_value })
+        }
+      }
+      else if (payload && payload.toLowerCase() === 'product') {
+        //
+      }
+      else if (payload && payload.toLowerCase() === 'coupons') {
+        //
+      }
+    } else {
+      console.log('shit route name')
     }
   }
 
