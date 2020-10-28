@@ -56,8 +56,8 @@ class Merchant extends Component {
       const shop_parameter = {
         id: merchant_id,
         code: merchant_id,
-        latitude: location.latitude,
-        longitude: location.longitude
+        latitude: location?.latitude || null,
+        longitude: location?.longitude || null
       }
       Api.request(Routes.dashboardRetrieveShops, shop_parameter, response => {
         if (response.data.length) {
