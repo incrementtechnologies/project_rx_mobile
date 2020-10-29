@@ -46,7 +46,7 @@ class Shops extends Component {
     const nextLoc = nextProps.state.location
     const isEqual = _.isEqual(currentLoc, nextLoc)
     if (!isEqual) {
-      this.setState({ data: [], offset: 0 })
+      this.setState({ data: [], offset: 0, isEnd: false })
       this.retrieve({ offset: 0, changedAddress: nextLoc })
     }
   }
