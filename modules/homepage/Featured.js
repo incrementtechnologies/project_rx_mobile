@@ -47,6 +47,7 @@ class Featured extends Component {
     if (location) {
       this.retrieve({ offset: this.state.offset, changedAddress: location })
     }
+    console.log(this.props)
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {

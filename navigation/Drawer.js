@@ -77,7 +77,9 @@ const Homepage_StackNavigator = createStackNavigator({
   Merchant: {
     screen: Merchant,
     navigationOptions: {
-      headerTransparent: true,
+      headerStyle: {
+        backgroundColor: Color.white,
+      },
       headerTintColor: '#fff'
     }
   },

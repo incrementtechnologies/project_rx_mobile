@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import Style from './Style.js';
 import { View, Image, TouchableHighlight, Text, ScrollView, FlatList,TouchableOpacity,Button,StyleSheet, ColorPropType,TextInput,PermissionsAndroid} from 'react-native';
 
-import { Spinner, Empty, SystemNotification,GooglePlacesAutoComplete } from 'components';
+import { Spinner, Empty, SystemNotification,GooglePlacesAutoComplete,ImageUpload} from 'components';
 import { connect } from 'react-redux';
 import { Dimensions } from 'react-native';
 import { Color, Routes ,BasicStyles} from 'common'
@@ -23,6 +23,7 @@ import TearLines from "react-native-tear-lines";
 
 
 
+
 class productCheckout extends Component{
   
   constructor(props){
@@ -37,6 +38,7 @@ class productCheckout extends Component{
      type:'Delivery',
      paymentType:'cod',
      productNumber:0,
+     isImageUpload:false,
    
  
     }
@@ -45,7 +47,7 @@ class productCheckout extends Component{
   
   componentDidMount(){
     const { user } = this.props.state;
-    console.log("currentprops",this.props.state)
+   
       this.retrieve()
       console.log("mount")
       this.willFocusSubscription = this.props.navigation.addListener(
@@ -69,11 +71,11 @@ class productCheckout extends Component{
     latitude:parseFloat(this.props.state.location.latitude),
     longitude:parseFloat(this.props.state.location.longitude),
   }
-  console.log(parameter)
+  
     Api.request(Routes.shippingFee, parameter, response => {
       if(response!=null)
       {
-        console.log(response)
+        
         this.setState({shippingFee:response})
     }}, error => {
       console.log({ error })
@@ -92,21 +94,21 @@ class productCheckout extends Component{
            value: this.props.state.user.id
        }]
      }
+     
      this.setState({
        isLoading: true
      })
-     console.log(this.props.state.user)
+   
        Api.request(Routes.cartsRetrieve, parameter, response => {
          if(response.data[0]!=null)
          {
-         console.log("merchant Data",JSON.parse(response.data[0].items))
-         console.log("current location",this.props.state.location)
+          
          let products=JSON.parse(response.data[0].items)
          products.forEach(product=>
           {
             product.price!=null ? this.setState({data:JSON.parse(response.data[0].items)}) : this.setState({data:JSON.parse(response.data[0].items),priceMissing:true});
           })
-
+          console.log(products)
           this.retrieveFees();
       
        }}, error => {
@@ -115,7 +117,7 @@ class productCheckout extends Component{
  
        Api.request(Routes.locationRetrieve, parameter, response => {
          this.setState({isLoading: false})
-         console.log('test',response)
+        
          if(response.data.length > 0){
            this.setState({address: response.data.find(def=>{return def.id==parseInt(this.props.state.user.account_information.address)})})
 
@@ -123,6 +125,22 @@ class productCheckout extends Component{
        },error => {
          console.log(error)
        });
+       
+       const idParams={
+         account_id:this.props.state.user.id
+       }
+       Api.request(Routes.getValidID,idParams,response=>{
+       
+         if(response.data.length>0)
+         {
+          console.log("testkjasdfhlaksdjfhalsdkfjhasldkfjh",response)
+          this.setState({validID:false});
+         }
+         
+      
+       },
+       error => {
+        console.log("problem",error)})
      }
     }
  
@@ -202,7 +220,7 @@ class productCheckout extends Component{
 
     this.setState({ isLoading: true })
     Api.request(Routes.cartsCreate, parameter, response => {
-      console.log(response.data)
+     
       this.setState({ isLoading: false })
     }, error => {
       console.log({ error })
@@ -216,7 +234,7 @@ class productCheckout extends Component{
     var products=[...this.state.data]
     if(products[index].quantity>1)
     {
-      console.log(this.props)
+     
       products[index].quantity-=1
       this.setState({productNumber:this.state.productNumber-1}) 
     }
@@ -226,7 +244,7 @@ class productCheckout extends Component{
     products.splice(index,1)
      
     }
-   console.log(products.length)
+  
     
     this.setState({data:products,products})
     const stringifyItems = JSON.stringify(products)
@@ -237,7 +255,7 @@ class productCheckout extends Component{
 
     this.setState({ isLoading: true })
     Api.request(Routes.cartsCreate, parameter, response => {
-      console.log(response.data)
+     
       this.setState({ isLoading: false })
     }, error => {
       console.log({ error })
@@ -252,6 +270,7 @@ class productCheckout extends Component{
    
   }
 
+ 
  
 
   onCheckOut=(totalPrice)=>
@@ -426,7 +445,7 @@ class productCheckout extends Component{
       
       <React.Fragment>
       <TouchableOpacity
-               onPress={() => this.onCheckOut(totalPrices)} 
+               onPress={() => this.state.validID!=true ? this.onCheckOut(totalPrices) : this.setState({isImageUpload:true}) } 
                style={{
                  position:'absolute',
                  justifyContent: 'center',
@@ -650,7 +669,17 @@ placeholder={'Money on Hand'}
      {this.state.isLoading ? null :   
     this.checkOutButton(totalPrices) }
    
-      
+   {this.state.isImageUpload ? 
+          <ImageUpload
+            id={true}
+            visible={this.state.isImageUpload}
+            onSelect={(url) => {
+              this.setState({isImageUpload: false, isLoading: false})
+              
+            }}
+            onCLose={() => {
+              this.setState({isImageUpload: false, isLoading: false})
+            }}/> : null}
        
      </View>
 
