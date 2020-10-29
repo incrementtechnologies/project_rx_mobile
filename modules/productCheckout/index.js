@@ -135,7 +135,10 @@ class productCheckout extends Component{
          {
           console.log("testkjasdfhlaksdjfhalsdkfjhasldkfjh",response)
           this.setState({validID:false});
-         }
+        }
+        else{
+          this.setState({validID:true});
+        }
          
       
        },
@@ -673,10 +676,6 @@ placeholder={'Money on Hand'}
           <ImageUpload
             id={true}
             visible={this.state.isImageUpload}
-            onSelect={(url) => {
-              this.setState({isImageUpload: false, isLoading: false})
-              
-            }}
             onCLose={() => {
               this.setState({isImageUpload: false, isLoading: false})
             }}/> : null}
