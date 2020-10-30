@@ -5,13 +5,15 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
-  Alert
+  Alert,
+  Image
 } from "react-native";
 import Modal from "react-native-modal";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Color , BasicStyles, Routes } from 'common';
 import { Spinner } from 'components';
+import Config from 'src/config.js'
 import Api from 'services/api';
 
 const height = Math.round(Dimensions.get('window').height);
@@ -53,42 +55,65 @@ const OrderItems = ({ visible, setVisible, data }) => {
 
   let itemList = null
   if (items.length) {
-    itemList = items.map(item => (
-      <View
-        key={item.id}
-        style={{
-          maxWidth: '100%',
-          flexDirection: 'row',
-          minHeight: 25,
-          marginTop: 25,
-          paddingBottom: 25,
-          paddingHorizontal: 25,
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          borderBottomWidth: 1,
-          borderColor: Color.primary
-        }}
-      >
-        <View style={{ width: '15%' }}>
-          <Text style={{ fontSize: 12 }}>
-            { item.qty }
-          </Text>
+    itemList = items.map(item => {
+      const imageUrl = item?.images?.length ? Config.BACKEND_URL + item.images[0].url : null
+      return (
+        <View
+          key={item.id}
+          style={{
+            maxWidth: '100%',
+            flexDirection: 'row',
+            minHeight: 25,
+            marginTop: 25,
+            paddingBottom: 25,
+            paddingHorizontal: 25,
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            borderBottomWidth: 1,
+            borderColor: Color.primary
+          }}
+        >
+          <View style={{ width: '15%' }}>
+            <Image
+              source={ imageUrl ? { uri: imageUrl } : null }
+              style={{
+                height: 50,
+                width: '100%'
+              }}
+            />
+            <Text
+              style={{ 
+                textAlign: 'center',
+                position: 'absolute',
+                right: 0,
+                bottom: 0,
+                fontSize: 10,
+                color: Color.white,
+                backgroundColor: Color.primary,
+                width: 16,
+                height: 16,
+                borderRadius: 8,
+              }}
+            >
+              { item.qty }
+            </Text>
+          </View>
+          <View style={{ paddingHorizontal: 10, width: '70%' }}>
+            <Text style={{ fontSize: 12 }}>
+              { item.title }
+            </Text>
+          </View>
+          <View style={{ width: '15%' }}>
+            <Text style={{ fontSize: 12 }}>
+              { item.price }
+            </Text>
+            <Text style={{ fontSize: 12 }}>
+              PHP
+            </Text>
+          </View>
         </View>
-        <View style={{ paddingHorizontal: 10, width: '70%' }}>
-          <Text style={{ fontSize: 12 }}>
-            { item.title }
-          </Text>
-        </View>
-        <View style={{ width: '15%' }}>
-          <Text style={{ fontSize: 12 }}>
-            { item.price }
-          </Text>
-          <Text style={{ fontSize: 12 }}>
-            PHP
-          </Text>
-        </View>
-      </View>
-    ))
+      )
+    })
   } else {
     itemList = (
       <Text style={{ textAlign: 'center', marginVertical: '50%' }}>
