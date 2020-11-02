@@ -360,6 +360,20 @@ class productCheckout extends Component{
     }
   }
 
+  uploadID=(url)=>{
+    const parameter={
+      account_id:this.props.state.user.id,
+      file_url:url
+    }
+    Api.request(Routes.uploadValidID, parameter, response => {
+    console.log(response)  
+    alert("ID Successfully Uploaded")
+    }, error => {
+      console.log( "this is uploadID error",error )
+
+    })
+  }
+
   clearCart=()=>
   {
     let products=[...this.state.data];
@@ -676,7 +690,11 @@ placeholder={'Money on Hand'}
           <ImageUpload
             id={true}
             visible={this.state.isImageUpload}
-            onCLose={() => {
+            onSelect={(url) => {
+              this.setState({isImageUpload: false, isLoading: false})
+              this.uploadID(url)
+            }}
+            onClose={() => {
               this.setState({isImageUpload: false, isLoading: false})
             }}/> : null}
        

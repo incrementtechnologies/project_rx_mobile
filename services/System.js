@@ -1,7 +1,8 @@
 import VersionCheck from 'react-native-version-check';
+
 import DeviceInfo from 'react-native-device-info';
 import { Helper } from 'common';
-import { Platform, Linking } from 'react-native';
+import { Platform, Linking , Alert} from 'react-native';
 export default {
   checkVersion(callback){
     if(Platform.OS === 'android'){
@@ -9,7 +10,15 @@ export default {
       .then(async res => {
         if(typeof res != undefined && typeof res != 'undefined'){
           if (res.isNeeded) {
-            Linking.openURL(res.storeUrl);  // open store if update is needed.
+            Alert.alert(
+              'Update Required',
+              'An update is required to continue using the Application!',
+              [
+                { text: 'Update', onPress: () =>  Linking.openURL(res.storeUrl)}
+              ],
+              { cancelable: false }
+            );
+           
           }else{
             callback(true)
           }
