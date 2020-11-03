@@ -9,36 +9,40 @@ import {
 import Modal from "react-native-modal";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import _ from 'lodash';
 import { Color , BasicStyles } from 'common';
 
 const height = Math.round(Dimensions.get('window').height);
 const width = Math.round(Dimensions.get('window').width);
 
 const Variations = ({ state, cart, selectedProduct, onClose, onAdd }) => {
-  const [selectedVariation, setSelectedVariation] = useState(null)
+  const [selectedVariation, setSelectedVariation] = useState([])
   const [isOnCart, setIsOnCart] = useState(false)
 
   useEffect(() => {
-    setSelectedVariation(null)
+    setSelectedVariation([])
     setIsOnCart(false)
 
     if (cart.length) {
       cart.map(obj => {
         if (selectedProduct && obj.id === selectedProduct.id) {
-          setSelectedVariation(obj.selectedVariation)
-          setIsOnCart(true)
+          if (obj.hasOwnProperty('selectedVariation')) {
+            setSelectedVariation([...obj.selectedVariation])
+            setIsOnCart(true)
+          }
         }
       })
     }
   }, [selectedProduct])
 
   let variationsList = <Text>No variation available</Text>
-  if (selectedProduct != null && selectedProduct.variation && selectedProduct.variation.length) {
+  if (selectedProduct != null && selectedProduct.variation && selectedProduct.variation.length > 0) {
     variationsList = selectedProduct.variation.map(item => {
       let colorVariant = {}
+      const isSelected = selectedVariation.length ? selectedVariation.find(obj => obj.id === item.id) : null
       const fontStyle = {
         fontSize: 12,
-        color: selectedVariation && selectedVariation.id === item.id ? Color.white : Color.black
+        color: isSelected ? Color.white : Color.black
       }
 
       let payloadValue = item.payload_value 
@@ -56,7 +60,14 @@ const Variations = ({ state, cart, selectedProduct, onClose, onAdd }) => {
       return (
         <TouchableOpacity onPress={() => {
           if (isOnCart) return
-          setSelectedVariation(item)
+          const index = _.indexOf(selectedVariation, item)
+          if (index !== -1) { // if item already exist; remove it from array
+            const newArray = [...selectedVariation]
+            newArray.splice(index, 1)
+            setSelectedVariation(newArray)
+          } else { // else; push the item to the selected variation array
+            setSelectedVariation(prevState => [...prevState, item])
+          }
         }}>
           <View
             key={item.id}
@@ -71,7 +82,7 @@ const Variations = ({ state, cart, selectedProduct, onClose, onAdd }) => {
               justifyContent: 'space-between',
               borderBottomWidth: 1,
               borderColor: Color.primary,
-              backgroundColor: selectedVariation && selectedVariation.id === item.id ? Color.primary : isOnCart ? Color.lightGray : Color.white
+              backgroundColor: isSelected ? Color.primary : isOnCart ? Color.lightGray : Color.white
             }}
           >
             <View style={{ width: '15%' }}>
