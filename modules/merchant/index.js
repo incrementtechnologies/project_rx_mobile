@@ -154,8 +154,8 @@ class Merchant extends Component {
     Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(2)) + 'k+' : Math.sign(num)*Math.abs(num)
   )
 
-  addToCart = (item, variation = []) => {
-    const { addProductToCart, removeProductToCart } = this.props
+  addToCart = (item, variation = [], isUpdating = false) => {
+    const { addProductToCart, removeProductToCart, updateProductToCart } = this.props
     const { user, cart } = this.props.state
     const data = [...cart]
 
@@ -189,7 +189,13 @@ class Merchant extends Component {
     const isRemoving = data.find(item => item.id === product.id)
   
     let updatedItems
-    if (isRemoving) {
+    if (isUpdating && variation.length) {
+      const index = _.indexOf(data, isRemoving)
+      if (index !== -1) {
+        data[index] = product
+        updatedItems = [...data]
+      }
+    } else if (isRemoving) {
       updatedItems = _.remove(data, (item) => item.id !== product.id)
     } else {
       updatedItems = [...data, product]
@@ -202,18 +208,44 @@ class Merchant extends Component {
     }
 
     this.setState({ isLoading: true })
-    Api.request(Routes.cartsCreate, parameter, response => {
-      if (isRemoving) {
-        removeProductToCart(product)
-      } else {
-        addProductToCart(product)
+    if (isUpdating) { // UPDATING
+      const cartParam = {
+        condition: [{
+          column: 'account_id',
+          clause: '=',
+          value: user.id
+        }]
       }
-      this.setState({ isLoading: false })
-    }, error => {
-      console.log({ error })
-      this.setState({ isLoading: false })
-      Alert.alert('Notice', 'Connection error, try again')
-    })
+      Api.request(Routes.cartsRetrieve, cartParam, response => {
+        if (response.data.length) {
+          const { id } = response.data[0]
+          Api.request(Routes.cartsUpdate, {...parameter, id }, () => {
+            updateProductToCart(product)
+            this.setState({ isLoading: false })
+          }, () => {
+            this.setState({ isLoading: false })
+            Alert.alert('Notice', 'Something went wrong in updating your product, please try again')
+          })
+        } else {
+          this.setState({ isLoading: false })
+        }
+      }, () => {
+        this.setState({ isLoading: false })
+        Alert.alert('Notice', 'Something went wrong in updating your product, please try again')
+      })
+    } else { // ADDING/REMOVING
+      Api.request(Routes.cartsCreate, parameter, () => {
+        if (isRemoving) {
+          removeProductToCart(product)
+        } else {
+          addProductToCart(product)
+        }
+        this.setState({ isLoading: false })
+      }, () => {
+        this.setState({ isLoading: false })
+        Alert.alert('Notice', 'Connection error, try again')
+      })
+    }
   }
 
   goToCart = () => {
@@ -306,8 +338,8 @@ class Merchant extends Component {
               selectedProduct: null
             })
           }}
-          onAdd={(product, variation) => {
-            this.addToCart(product, variation)
+          onAdd={(product, variation, isUpdating) => {
+            this.addToCart(product, variation, isUpdating)
             this.setState({
               variationState: false,
               selectedProduct: null
@@ -529,6 +561,7 @@ const mapDispatchToProps = dispatch => {
   return {
     addProductToCart: (product) => dispatch(actions.addProductToCart(product)),
     removeProductToCart: (product) => dispatch(actions.removeProductToCart(product)),
+    updateProductToCart: (product) => dispatch(actions.updateProductToCart(product)),
   }
 };
 
