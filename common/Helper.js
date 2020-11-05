@@ -111,6 +111,7 @@ export default {
     typing: 'typing',
     messages: 'App\\Events\\Message',
     messageGroup: 'App\\Events\\MessageGroup',
+    rider: 'App\\Events\\Rider',
   },
   tutorials: [
     {
