@@ -1,7 +1,6 @@
 import React, { Component, useState } from 'react';
 import Style from './Style.js';
 import { View, Image, TouchableHighlight, Text, ScrollView, FlatList,TouchableOpacity,Button,StyleSheet, ColorPropType,TextInput,PermissionsAndroid} from 'react-native';
-
 import { Spinner, Empty, SystemNotification,GooglePlacesAutoComplete,ImageUpload} from 'components';
 import { connect } from 'react-redux';
 import { Dimensions } from 'react-native';
@@ -590,7 +589,7 @@ onVariationSubtract=(index,variationIndex)=>{
     })
     return (
       <View style={{height:'100%',backgroundColor:'white'}}>
-         {this.state.isLoading ? <Spinner mode="overlay"/> : 
+         {
           this.state.data[0]!=null ? 
          <ScrollView
       style={Style.ScrollView}
@@ -598,7 +597,7 @@ onVariationSubtract=(index,variationIndex)=>{
         if (event.nativeEvent.contentOffset.y <= 0) {
         }
       }}>
-        
+         
             <View style={{flexDirection:'row',justifyContent:'space-evenly',marginTop:25, marginBottom:15}}>
         <TouchableOpacity
               onPress={()=>{this.setState({type:"Delivery",paymentType:"cod"})}}
@@ -622,6 +621,7 @@ onVariationSubtract=(index,variationIndex)=>{
               }}>Pickup</Text>
             </TouchableOpacity>
         </View>
+       
         <Divider style={{height:3}}/>
         {
           (this.state.type=="Delivery" && this.props.state.location) ? this.deliveryDetails() : null
@@ -639,8 +639,8 @@ onVariationSubtract=(index,variationIndex)=>{
         
         </View>
         <Divider style={{height:3}}/>
+        
           <View style={{ alignItems: 'center',width:'100%',backgroundColor:'white'}}>
-          
              {
                 first.map((product,index) => (
                   product.selectedVariation.length>0 ?
@@ -650,7 +650,7 @@ onVariationSubtract=(index,variationIndex)=>{
                     details={product}
                     variation={variation} 
                     onSubtract={()=>this.onVariationSubtract(index,variationIndex)} 
-                    onAdd={()=>this.checkCart()} />
+                    onAdd={()=>this.onVariationAdd(index,variationIndex)} />
                   )):
                   <CheckoutCard 
                   key={product.id} 
@@ -773,7 +773,7 @@ placeholder={'Money on Hand'}
   </View>
 </View>
 </TouchableOpacity>
-
+{this.state.isLoading ? <Spinner mode='overlay'/> : null}
      </ScrollView>: 
       <View style={{ marginTop: '20%', alignItems: 'center',marginBottom:100 }}>
       <Text>Looks like you don't have any orders yet</Text>
