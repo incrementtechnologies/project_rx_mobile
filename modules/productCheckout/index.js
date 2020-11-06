@@ -47,6 +47,8 @@ class productCheckout extends Component{
   
   componentDidMount(){
     const { user } = this.props.state;
+
+    
    
       this.retrieve()
       console.log("mount")
@@ -83,8 +85,9 @@ class productCheckout extends Component{
     })      
   }
 
-    retrieve=()=>
+    retrieve=async()=>
     {
+    
       const { user } = this.props.state;
       if(user != null){
        const parameter = {
@@ -98,23 +101,40 @@ class productCheckout extends Component{
      this.setState({
        isLoading: true
      })
-   
-       Api.request(Routes.cartsRetrieve, parameter, response => {
-         if(response.data[0]!=null)
-         {
-          
-         let products=JSON.parse(response.data[0].items)
-         products.forEach(product=>
-          {
-            product.price!=null ? this.setState({data:JSON.parse(response.data[0].items)}) : this.setState({data:JSON.parse(response.data[0].items),priceMissing:true});
-          })
-          console.log(products)
-          this.retrieveFees();
-      
-       }}, error => {
-         console.log({ error })
+     let products=this.props.state.cart;
+     if(products.length>0)
+     {
+    await products.forEach(product=>
+       {
+         product.price!=null ? this.setState({data:products}) : this.setState({data:products,priceMissing:true});
        })
+
+       this.retrieveFees();
+      
+     }
+     console.log("props",this.state.data)
+     
+   
+      //  Api.request(Routes.cartsRetrieve, parameter, response => {
+      //    if(response.data[0]!=null)
+      //    {
+          
+      //    let products=JSON.parse(response.data[0].items)
+      //     console.log("current data",products)
+      //    products.forEach(product=>
+      //     {
+      //       product.price!=null ? this.setState({data:JSON.parse(response.data[0].items)}) : this.setState({data:JSON.parse(response.data[0].items),priceMissing:true});
+      //     })
+      //     console.log(products)
+      //     this.retrieveFees();
+      
+      //  }}, error => {
+      //    console.log({ error })
+      //  })
+
+       
  
+
        Api.request(Routes.locationRetrieve, parameter, response => {
          this.setState({isLoading: false})
         
@@ -214,6 +234,7 @@ class productCheckout extends Component{
     const products=[...this.state.data]
     products[index].quantity+=1
     this.setState({data:products,products})
+    
 
     const stringifyItems = JSON.stringify(products)
     const parameter = {
@@ -223,7 +244,7 @@ class productCheckout extends Component{
 
     this.setState({ isLoading: true })
     Api.request(Routes.cartsCreate, parameter, response => {
-     
+      this.props.updateProductToCart(products[index])
       this.setState({ isLoading: false })
     }, error => {
       console.log({ error })
@@ -231,25 +252,15 @@ class productCheckout extends Component{
     this.setState({productNumber:this.state.productNumber+1})
   }
 
-  onSubtract=(index)=>
+  onVariationAdd=(index,variationIndex)=>
   {
-    const { removeProductToCart } = this.props
-    var products=[...this.state.data]
-    if(products[index].quantity>1)
-    {
-     
-      products[index].quantity-=1
-      this.setState({productNumber:this.state.productNumber-1}) 
-    }
-    else if (products[index].quantity==1)
-    {
-    removeProductToCart(products[index])
-    products.splice(index,1)
-     
-    }
-  
-    
+
+    const products=[...this.state.data]
+    products[index].selectedVariation[variationIndex].quantity+=1
     this.setState({data:products,products})
+    console.log(this.state.data)
+    
+
     const stringifyItems = JSON.stringify(products)
     const parameter = {
       account_id: this.props.state.user.id,
@@ -258,20 +269,80 @@ class productCheckout extends Component{
 
     this.setState({ isLoading: true })
     Api.request(Routes.cartsCreate, parameter, response => {
+      this.props.updateProductToCart(products[index]);
+      console.log("response",response)
+      this.setState({ isLoading: false })
+    }, error => {
+      console.log({ error })
+    })
+    this.setState({productNumber:this.state.productNumber+1})
+
+  }
+
+
+  onSubtract=(index)=>
+  {
+    const { removeProductToCart } = this.props
+    var products=[...this.state.data]
+    if(products[index].quantity>1)
+    {
+      products[index].quantity-=1
+      this.setState({productNumber:this.state.productNumber-1}) 
+    }
+    else if (products[index].quantity==1)
+    {
+    removeProductToCart(products[index]);
+    products.splice(index,1)
+    } 
+    this.setState({data:products,products})
+    const stringifyItems = JSON.stringify(products)
+    const parameter = {
+      account_id: this.props.state.user.id,
+      items: stringifyItems
+    }
+    this.setState({ isLoading: true })
+    Api.request(Routes.cartsCreate, parameter, response => {
      
       this.setState({ isLoading: false })
     }, error => {
       console.log({ error })
     })
-    
-
   }
+checkCart=()=>{
+  console.log(this.state.data)
+}
+onVariationSubtract=(index,variationIndex)=>{
+  const { removeProductToCart } = this.props
+  var products=[...this.state.data]
+  //
 
-  checkCart=()=>
+
+
+  //
+  if(products[index].selectedVariation[variationIndex].quantity>1)
   {
-    console.log(JSON.stringify(this.state.data.length))
-   
+    products[index].selectedVariation[variationIndex].quantity-=1
+    this.setState({productNumber:this.state.productNumber-1}) 
   }
+  else if (products[index].selectedVariation[variationIndex].quantity==1)
+  {
+  products[index].selectedVariation.splice(variationIndex,1)
+  } 
+  this.setState({data:products,products})
+  const stringifyItems = JSON.stringify(products)
+  const parameter = {
+    account_id: this.props.state.user.id,
+    items: stringifyItems
+  }
+  this.setState({ isLoading: true })
+  Api.request(Routes.cartsCreate, parameter, response => {
+    this.props.updateProductToCart(products[index]);
+    this.setState({ isLoading: false })
+  }, error => {
+    console.log({ error })
+  }) 
+}
+
 
  
  
@@ -411,6 +482,19 @@ class productCheckout extends Component{
 
   checkOutButton=(totalPrices)=>
   {
+    var variationLength=0;
+   const count=this.state.data.filter(item=> item.selectedVariation.length>0).length
+   this.state.data.map(product=>{
+    if(product.selectedVariation.length>0)
+    {
+      product.selectedVariation.map(variation=>{
+      variationLength+=variation.quantity;
+      })
+    }
+  })
+
+  variationLength-=count;
+   console.log(count)
     return(
       <View style={{justifyContent:'center',width:'100%',flexDirection:'row'}}>
         
@@ -476,7 +560,9 @@ class productCheckout extends Component{
                disabled={this.state.error||this.state.shippingFee==null ? true : false}
                >
                  <View style={{flexDirection:'row',justifyContent:'space-between',marginRight:5}}>
-               <View style={Style.circleContainer}><Text style={{alignSelf:'center',color:'#FF5B04'}}>{this.state.data.length + this.state.productNumber}</Text></View>
+               <View style={Style.circleContainer}><Text style={{alignSelf:'center',color:'#FF5B04'}}>
+                 {this.state.data.length + this.state.productNumber + variationLength}
+                 </Text></View>
                <Text style={{
                  color:'white',
                  alignSelf:'center',
@@ -500,7 +586,7 @@ class productCheckout extends Component{
     let totalPrices=0
     this.state.data.forEach(product=>{
       (product.price!=null) &&
-      (product.selectedVariation != null ? totalPrices+=product.quantity*product.selectedVariation.price : totalPrices+=product.quantity*product.price[0].price )
+      (product.selectedVariation.length>0 ? totalPrices+=product.quantity*product.selectedVariation[0].price : totalPrices+=product.quantity*product.price[0].price )
     })
     return (
       <View style={{height:'100%',backgroundColor:'white'}}>
@@ -557,6 +643,15 @@ class productCheckout extends Component{
           
              {
                 first.map((product,index) => (
+                  product.selectedVariation.length>0 ?
+                  product.selectedVariation.map((variation,variationIndex)=>(
+                    <CheckoutCard 
+                    key={variation.id} 
+                    details={product}
+                    variation={variation} 
+                    onSubtract={()=>this.onVariationSubtract(index,variationIndex)} 
+                    onAdd={()=>this.checkCart()} />
+                  )):
                   <CheckoutCard 
                   key={product.id} 
                   details={product} 
@@ -574,6 +669,15 @@ class productCheckout extends Component{
             </TouchableOpacity> )}
 
             {this.state.showStatus ? null : rest.map((product,index)  => (
+                product.selectedVariation.length>0 ?
+                product.selectedVariation.map((variation,variationIndex)=>(
+                  <CheckoutCard 
+                  key={variation.id} 
+                  details={product}
+                  variation={variation} 
+                  onSubtract={()=>this.onVariationSubtract(index,variationIndex)} 
+                  onAdd={()=>this.onAdd(index+2)} />
+                )):
             <CheckoutCard 
             key={product.id} 
             details={product} 
@@ -709,6 +813,8 @@ const mapDispatchToProps = dispatch => {
   const { actions } = require('@redux');
   return {
     removeProductToCart: (products) => dispatch(actions.removeProductToCart(products)),
+    updateProductToCart: (products) => dispatch(actions.updateProductToCart(products)),
+    
 
   };
 };
