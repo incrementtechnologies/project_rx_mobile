@@ -231,6 +231,7 @@ class productCheckout extends Component{
     this.setState({productNumber:this.state.productNumber+1})
   }
 
+
   onSubtract=(index)=>
   {
     const { removeProductToCart } = this.props
@@ -500,7 +501,7 @@ class productCheckout extends Component{
     let totalPrices=0
     this.state.data.forEach(product=>{
       (product.price!=null) &&
-      (product.selectedVariation != null ? totalPrices+=product.quantity*product.selectedVariation.price : totalPrices+=product.quantity*product.price[0].price )
+      (product.selectedVariation.length>0 ? totalPrices+=product.quantity*product.selectedVariation[0].price : totalPrices+=product.quantity*product.price[0].price )
     })
     return (
       <View style={{height:'100%',backgroundColor:'white'}}>
@@ -557,10 +558,19 @@ class productCheckout extends Component{
           
              {
                 first.map((product,index) => (
+                  product.selectedVariation.length>0 ?
+                  product.selectedVariation.map((variation,variationIndex)=>(
+                    <CheckoutCard 
+                    key={variation.id} 
+                    details={product}
+                    variation={variation} 
+                    onSubtract={()=>alert(variationIndex)} 
+                    onAdd={()=>this.onAdd(index)} />
+                  )):
                   <CheckoutCard 
                   key={product.id} 
                   details={product} 
-                  onSubtract={()=>this.onSubtract(index)} 
+                  onSubtract={()=>alert(index)} 
                   onAdd={()=>this.onAdd(index)} />
                 ))
               }
@@ -574,10 +584,19 @@ class productCheckout extends Component{
             </TouchableOpacity> )}
 
             {this.state.showStatus ? null : rest.map((product,index)  => (
+                product.selectedVariation.length>0 ?
+                product.selectedVariation.map((variation,variationIndex)=>(
+                  <CheckoutCard 
+                  key={variation.id} 
+                  details={product}
+                  variation={variation} 
+                  onSubtract={()=>alert(variationIndex+2)} 
+                  onAdd={()=>this.onAdd(index+2)} />
+                )):
             <CheckoutCard 
             key={product.id} 
             details={product} 
-            onSubtract={()=>this.onSubtract(index+2)} 
+            onSubtract={()=>alert(index+2)} 
             onAdd={()=>this.onAdd(index+2)} />
             ))
             }
