@@ -5,10 +5,11 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
+  Alert,
 } from "react-native";
 import Modal from "react-native-modal";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
 import { Color , BasicStyles } from 'common';
 
@@ -35,11 +36,63 @@ const Variations = ({ state, cart, selectedProduct, onClose, onAdd }) => {
     }
   }, [selectedProduct])
 
+  const onAddQuantity = (item) => {
+    // 1) find item on selectedVariation array
+    const existingItem = selectedVariation.find(obj => obj.id === item.id)
+    // 2) find index of that item on selectedVariation array
+    // finding index must use the 'existingItem' variable.
+    // passing directly the 'item' parameter always results to '-1'
+    // since the quantity property of the item in selectedVariation array is already changed
+    const index = _.indexOf(selectedVariation, existingItem)
+
+    if (index === -1) { // if item is not yet added in selectedVariation array
+      const newItem = {...item}
+      newItem.quantity = 1
+      setSelectedVariation(prevState => [...prevState, newItem])
+    } else { // update quantity of that item in selectedVariation array
+      const updatedArray = [...selectedVariation]
+      const updatedItem = {...selectedVariation[index]}
+      updatedItem.quantity += 1
+      updatedArray[index] = updatedItem
+      setSelectedVariation(updatedArray)
+    }
+  }
+
+  const onMinusQuantity = (item) => {
+    // 1) find item on selectedVariation array
+    const existingItem = selectedVariation.find(obj => obj.id === item.id)
+    // 2) find index of that item on selectedVariation array
+    // finding index must use the 'existingItem' variable.
+    // passing directly the 'item' parameter always results to '-1'
+    // since the quantity property of the item in selectedVariation array is already changed
+    const index = _.indexOf(selectedVariation, existingItem)
+
+    if (index < 0) return
+    if (existingItem.quantity > 1) {
+      const updatedArray = [...selectedVariation]
+      const updatedItem = {...selectedVariation[index]}
+      updatedItem.quantity -= 1
+      updatedArray[index] = updatedItem
+      setSelectedVariation(updatedArray)
+    } else {
+      const newArray = [...selectedVariation]
+      newArray.splice(index, 1)
+      setSelectedVariation(newArray)
+    }
+  }
+
+  const closeModal = () => {
+    setSelectedVariation([])
+    onClose()
+  }
+
   let variationsList = <Text>No variation available</Text>
   if (selectedProduct != null && selectedProduct.variation && selectedProduct.variation.length > 0) {
     variationsList = selectedProduct.variation.map(item => {
       let colorVariant = {}
-      const isSelected = selectedVariation.length ? selectedVariation.find(obj => obj.id === item.id) : null
+      const find = selectedVariation.find(obj => obj.id === item.id)
+      const index = _.indexOf(selectedVariation, find)
+      const isSelected = index !== -1 ? true : false
       const fontStyle = {
         fontSize: 12,
         color: isSelected ? Color.white : Color.black
@@ -58,60 +111,73 @@ const Variations = ({ state, cart, selectedProduct, onClose, onAdd }) => {
       }
 
       return (
-        <TouchableOpacity onPress={() => {
-          if (isOnCart) return
-          const index = _.indexOf(selectedVariation, item)
-          if (index !== -1) { // if item already exist; remove it from array
-            const newArray = [...selectedVariation]
-            newArray.splice(index, 1)
-            setSelectedVariation(newArray)
-          } else { // else; push the item to the selected variation array
-            setSelectedVariation(prevState => [...prevState, item])
-          }
-        }}>
-          <View
-            key={item.id}
-            style={{
-              maxWidth: '100%',
-              flexDirection: 'row',
-              minHeight: 25,
-              paddingTop: 25,
-              paddingBottom: 25,
-              paddingHorizontal: 25,
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              borderBottomWidth: 1,
-              borderColor: Color.primary,
-              backgroundColor: isSelected ? Color.primary : isOnCart ? Color.lightGray : Color.white
-            }}
-          >
-            <View style={{ width: '15%' }}>
-              <Text style={fontStyle}>
-                { item.payload }
-              </Text>
-            </View>
-            <View style={{ paddingHorizontal: 10, width: '70%' }}>
-              <Text style={{...fontStyle, ...colorVariant}}>
-                { payloadValue }
-              </Text>
-            </View>
-            <View style={{ width: '15%' }}>
-              <Text style={fontStyle}>
-                { item.price }
-              </Text>
-              <Text style={fontStyle}>
-                PHP
-              </Text>
-            </View>
+        <View
+          key={item.id}
+          style={{
+            maxWidth: '100%',
+            flexDirection: 'row',
+            minHeight: 25,
+            paddingTop: 25,
+            paddingBottom: 25,
+            paddingHorizontal: 25,
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            borderBottomWidth: 1,
+            borderColor: Color.primary,
+            backgroundColor: isSelected ? Color.primary : Color.white
+          }}
+        >
+          <View style={{ width: '15%' }}>
+            <Text style={fontStyle}>
+              { item.payload }
+            </Text>
           </View>
-        </TouchableOpacity>
+          <View style={{ paddingHorizontal: 10, width: '40%' }}>
+            <Text style={{...fontStyle, ...colorVariant}}>
+              { payloadValue }
+            </Text>
+          </View>
+          <View style={{ width: '15%' }}>
+            <Text style={fontStyle}>
+              { item.price }
+            </Text>
+            <Text style={fontStyle}>
+              PHP
+            </Text>
+          </View>
+          <View
+            style={{ 
+              width: '30%',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }
+          }>
+            <TouchableOpacity onPress={() => onMinusQuantity(item)}>
+              <FontAwesomeIcon
+                icon={ faMinus }
+                style={{
+                  color: isSelected ? Color.white : Color.primary
+                }}
+                size={20}
+              />
+            </TouchableOpacity>
+            <Text style={{...fontStyle, marginHorizontal: 10 }}>
+              { isSelected ? selectedVariation[index].quantity  : 0 }
+            </Text>
+            <TouchableOpacity onPress={() => onAddQuantity(item)}>
+              <FontAwesomeIcon
+                icon={ faPlus }
+                style={{
+                  color: isSelected ? Color.white : Color.primary
+                }}
+                size={20}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
       )
     })
-  }
-
-  const closeModal = () => {
-    setSelectedVariation(null)
-    onClose()
   }
 
   return (
@@ -149,9 +215,13 @@ const Variations = ({ state, cart, selectedProduct, onClose, onAdd }) => {
                 justifyContent: 'center'
               }}>
                 <TouchableOpacity onPress={() => closeModal()} style={{ paddingRight: 10 }}>
-                  <FontAwesomeIcon icon={ faTimes } style={{
-                    color: Color.danger
-                  }} size={BasicStyles.iconSize} />
+                  <FontAwesomeIcon
+                    icon={ faTimes }
+                    style={{
+                      color: Color.danger
+                    }}
+                    size={BasicStyles.iconSize}
+                  />
                 </TouchableOpacity>
               </View>
             </View>
@@ -175,16 +245,30 @@ const Variations = ({ state, cart, selectedProduct, onClose, onAdd }) => {
             }}>
               <View style={{ width: '50%', alignItems: 'center' }}>
                 <TouchableOpacity 
-                  onPress={() => closeModal()}
+                  onPress={() => {
+                    if (isOnCart) { // removing all variations
+                      Alert.alert(
+                        "Remove product",
+                        "Are you sure you want to remove all variations you have set from this product?",
+                        [
+                          { text: "No" },
+                          { text: "Yes", onPress: () => onAdd(selectedProduct, selectedVariation) },
+                        ],
+                        { cancelable: true }
+                      );
+                    } else {
+                      closeModal()
+                    }
+                  }}
                   underlayColor={Color.gray}
                 >
                   <Text style={{
-                    color: Color.warning,
+                    color: isOnCart ? Color.danger : Color.black,
                     paddingTop: 15,
                     paddingBottom: 15,
                     paddingLeft: 10,
                   }}>
-                    Cancel
+                    { isOnCart ? 'Remove' : 'Cancel' }
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -195,16 +279,23 @@ const Variations = ({ state, cart, selectedProduct, onClose, onAdd }) => {
                   borderLeftWidth: 1
               }}>
                 <TouchableOpacity 
-                  onPress={() => onAdd(selectedProduct, selectedVariation)}
+                  onPress={() => {
+                    if (!isOnCart && selectedVariation.length < 1) {
+                      Alert.alert('Notice', 'Please specify the quantity of the variation you want to add')
+                    } else {
+                      const isUpdating = isOnCart && selectedVariation.length > 0
+                      onAdd(selectedProduct, selectedVariation, isUpdating)
+                    }
+                  }}
                   underlayColor={Color.gray}
                 >
                   <Text style={{ 
-                    color: Color.primary,
+                    color: Color.success,
                     paddingTop: 15,
                     paddingBottom: 15,
                     paddingLeft: 10,
                   }}>
-                    { isOnCart ? 'Remove' : 'Add' }
+                    { isOnCart ? 'Update' : 'Add' }
                   </Text>
                 </TouchableOpacity>
               </View>

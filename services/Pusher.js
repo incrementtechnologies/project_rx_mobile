@@ -26,5 +26,8 @@ export default {
       console.log('hello')
       callback({type: Helper.pusher.systemNotification, data: response.data})
     })
+    this.channel.bind(Helper.pusher.rider, response => {
+      callback({type: Helper.pusher.rider, data: response.data})
+    })
   }
 }

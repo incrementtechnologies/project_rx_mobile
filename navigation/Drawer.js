@@ -80,7 +80,8 @@ const Homepage_StackNavigator = createStackNavigator({
       headerStyle: {
         backgroundColor: Color.white,
       },
-      headerTintColor: '#fff'
+      headerTintColor: '#000',
+      headerTitle: 'Merchant'
     }
   },
   Dashboard: {
