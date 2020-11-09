@@ -524,27 +524,30 @@ class Merchant extends Component {
             <View style={Style.tabBar}>
               { 
                 categories && 
-                categories.map((tab, idx) => (
-                  <TouchableOpacity
-                    key={idx}
-                    onPress={() => this.scrollToCategory(idx)}
-                    onLayout={event => {
-                      const layout = event.nativeEvent.layout;
-                      this.products_navigator_layout[idx] = layout.x;
-                    }}
-                    style={[
-                      Style.tabItem,
-                      this.state.active_category === idx ? 
-                      { borderTopWidth: 2, borderColor: Color.primary } : {}
-                    ]}
-                  >
-                    <View>
-                      <Text style={ this.state.active_category === idx ? { color: Color.primary } : {}}>
-                        { tab }
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                ))
+                categories.map((tab, idx) => {
+                  if (tab == null) return null
+                  return (
+                    <TouchableOpacity
+                      key={idx}
+                      onPress={() => this.scrollToCategory(idx)}
+                      onLayout={event => {
+                        const layout = event.nativeEvent.layout;
+                        this.products_navigator_layout[idx] = layout.x;
+                      }}
+                      style={[
+                        Style.tabItem,
+                        this.state.active_category === idx ? 
+                        { borderTopWidth: 2, borderColor: Color.primary } : {}
+                      ]}
+                    >
+                      <View>
+                        <Text style={ this.state.active_category === idx ? { color: Color.primary } : {}}>
+                          { tab }
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  )
+                })
               }
             </View>
           </ScrollView>
