@@ -301,73 +301,76 @@ class Categories extends Component {
                   ]}
                 >
                 {
-                  products.length > 0 && products.map((product, idx) => (
-                    <View key={idx}>
-                      <View style={{ 
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          paddingHorizontal: 5,
-                          marginVertical: 10
-                        }}
-                      >
-                        <Text style={{ fontSize: 17, fontWeight: '600'}}>
-                          {product.category}
-                        </Text>
-                        <TouchableOpacity onPress={() => {
-                          this.setState({ selected_category: product.category })
-                          this.ScrollViewRef.scrollTo({
-                            x: 0,
-                            y: 0,
-                            animated: true
-                          })
-                        }}>
-                          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text
-                              style={{ 
-                                color: Color.darkGray,
-                                fontSize: 12,
-                                marginRight: 5
-                              }}
-                            >
-                              View more
-                            </Text>
-                            <FontAwesomeIcon
-                              icon={faArrowCircleRight}
-                              size={15}
-                              style={{ color: Color.darkGray }}
-                            />
-                          </View>
-                        </TouchableOpacity>
+                  products.length > 0 && products.map((product, idx) => {
+                    if (product.hasOwnProperty('data') && product.data.length === 0) return null
+                    return (
+                      <View key={idx}>
+                        <View style={{ 
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            paddingHorizontal: 5,
+                            marginVertical: 10
+                          }}
+                        >
+                          <Text style={{ fontSize: 17, fontWeight: '600'}}>
+                            {product.category}
+                          </Text>
+                          <TouchableOpacity onPress={() => {
+                            this.setState({ selected_category: product.category })
+                            this.ScrollViewRef.scrollTo({
+                              x: 0,
+                              y: 0,
+                              animated: true
+                            })
+                          }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                              <Text
+                                style={{ 
+                                  color: Color.darkGray,
+                                  fontSize: 12,
+                                  marginRight: 5
+                                }}
+                              >
+                                View more
+                              </Text>
+                              <FontAwesomeIcon
+                                icon={faArrowCircleRight}
+                                size={15}
+                                style={{ color: Color.darkGray }}
+                              />
+                            </View>
+                          </TouchableOpacity>
+                        </View>
+                        {
+                          product.data.length
+                          ? (
+                              <View style={{ height: 180 }}>
+                                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                                  { 
+                                    product.data.map((details, idx) => {
+                                      return (
+                                        <TouchableOpacity
+                                          key={idx}
+                                          onPress={() => navigate('Merchant', { merchant_id: details.merchant_id })}
+                                        >
+                                          <Card details={details} theme={theme}/>
+                                        </TouchableOpacity>
+                                      )
+                                    })
+                                  }
+                                </ScrollView>
+                              </View>
+                            )
+                          : (
+                              <View style={{ justifyContent: 'center', alignItems: 'center', height: 100}}>
+                                <Text>No products available in your area</Text>
+                              </View>
+                            )
+                        }
                       </View>
-                      {
-                        product.data.length
-                        ? (
-                            <View style={{ height: 180 }}>
-                              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                                { 
-                                  product.data.map((details, idx) => {
-                                    return (
-                                      <TouchableOpacity
-                                        key={idx}
-                                        onPress={() => navigate('Merchant', { merchant_id: details.merchant_id })}
-                                      >
-                                        <Card details={details} theme={theme}/>
-                                      </TouchableOpacity>
-                                    )
-                                  })
-                                }
-                              </ScrollView>
-                            </View>
-                          )
-                        : (
-                            <View style={{ justifyContent: 'center', alignItems: 'center', height: 100}}>
-                              <Text>No products available in your area</Text>
-                            </View>
-                          )
-                      }
-                    </View>
-                  )) //end products map
+                    )
+                  }) //end products map
                 }
                 </View>
               </ScrollView>

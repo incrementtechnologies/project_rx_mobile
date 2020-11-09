@@ -225,7 +225,15 @@ class Featured extends Component {
             /> */}
 
             {/* Promo Card */}
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ maxHeight: 90 }}>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              style={{
+                minHeight: 70,
+                maxHeight: 200,
+                marginBottom: 20
+              }}
+            >
               {
                 isLoadingCoupons ? (
                   [1, 2, 3, 4, 5].map((id) => (
@@ -299,7 +307,7 @@ class Featured extends Component {
                   </View>
                 </>
               ) : isLoading === false ? (
-                <View style={{ alignItems: 'center', marginTop: '40%' }}>
+                <View style={{ alignItems: 'center' }}>
                   <Text>
                     Looks like there are no featured products available in your area. {''}
                     <Text
