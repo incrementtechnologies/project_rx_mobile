@@ -43,7 +43,6 @@ class productCheckout extends Component{
     }
   }
 
-  
   componentDidMount(){
     const { user } = this.props.state;
 
@@ -152,7 +151,7 @@ class productCheckout extends Component{
        
          if(response.data.length>0)
          {
-          console.log("testkjasdfhlaksdjfhalsdkfjhasldkfjh",response)
+          console.log("test",response)
           this.setState({validID:false});
         }
         else{
@@ -168,8 +167,6 @@ class productCheckout extends Component{
  
 
   deliveryDetails=()=>{
-   
-  
     return(
       <React.Fragment>
         <View style={Style.DelvToContainer}><Text style={{fontSize:15}}>Deliver To</Text></View>
@@ -253,19 +250,16 @@ class productCheckout extends Component{
 
   onVariationAdd=(index,variationIndex)=>
   {
-
     const products=[...this.state.data]
     products[index].selectedVariation[variationIndex].quantity+=1
     this.setState({data:products,products})
     console.log(this.state.data)
     
-
     const stringifyItems = JSON.stringify(products)
     const parameter = {
       account_id: this.props.state.user.id,
       items: stringifyItems
     }
-
     this.setState({ isLoading: true })
     Api.request(Routes.cartsCreate, parameter, response => {
       this.props.updateProductToCart(products[index]);
@@ -277,7 +271,6 @@ class productCheckout extends Component{
     this.setState({productNumber:this.state.productNumber+1})
 
   }
-
 
   onSubtract=(index)=>
   {
@@ -313,11 +306,7 @@ checkCart=()=>{
 onVariationSubtract=(index,variationIndex)=>{
   const { removeProductToCart } = this.props
   var products=[...this.state.data]
-  //
-
-
-
-  //
+ 
   if(products[index].selectedVariation[variationIndex].quantity>1)
   {
     products[index].selectedVariation[variationIndex].quantity-=1
@@ -438,6 +427,7 @@ onVariationSubtract=(index,variationIndex)=>{
     Api.request(Routes.uploadValidID, parameter, response => {
     console.log(response)  
     alert("ID Successfully Uploaded")
+    this.retrieve();
     }, error => {
       console.log( "this is uploadID error",error )
 
@@ -574,7 +564,6 @@ onVariationSubtract=(index,variationIndex)=>{
               </View>
          </TouchableOpacity>
          </React.Fragment>}
-    
       </View> 
     )
   }
