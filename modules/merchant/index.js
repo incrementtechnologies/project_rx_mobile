@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Dimensions,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
 import { NavigationActions } from 'react-navigation'
 import { connect } from 'react-redux';
@@ -172,17 +173,58 @@ class Merchant extends Component {
     // initialize quantitiy
     product.quantity = 1
     product.selectedVariation = variation
+    console.log({ product, isArrayVariation: _.isArray(product.variation) })
 
     // checking if unique merchant (RETURN IF UNIQUE)
     const isDifferentMerchant = _.uniqBy([...data, product], 'merchant_id').length > 1
     if (isDifferentMerchant) {
-      Alert.alert('Notice', 'Sorry, ordering to multiple merchants is not allowed yet')
+      if (variation.length > 0) {
+        if (Platform.OS === 'ios') {
+          // setting timeout to fix React native alert issue:
+          // re: (Alert closes immediately along with modal)
+          setTimeout(() => {
+            Alert.alert(
+              'Notice',
+              'Sorry, ordering to multiple merchants is not allowed yet'
+            )
+          }, 1000)
+        } else {
+          Alert.alert(
+            'Notice',
+            'Sorry, ordering to multiple merchants is not allowed yet'
+          )
+        }
+      } else {
+        Alert.alert('Notice', 'Sorry, ordering to multiple merchants is not allowed yet')
+      }
+
       return
     }
 
-    if (product.price == null) {
+    if (product.variation == null && product.price == null) {
       Alert.alert('Notice', 'Sorry, this product does not have a price yet, please choose another product')
       return
+    } else if (_.isArray(product.variation) && product.variation.length > 0) {
+      if (_.isArray(variation) && variation.length > 0) {
+        for (let selectedVar of variation) {
+          if (selectedVar.price <= 0) {
+            if (Platform.OS === 'ios') {
+              setTimeout(() => {
+                Alert.alert(
+                  'Notice',
+                  `Sorry, ${selectedVar.payload}: ${selectedVar.payload_value} does not have a price yet, please choose another variation`
+                )
+              }, 1000)
+            } else {
+              Alert.alert(
+                'Notice',
+                `Sorry, ${selectedVar.payload}: ${selectedVar.payload_value} does not have a price yet, please choose another variation`
+              )
+            }
+            return
+          }
+        }
+      }
     }
 
     // checking if item is already added in cart (REMOVING IF FOUND)
