@@ -17,7 +17,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Geolocation from '@react-native-community/geolocation';
 import { Row } from 'native-base';
 import { CheckoutCard } from 'components/Checkout';
-import { products } from './data';
 import TearLines from "react-native-tear-lines";
 
 
@@ -32,7 +31,7 @@ class productCheckout extends Component{
     address:[],
     merchantID:null,
      showStatus:true,
-     products,
+     products:[],
      totalPrice:0,
      type:'Delivery',
      paymentType:'cod',
@@ -113,22 +112,33 @@ class productCheckout extends Component{
      console.log("props",this.state.data)
      
    
-      //  Api.request(Routes.cartsRetrieve, parameter, response => {
-      //    if(response.data[0]!=null)
-      //    {
+    //  Api.request(Routes.cartsRetrieve, parameter, response => {
+    //      if(response.data[0]!=null)
+    //      {
           
-      //    let products=JSON.parse(response.data[0].items)
-      //     console.log("current data",products)
-      //    products.forEach(product=>
-      //     {
-      //       product.price!=null ? this.setState({data:JSON.parse(response.data[0].items)}) : this.setState({data:JSON.parse(response.data[0].items),priceMissing:true});
-      //     })
-      //     console.log(products)
-      //     this.retrieveFees();
+    //      let products=JSON.parse(response.data[0].items)
+    //       console.log("current data",products)
+    //      products.forEach(product=>
+    //       {
+    //         product.price!=null ? this.setState({data:JSON.parse(response.data[0].items)}) : this.setState({data:JSON.parse(response.data[0].items),priceMissing:true});
+    //         console.log(product)
+    //         if(this.props.state.cart!=null)
+    //         {
+    //         this.props.addProductToCart(product)
+    //         }
+     
+    //       })
+    //       console.log(products)
+    //       this.retrieveFees();
+          
       
-      //  }}, error => {
-      //    console.log({ error })
-      //  })
+    //    }}, error => {
+    //      console.log({ error })
+    //    })
+
+      
+
+    //    console.log("henlo",this.props.state.cart)
 
        
  
@@ -803,6 +813,7 @@ const mapDispatchToProps = dispatch => {
   return {
     removeProductToCart: (products) => dispatch(actions.removeProductToCart(products)),
     updateProductToCart: (products) => dispatch(actions.updateProductToCart(products)),
+    addProductToCart: (products) => dispatch(actions.addProductToCart(products)),
     
 
   };
