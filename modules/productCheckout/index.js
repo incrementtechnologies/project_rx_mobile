@@ -17,7 +17,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import Geolocation from '@react-native-community/geolocation';
 import { Row } from 'native-base';
 import { CheckoutCard } from 'components/Checkout';
-import { products } from './data';
 import TearLines from "react-native-tear-lines";
 
 
@@ -32,7 +31,7 @@ class productCheckout extends Component{
     address:[],
     merchantID:null,
      showStatus:true,
-     products,
+     products:[],
      totalPrice:0,
      type:'Delivery',
      paymentType:'cod',
@@ -104,7 +103,7 @@ class productCheckout extends Component{
      {
     await products.forEach(product=>
        {
-         product.price!=null ? this.setState({data:products}) : this.setState({data:products,priceMissing:true});
+         (product.price!=null || product.selectedVariation.length>0) ? this.setState({data:products}) : this.setState({data:products,priceMissing:true});
        })
 
        this.retrieveFees();
@@ -113,22 +112,33 @@ class productCheckout extends Component{
      console.log("props",this.state.data)
      
    
-      //  Api.request(Routes.cartsRetrieve, parameter, response => {
-      //    if(response.data[0]!=null)
-      //    {
+    //  Api.request(Routes.cartsRetrieve, parameter, response => {
+    //      if(response.data[0]!=null)
+    //      {
           
-      //    let products=JSON.parse(response.data[0].items)
-      //     console.log("current data",products)
-      //    products.forEach(product=>
-      //     {
-      //       product.price!=null ? this.setState({data:JSON.parse(response.data[0].items)}) : this.setState({data:JSON.parse(response.data[0].items),priceMissing:true});
-      //     })
-      //     console.log(products)
-      //     this.retrieveFees();
+    //      let products=JSON.parse(response.data[0].items)
+    //       console.log("current data",products)
+    //      products.forEach(product=>
+    //       {
+    //         product.price!=null ? this.setState({data:JSON.parse(response.data[0].items)}) : this.setState({data:JSON.parse(response.data[0].items),priceMissing:true});
+    //         console.log(product)
+    //         if(this.props.state.cart!=null)
+    //         {
+    //         this.props.addProductToCart(product)
+    //         }
+     
+    //       })
+    //       console.log(products)
+    //       this.retrieveFees();
+          
       
-      //  }}, error => {
-      //    console.log({ error })
-      //  })
+    //    }}, error => {
+    //      console.log({ error })
+    //    })
+
+      
+
+    //    console.log("henlo",this.props.state.cart)
 
        
  
@@ -268,7 +278,7 @@ class productCheckout extends Component{
     }, error => {
       console.log({ error })
     })
-    this.setState({productNumber:this.state.productNumber+1})
+    
 
   }
 
@@ -310,12 +320,20 @@ onVariationSubtract=(index,variationIndex)=>{
   if(products[index].selectedVariation[variationIndex].quantity>1)
   {
     products[index].selectedVariation[variationIndex].quantity-=1
-    this.setState({productNumber:this.state.productNumber-1}) 
+    
   }
   else if (products[index].selectedVariation[variationIndex].quantity==1)
   {
+  removeProductToCart(products[index]);
   products[index].selectedVariation.splice(variationIndex,1)
-  } 
+
+  if(products[index].selectedVariation.length==0)
+  {
+    products.splice(index,1)
+  }
+  
+  }
+
   this.setState({data:products,products})
   const stringifyItems = JSON.stringify(products)
   const parameter = {
@@ -471,7 +489,7 @@ onVariationSubtract=(index,variationIndex)=>{
 
   checkOutButton=(totalPrices)=>
   {
-    var variationLength=0;
+   var variationLength=0;
    const count=this.state.data.filter(item=> item.selectedVariation.length>0).length
    this.state.data.map(product=>{
     if(product.selectedVariation.length>0)
@@ -573,8 +591,17 @@ onVariationSubtract=(index,variationIndex)=>{
     const rest=this.state.data.slice(2);
     let totalPrices=0
     this.state.data.forEach(product=>{
-      (product.price!=null) &&
-      (product.selectedVariation.length>0 ? totalPrices+=product.quantity*product.selectedVariation[0].price : totalPrices+=product.quantity*product.price[0].price )
+      (product.price!=null || product.selectedVariation.length>0) &&
+      (product.selectedVariation.length>0 ?
+        
+        product.selectedVariation.map(variation=>{
+          totalPrices+=variation.quantity*variation.price
+        })
+        
+        
+        
+        
+        : totalPrices+=product.quantity*product.price[0].price )
     })
     return (
       <View style={{height:'100%',backgroundColor:'white'}}>
@@ -803,6 +830,7 @@ const mapDispatchToProps = dispatch => {
   return {
     removeProductToCart: (products) => dispatch(actions.removeProductToCart(products)),
     updateProductToCart: (products) => dispatch(actions.updateProductToCart(products)),
+    addProductToCart: (products) => dispatch(actions.addProductToCart(products)),
     
 
   };

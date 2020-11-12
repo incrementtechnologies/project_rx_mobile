@@ -91,6 +91,7 @@ class Merchant extends Component {
     }
 
     Api.request(Routes.productsRetrieve, products_parameter, response => {
+      console.log(response.data);
       const categories = _.uniqBy(response.data, 'tags').map(data => data.tags)
       if (response.data.length) {
         this.setState({
