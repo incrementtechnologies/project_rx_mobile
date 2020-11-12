@@ -90,6 +90,7 @@ class Merchant extends Component {
     }
 
     Api.request(Routes.productsRetrieve, products_parameter, response => {
+      console.log(response.data);
       const categories = _.uniqBy(response.data, 'tags').map(data => data.tags)
       if (response.data.length) {
         this.setState({
@@ -180,7 +181,7 @@ class Merchant extends Component {
       return
     }
 
-    if (product.price == null) {
+    if (product.price == null && product.selectedVariation.length<1) {
       Alert.alert('Notice', 'Sorry, this product does not have a price yet, please choose another product')
       return
     }
