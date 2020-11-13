@@ -27,13 +27,47 @@ class MyOrderDetails extends Component {
   constructor(props){
     super(props);
     this.state = {
-      isLoading: false,
+      isLoading: true,
+      details: null,
       createRating: {
         state: false,
         selected: null
       },
       viewItems: false
     }
+  }
+
+  componentDidMount() {
+    const checkoutId = this.props.navigation?.state?.params?.checkoutId || null
+
+    this.setState({ isLoading: true })
+    if (checkoutId != null) {
+      this.retriveSpecificOrder(checkoutId)
+    } else {
+      const details = this.props.navigation.state?.params?.data
+      this.setState({ details, isLoading: false })
+    }
+  }
+
+  retriveSpecificOrder = (checkoutId) => {
+    const parameter = {
+      condition: [{
+        column: 'id',
+        clause: '=',
+        value: checkoutId
+      }],
+    }
+
+    Api.request(Routes.ordersRetrieve, parameter, response => {
+      if (response.data.length) {
+        this.setState({ isLoading: false, details: response.data[0] })
+      } else {
+        this.setState({ isLoading: false })
+      }
+    }, error => {
+      console.error({ RetrievingOrdersError: error })
+      this.setState({ isLoading: false })
+    })
   }
 
   goToMessenger(details) {
@@ -50,7 +84,30 @@ class MyOrderDetails extends Component {
   render() {
     const { theme } = this.props.state
     const { isLoading, createRating, viewItems } = this.state
-    const details = this.props.navigation.state?.params?.data
+    const { details } = this.state
+
+    if (isLoading) {
+      return (
+        <View style={{ marginVertical: 20 }}>
+          <Spinner mode="full"/> 
+        </View>
+      )
+    }
+
+    if (details == null && !isLoading) return (
+      <View
+        style={{
+          width: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginVertical: 20
+        }}
+      >
+        <Text>
+          Error fetching data, please try again
+        </Text>
+      </View>
+    )
 
     let icon = null
     switch (details.status) {
@@ -276,12 +333,6 @@ class MyOrderDetails extends Component {
                   </Text>
                 </View>
               </TouchableOpacity>
-              { isLoading
-                ? (<View style={{ marginVertical: 20 }}>
-                    <Spinner mode="overlay"/> 
-                  </View>)
-                : null 
-              }
               {
                 details.status !== 'completed' ? (
                   <TouchableOpacity onPress={() => this.goToMessenger(details)}>
