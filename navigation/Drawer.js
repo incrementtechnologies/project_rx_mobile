@@ -130,14 +130,13 @@ const Homepage_StackNavigator = createStackNavigator({
   },
   Notification: {
     screen: Notification,
-    navigationOptions: ({ navigation }) => ({
-      headerLeft: <MenuDrawerStructure navigationProps={navigation} />,
-      headerRight: <OptionRight navigationProps={navigation} />,
+    navigationOptions: {
       headerStyle: {
         backgroundColor: Color.white,
       },
-      headerTintColor: '#fff',
-    }),
+      headerTintColor: '#000',
+      headerTitle: 'Notifications'
+    }
   },
   MyOrders: {
     screen: MyOrders,
@@ -313,6 +312,12 @@ const Drawer = createDrawerNavigator({
       drawerLabel: '',
     }
   },
+  MyOrderDetails: {
+    screen: Homepage_StackNavigator,
+    navigationOptions: {
+      drawerLabel: '',
+    }
+  }
 }, {
   contentComponent: Slider
 });

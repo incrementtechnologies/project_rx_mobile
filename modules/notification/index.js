@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Style from './Style.js';
-import { View, Text, ScrollView, FlatList, TouchableHighlight} from 'react-native';
+import { View, Text, ScrollView, FlatList, TouchableHighlight, Alert} from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
 import { Routes, Color, Helper, BasicStyles } from 'common';
 import { Spinner } from 'components';
@@ -46,66 +46,82 @@ class Notifications extends Component{
     })
   }
 
-  redirect(route){
-    const reset = StackActions.reset({
-      index: 0,
-      key: null,
-      actions: [NavigationActions.navigate({
-          routeName: 'declarationStack'
-      })]
-    });
-    this.props.navigation.dispatch(reset);
+  redirect(params){
+    const { route, data } = params
+
+    switch (route) {
+      case 'MessengerMessages':
+        this.props.navigation.navigate(route, { 
+          checkoutData: {
+            code: data,
+          },
+          messengerHeaderTitle: `***${data.slice(-8)}`
+        });
+        break;
+      case 'MyOrderDetails':
+        this.props.navigation.navigate(route, { checkoutId: data });
+        break;
+      default:
+        const reset = StackActions.reset({
+          index: 0,
+          key: null,
+          actions: [NavigationActions.navigate({
+            routeName: route
+          })]
+        });
+        this.props.navigation.dispatch(reset);
+        break;
+    }
   }
-  updateNotification = (searchParameter, notification, route) => {
-    const { setDeclaration, setNotifications } = this.props;
+
+  updateNotification = (notification, params) => {
+    const { setNotifications } = this.props;
     const { user } = this.props.state;
-    if(user == null){
-      return
-    }
-    let parameter = {
-      id: notification.id
-    }
+
+    if (user == null) return
+
+    let parameter = { id: notification.id }
     Api.request(Routes.notificationUpdate, parameter, response => {
       let retrieveParameter = {
         account_id: user.id
       }
       Api.request(Routes.notificationsRetrieve, retrieveParameter, notifications => {
         setNotifications(notifications.size, notifications.data);
-        setDeclaration(searchParameter)
-        this.redirect(route)
       });
     })
+
+    this.redirect(params)
   }
 
   viewNotification = (notification, index) => {
+    console.log({ notification })
     const { notifications } = this.props.state;
-    const { setDeclaration } = this.props;
-    setDeclaration(null)
-    let route = null;
-    let searchParameter = null
-    switch(notification.payload){
-      case 'form_request':
-        route = 'Declaration';
-        searchParameter = {
-          column: 'id',
-          value: notification.payload_value
-        }
-        break;
-      case 'form_submitted':
-        route = 'Declaration'
-        searchParameter = {
-          column: 'id',
-          value: notification.payload_value
-        }
-        break;
+
+    let params = {
+      route: null,
+      data: null
     }
-    if(notifications.unread > index){
-      console.log('hello')
-      this.updateNotification(searchParameter, notification, route);
-    }else{
-      console.log('hi')
-      setDeclaration(searchParameter)
-      this.redirect(route)
+    switch(notification.payload){
+      case 'thread':
+        params.route = 'MessengerMessages'
+        params.data = notification.route.split('/')[2]
+        break;
+      case 'new_delivery':
+        params.route = 'MyOrderDetails'
+        params.data = notification.route
+        break;
+      default: break;
+    }
+
+    if (params.route === null) {
+      Alert.alert('Notice', `Invalid route`)
+      return
+    }
+
+    if (notifications.unread > index) {
+      this.updateNotification(notification, params);
+    } else {
+      this.redirect(params)
     }
   }
 
@@ -136,7 +152,7 @@ class Notifications extends Component{
                 extraData={selected}
                 ItemSeparatorComponent={this.FlatListItemSeparator}
                 renderItem={({ item, index }) => (
-                  <View>
+                  <View style={{ borderBottomWidth: 1, borderBottomColor: Color.gray }}>
                     <TouchableHighlight
                       onPress={() => {this.viewNotification(item, index)}}
                       underlayColor={Color.gray}
@@ -151,13 +167,14 @@ class Notifications extends Component{
                           {item.title}
                         </Text>
                         <Text
-                          style={BasicStyles.normalText}>
+                          style={[BasicStyles.normalText, { color: Color.darkGray }]}>
                           {item.description}
                         </Text>
 
                         <Text
                           style={[BasicStyles.normalText, {
-                            paddingBottom: 10
+                            paddingBottom: 10,
+                            color: Color.darkGray
                           }]}>
                           {item.created_at_human}
                         </Text>
@@ -180,7 +197,6 @@ const mapStateToProps = state => ({ state: state });
 const mapDispatchToProps = dispatch => {
   const { actions } = require('@redux');
   return {
-    setDeclaration: (declaration) => dispatch(actions.setDeclaration(declaration)),
     setNotifications: (unread, notifications) => dispatch(actions.setNotifications(unread, notifications))
   };
 };
