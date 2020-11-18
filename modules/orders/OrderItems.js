@@ -102,6 +102,32 @@ const OrderItems = ({ visible, setVisible, data }) => {
             <Text style={{ fontSize: 12 }}>
               { item.title }
             </Text>
+            {
+              item.product_attributes != null && item.product_attributes.length > 0 && (
+                <View style={{ flexDirection: 'row', marginTop: 5, alignItems: 'center' }}>
+                  <Text style={{ fontSize: 12, color: Color.darkGray }}>
+                    {`${item.product_attributes[0].payload}: `}
+                  </Text>
+                  {
+                    (item.product_attributes[0].payload + '').toLowerCase() === 'color' ? (
+                      <View
+                        style={{
+                          width: 40,
+                          backgroundColor: item.product_attributes[0].payload_value + '',
+                          height: 20,
+                          borderRadius: 10,
+                          overflow: 'hidden'
+                        }}
+                      />
+                    ) : (
+                      <Text style={{ fontSize: 12, color: Color.darkGray }}>
+                        {item.product_attributes[0].payload_value}
+                      </Text>
+                    )
+                  }
+                </View>
+              )
+            }
           </View>
           <View style={{ width: '15%' }}>
             <Text style={{ fontSize: 12 }}>
